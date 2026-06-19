@@ -1,0 +1,65 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+apps/web/.next/
+*.egg-info/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Environment & secrets (NEVER commit)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production
+.env.production.local
+apps/web/.env.local
+apps/api/.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Testing
+coverage/
+.pytest_cache/
+htmlcov/
+playwright-report/
+test-results/
+
+# Turbo
+.turbo/
+
+# Hardhat
+packages/contracts/cache/
+packages/contracts/artifacts/
+packages/contracts/typechain-types/
+packages/contracts/coverage.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Docker
+*.pid
+
+# OS
+Thumbs.db
+
+# Vercel
+.vercel
+
+# Python
+.mypy_cache/
+.ruff_cache/
