@@ -1,5 +1,5 @@
 import uuid
-from datetime import UTC, datetime
+from datetime import datetime
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, String, Text, func
 from sqlalchemy.dialects.postgresql import UUID
@@ -11,9 +11,7 @@ from app.core.database import Base
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     wallet_address: Mapped[str] = mapped_column(String(42), unique=True, nullable=False)
     username: Mapped[str | None] = mapped_column(String(64), unique=True, nullable=True)
     email: Mapped[str | None] = mapped_column(String(255), unique=True, nullable=True)
@@ -32,7 +30,16 @@ class User(Base):
     )
 
     wallets: Mapped[list["Wallet"]] = relationship(back_populates="user", cascade="all, delete")
-    sessions: Mapped[list["Session"]] = relationship(
+    sessions: Mapped[list["Session"]] = relationship(back_populates="user", cascade="all, delete")
+    projects: Mapped[list["Project"]] = relationship(back_populates="user", cascade="all, delete")
+    skill_passports: Mapped[list["SkillPassport"]] = relationship(
+        back_populates="user", cascade="all, delete"
+    )
+    nft_records: Mapped[list["NftRecord"]] = relationship(
+        back_populates="user", cascade="all, delete"
+    )
+    audits: Mapped[list["Audit"]] = relationship(back_populates="user", cascade="all, delete")
+    analytics_events: Mapped[list["AnalyticsEvent"]] = relationship(
         back_populates="user", cascade="all, delete"
     )
 
@@ -40,9 +47,7 @@ class User(Base):
 class Wallet(Base):
     __tablename__ = "wallets"
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
     )
@@ -61,9 +66,7 @@ class Wallet(Base):
 class Session(Base):
     __tablename__ = "sessions"
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
     )
@@ -78,3 +81,6 @@ class Session(Base):
     )
 
     user: Mapped["User"] = relationship(back_populates="sessions")
+    analytics_events: Mapped[list["AnalyticsEvent"]] = relationship(
+        back_populates="session", cascade="all, delete"
+    )

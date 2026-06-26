@@ -37,6 +37,29 @@ jobs:
     defaults:
       run:
         working-directory: apps/api
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: nexus
+          POSTGRES_PASSWORD: nexus
+          POSTGRES_DB: nexus
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U nexus -d nexus"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -45,9 +68,15 @@ jobs:
           cache: pip
           cache-dependency-path: apps/api/requirements.txt
       - run: pip install -r requirements.txt
+      - run: alembic upgrade head
+        env:
+          DATABASE_URL: postgresql+asyncpg://nexus:nexus@localhost:5432/nexus
+          JWT_SECRET_KEY: ci-test-secret-not-for-production
       - run: ruff check app tests
       - run: pytest -q
         env:
+          DATABASE_URL: postgresql+asyncpg://nexus:nexus@localhost:5432/nexus
+          REDIS_URL: redis://localhost:6379/0
           JWT_SECRET_KEY: ci-test-secret-not-for-production
 
   contracts:

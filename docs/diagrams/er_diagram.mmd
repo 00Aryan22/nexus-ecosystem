@@ -1,4 +1,84 @@
 erDiagram
     users ||--o{ wallets : has
-    users ||--o| skill_passports : owns
-    users ||--o{ startups : creates
+    users ||--o{ sessions : has
+    users ||--o{ projects : owns
+    users ||--o{ skill_passports : owns
+    users ||--o{ nft_records : owns
+    users ||--o{ audits : submits
+    users ||--o{ analytics_events : generates
+    sessions ||--o{ analytics_events : tracks
+    skill_passports ||--o| nft_records : mints
+
+    users {
+        uuid id PK
+        string wallet_address UK
+        string username UK
+        string role
+        boolean is_active
+        timestamptz created_at
+    }
+
+    wallets {
+        uuid id PK
+        uuid user_id FK
+        string address UK
+        int chain_id
+        boolean is_primary
+    }
+
+    sessions {
+        uuid id PK
+        uuid user_id FK
+        string jwt_jti UK
+        string wallet_address
+        timestamptz expires_at
+        boolean revoked
+    }
+
+    projects {
+        uuid id PK
+        uuid user_id FK
+        string name
+        string industry
+        text problem_statement
+        string stage
+        jsonb plan_json
+        boolean is_public
+    }
+
+    skill_passports {
+        uuid id PK
+        uuid user_id FK
+        string skill_category
+        string skill_name
+        string evidence_url
+        decimal evaluation_score
+        string status
+    }
+
+    nft_records {
+        uuid id PK
+        uuid passport_id FK
+        uuid user_id FK
+        int token_id
+        string contract_address
+        string tx_hash
+    }
+
+    audits {
+        uuid id PK
+        uuid user_id FK
+        string source_hash
+        string status
+        int critical_count
+        jsonb report_json
+    }
+
+    analytics_events {
+        uuid id PK
+        uuid user_id FK
+        uuid session_id FK
+        string event_type
+        jsonb event_data
+        timestamptz created_at
+    }

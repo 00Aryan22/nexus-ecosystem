@@ -6,16 +6,17 @@ Create Date: 2026-06-20
 
 """
 
-from typing import Sequence, Union
+from collections.abc import Sequence
 
 import sqlalchemy as sa
-from alembic import op
 from sqlalchemy.dialects import postgresql
 
+from alembic import op
+
 revision: str = "001_auth_tables"
-down_revision: Union[str, None] = None
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = None
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -47,7 +48,12 @@ def upgrade() -> None:
     op.create_table(
         "wallets",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
-        sa.Column("user_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "user_id",
+            postgresql.UUID(as_uuid=True),
+            sa.ForeignKey("users.id", ondelete="CASCADE"),
+            nullable=False,
+        ),
         sa.Column("address", sa.String(42), nullable=False, unique=True),
         sa.Column("chain_id", sa.Integer(), nullable=False, server_default="80002"),
         sa.Column("nonce", sa.String(64), nullable=False, server_default=""),
@@ -66,7 +72,12 @@ def upgrade() -> None:
     op.create_table(
         "sessions",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
-        sa.Column("user_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "user_id",
+            postgresql.UUID(as_uuid=True),
+            sa.ForeignKey("users.id", ondelete="CASCADE"),
+            nullable=False,
+        ),
         sa.Column("jwt_jti", sa.String(64), nullable=False, unique=True),
         sa.Column("wallet_address", sa.String(42), nullable=False),
         sa.Column("ip_address", sa.String(45), nullable=True),

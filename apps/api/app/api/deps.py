@@ -38,7 +38,10 @@ async def get_current_user(
 
     session = await get_active_session(db, jti)
     if session is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Session revoked or expired")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Session revoked or expired",
+        )
 
     result = await db.execute(select(User).where(User.id == UUID(user_id)))
     user = result.scalar_one_or_none()
