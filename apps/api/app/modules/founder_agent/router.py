@@ -90,8 +90,18 @@ async def get_conversation(
     )
     messages = messages_result.scalars().all()
 
-    conv_data = AgentConversationDetail.model_validate(conv)
-    conv_data.messages = [AgentMessagePublic.model_validate(m) for m in messages]
+    # Build the detail schema from the ORM object + eagerly loaded messages.
+    # Do NOT pass the ORM conversation directly to AgentConversationDetail.model_validate
+    # because that triggers lazy-loading the `messages` relationship outside an
+    # async greenlet (MissingGreenlet error).
+    conv_data = AgentConversationDetail(
+        id=conv.id,
+        user_id=conv.user_id,
+        title=conv.title,
+        created_at=conv.created_at,
+        updated_at=conv.updated_at,
+        messages=[AgentMessagePublic.model_validate(m) for m in messages],
+    )
     return ApiResponse(data=conv_data)
 
 

@@ -14,7 +14,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 async def get_nonce(wallet: str) -> ApiResponse[NonceData]:
     if not wallet.startswith("0x") or len(wallet) != 42:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail="Invalid wallet address",
         )
     nonce, message, expires_at = await issue_nonce(wallet)

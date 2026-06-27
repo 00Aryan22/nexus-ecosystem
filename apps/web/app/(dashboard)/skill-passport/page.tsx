@@ -13,11 +13,8 @@ import {
   ExternalLink,
   Cpu,
   FileText,
-  BadgeAlert,
   BadgeCheck,
   Zap,
-  Activity,
-  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";

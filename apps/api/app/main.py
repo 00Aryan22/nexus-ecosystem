@@ -15,8 +15,15 @@ from app.modules.projects.router import router as projects_router
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
+    # Eagerly initialise DB engine on startup so the first request is fast
+    from app.core.database import get_engine
+
+    await get_engine()
     yield
     await close_redis()
+    from app.core.database import dispose_engine
+
+    await dispose_engine()
 
 
 app = FastAPI(

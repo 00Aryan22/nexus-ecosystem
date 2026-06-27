@@ -4,7 +4,7 @@ import { ConnectWalletButton } from "@/components/auth/connect-wallet-button";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight, Bot, ShieldAlert, Rocket, Layers } from "lucide-react";
+import { ArrowRight, Bot, ShieldAlert, Layers } from "lucide-react";
 
 export default function Home() {
   return (

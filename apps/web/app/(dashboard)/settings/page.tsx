@@ -6,13 +6,10 @@ import {
   User,
   ShieldCheck,
   Cpu,
-  Globe,
-  Settings,
   Briefcase,
   Search,
   Key,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
 

@@ -33,13 +33,12 @@ import { Button } from "@/components/ui/button";
 
 export default function AnalyticsPage() {
   const [events, setEvents] = useState<AnalyticsEventPublic[]>([]);
-  const [metrics, setMetrics] = useState<any>({ top_users: [], total_users: 0, active_startups: 0, contracts_audited: 0, passports_minted: 0 });
+  const [metrics] = useState<{top_users: any[]; total_users: number; active_startups: number; contracts_audited: number; passports_minted: number}>({ top_users: [], total_users: 0, active_startups: 0, contracts_audited: 0, passports_minted: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [simEventType] = useState("wallet_connected");
   const [simulating, setSimulating] = useState(false);
-
   const loadEvents = async () => {
     setLoading(true);
     try {

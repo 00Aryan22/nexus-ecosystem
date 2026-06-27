@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Any
+from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -16,7 +17,7 @@ class AgentMessagePublic(BaseModel):
 
 class AgentConversationPublic(BaseModel):
     id: str
-    user_id: str
+    user_id: UUID  # ORM returns uuid.UUID — must not be declared as str
     title: str | None = None
     created_at: datetime
     updated_at: datetime

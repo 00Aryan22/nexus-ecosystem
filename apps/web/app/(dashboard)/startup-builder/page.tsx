@@ -12,16 +12,12 @@ import {
   Plus,
   Trash2,
   Edit2,
-  CheckCircle2,
   Calendar,
-  Layers,
   Coins,
   Globe,
   Lock,
-  ExternalLink,
   ChevronRight,
   Sparkles,
-  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";

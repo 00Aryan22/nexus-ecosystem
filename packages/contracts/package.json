@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "compile": "hardhat compile",
-    "test": "hardhat test",
+    "compile": "node scripts/run-hardhat.js compile",
+    "test": "node scripts/run-hardhat.js test",
     "lint": "echo \"contracts: no lint configured yet\""
   },
   "devDependencies": {

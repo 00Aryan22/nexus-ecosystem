@@ -22,7 +22,8 @@ async def check_rate_limit(
     try:
         current = await redis.get(key)
         if current is None:
-            await redis.setex(key, window_seconds, "1")
+            # Use set() with ex= instead of deprecated setex()
+            await redis.set(key, "1", ex=window_seconds)
             return
 
         count = int(current)
@@ -32,7 +33,7 @@ async def check_rate_limit(
                 detail="Rate limit exceeded. Please try again later.",
             )
 
-        await redis.setex(key, window_seconds, str(count + 1))
+        await redis.set(key, str(count + 1), ex=window_seconds)
     except HTTPException:
         raise
     except Exception as exc:

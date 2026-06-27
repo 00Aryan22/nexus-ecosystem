@@ -38,7 +38,7 @@ async def issue_nonce(wallet: str) -> tuple[str, str, datetime]:
     message = siwe.prepare_message()
 
     redis = await get_redis()
-    await redis.setex(_nonce_redis_key(wallet), settings.siwe_nonce_ttl_seconds, nonce)
+    await redis.set(_nonce_redis_key(wallet), nonce, ex=settings.siwe_nonce_ttl_seconds)
 
     return nonce, message, expires_at
 

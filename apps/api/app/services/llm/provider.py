@@ -37,9 +37,11 @@ class EmergentProvider(LLMProvider):
         if not self.api_key:
             raise ValueError("Emergent API Key not configured")
 
-        messages = [{"role": "system", "content": system}] + history + [
-            {"role": "user", "content": prompt}
-        ]
+        messages = (
+            [{"role": "system", "content": system}]
+            + history
+            + [{"role": "user", "content": prompt}]
+        )
 
         async with httpx.AsyncClient(timeout=120.0) as client:
             async with client.stream(
@@ -59,8 +61,8 @@ class EmergentProvider(LLMProvider):
                             break
                         try:
                             payload = json.loads(data)
-                            chunk = payload.get("choices", [{}])[0].get("delta", {}).get(
-                                "content", ""
+                            chunk = (
+                                payload.get("choices", [{}])[0].get("delta", {}).get("content", "")
                             )
                             if chunk:
                                 yield chunk
@@ -105,8 +107,8 @@ class GeminiProvider(LLMProvider):
                         try:
                             chunk_data = json.loads(data)
                             if "candidates" in chunk_data and chunk_data["candidates"]:
-                                parts = chunk_data["candidates"][0].get("content", {}).get(
-                                    "parts", []
+                                parts = (
+                                    chunk_data["candidates"][0].get("content", {}).get("parts", [])
                                 )
                                 if parts:
                                     text = parts[0].get("text", "")
@@ -126,9 +128,11 @@ class OllamaProvider(LLMProvider):
     async def stream_generate(
         self, prompt: str, system: str, history: list[dict[str, str]]
     ) -> AsyncGenerator[str, None]:
-        messages = [{"role": "system", "content": system}] + history + [
-            {"role": "user", "content": prompt}
-        ]
+        messages = (
+            [{"role": "system", "content": system}]
+            + history
+            + [{"role": "user", "content": prompt}]
+        )
 
         async with httpx.AsyncClient(timeout=120.0) as client:
             async with client.stream(

@@ -10,7 +10,6 @@ import {
 } from "@/lib/api/client";
 import {
   ShieldAlert,
-  Plus,
   Code,
   CheckCircle2,
 } from "lucide-react";

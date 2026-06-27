@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { loading, isAuthenticated, address, user, signOut } = useAuth();
+  const { loading, isAuthenticated, address, signOut } = useAuth();
   const { mobileMenuOpen, setMobileMenuOpen } = useUIStore();
   const pathname = usePathname();
 

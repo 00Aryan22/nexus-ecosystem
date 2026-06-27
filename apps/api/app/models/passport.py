@@ -4,18 +4,18 @@ from decimal import Decimal
 from typing import Any
 
 from sqlalchemy import BigInteger, DateTime, ForeignKey, Integer, Numeric, String, Text, func
-from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
+from app.core.types import GUID, JSONBCompat
 
 
 class SkillPassport(Base):
     __tablename__ = "skill_passports"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(GUID(), primary_key=True, default=uuid.uuid4)
     user_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
     )
     skill_category: Mapped[str] = mapped_column(String(100), nullable=False)
     skill_name: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -44,22 +44,22 @@ class SkillPassport(Base):
 class NftRecord(Base):
     __tablename__ = "nft_records"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(GUID(), primary_key=True, default=uuid.uuid4)
     passport_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
+        GUID(),
         ForeignKey("skill_passports.id", ondelete="CASCADE"),
         nullable=False,
         unique=True,
     )
     user_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
     )
     token_id: Mapped[int] = mapped_column(BigInteger, nullable=False, unique=True)
     contract_address: Mapped[str] = mapped_column(String(42), nullable=False)
     chain_id: Mapped[int] = mapped_column(Integer, nullable=False, default=80002)
     tx_hash: Mapped[str] = mapped_column(String(66), nullable=False, unique=True)
     block_number: Mapped[int] = mapped_column(BigInteger, nullable=False)
-    metadata_json: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False)
+    metadata_json: Mapped[dict[str, Any]] = mapped_column(JSONBCompat(), nullable=False)
     minted_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

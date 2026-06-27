@@ -6,31 +6,44 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.database import AsyncSessionLocal
+# Ensure all models are registered with Base.metadata before create_all
+import app.models  # noqa: F401  (side-effect: registers all ORM models)
 from app.core.security import create_access_token, new_jti
 from app.main import app
 from app.models.auth import Session, User
 
 os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key-for-pytest-only-not-production")
 
-import asyncio
 
-
-@pytest.fixture(scope="session")
-def event_loop():
-    loop = asyncio.new_event_loop()
-    yield loop
-    loop.close()
-
-
+# ---------------------------------------------------------------------------
+# Engine / table setup — runs once for the entire session before any test.
+# ---------------------------------------------------------------------------
 @pytest.fixture(scope="session", autouse=True)
-async def cleanup_engine():
+async def setup_database():
+    """Initialise the engine (SQLite fallback when Postgres is unavailable)
+    and create all tables so tests can run without a real database."""
+
+    from app.core.database import Base, get_engine
+
+    # Force engine initialisation
+    engine = await get_engine()
+
+    # For SQLite we need to create tables; Postgres tables already exist via
+    # Alembic in CI, but creating them again is harmless (checkfirst=True).
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
     yield
-    from app.core.database import engine
 
-    await engine.dispose()
+    # Tear down
+    from app.core.database import dispose_engine
+
+    await dispose_engine()
 
 
+# ---------------------------------------------------------------------------
+# Fixtures
+# ---------------------------------------------------------------------------
 @pytest.fixture(autouse=True)
 def _jwt_secret() -> None:
     os.environ["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "test-secret-key")
@@ -38,7 +51,10 @@ def _jwt_secret() -> None:
 
 @pytest.fixture
 async def db_session() -> AsyncGenerator[AsyncSession, None]:
-    async with AsyncSessionLocal() as session:
+    from app.core.database import get_session_factory
+
+    factory = await get_session_factory()
+    async with factory() as session:
         yield session
         await session.rollback()
 

@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "name": "Update PROJECT_STATUS.md on Agent Stop",
+  "description": "After every agent session that makes changes to the project, automatically reminds Kiro to update PROJECT_STATUS.md with what was done, what was already done, and the current project capabilities.",
+  "version": "1",
+  "when": {
+    "type": "agentStop"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Check if any files were created or modified during this session. If yes, update PROJECT_STATUS.md at the repo root (d:\\Projects\\Nexus-AI Ecosystem\\PROJECT_STATUS.md) to reflect:\n1. What was changed/added in this session (new files, modified files, new APIs, new components, bug fixes)\n2. The current CI status (ruff, pytest, lint, typecheck, build, hardhat)\n3. The current \"What This Project Can Do\" section — keep it accurate and current\n4. Any new environment variables required\nKeep the existing structure and tone. Do NOT rewrite sections that didn't change. Only update what actually changed."
+  },
+  "workspaceFolderName": "Nexus-AI Ecosystem",
+  "shortName": "update-project-status-md"
+}
