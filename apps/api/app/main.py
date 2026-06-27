@@ -8,6 +8,7 @@ from app.core.redis import close_redis
 from app.modules.analytics.router import router as analytics_router
 from app.modules.audits.router import router as audits_router
 from app.modules.auth.router import router as auth_router
+from app.modules.founder_agent.router import router as founder_agent_router
 from app.modules.passports.router import router as passports_router
 from app.modules.projects.router import router as projects_router
 
@@ -23,7 +24,7 @@ app = FastAPI(
     version="0.2.0",
     description=(
         "NEXUS AI REST API — wallet auth, startup projects, skill passports, "
-        "contract audits, and analytics."
+        "contract audits, analytics, and AI founder agent."
     ),
     docs_url="/docs",
     redoc_url="/redoc",
@@ -34,6 +35,10 @@ app = FastAPI(
         {"name": "skill-passports", "description": "Skill passport credentials and NFT linkage"},
         {"name": "audits", "description": "Smart contract audit submissions and reports"},
         {"name": "analytics", "description": "Product analytics and dashboard metrics"},
+        {
+            "name": "founder_agent",
+            "description": "AI Founder Agent conversations and startup planning",
+        },
     ],
 )
 
@@ -50,6 +55,7 @@ app.include_router(projects_router, prefix=settings.api_v1_prefix)
 app.include_router(passports_router, prefix=settings.api_v1_prefix)
 app.include_router(audits_router, prefix=settings.api_v1_prefix)
 app.include_router(analytics_router, prefix=settings.api_v1_prefix)
+app.include_router(founder_agent_router, prefix=settings.api_v1_prefix)
 
 
 @app.get("/health")

@@ -38,6 +38,19 @@ class Settings(BaseSettings):
     cookie_secure: bool = False
     cookie_samesite: str = "lax"
 
+    emergent_api_key: str = ""
+    emergent_endpoint: str = "https://api.emergent.ai/v1/chat/completions"
+    gemini_api_key: str = ""
+    ollama_base_url: str = "http://localhost:11434"
+    ollama_model: str = "llama3"
+    llm_max_retries: int = 2
+    llm_retry_delay_seconds: float = 0.5
+
+    @property
+    def ollama_chat_url(self) -> str:
+        base = self.ollama_base_url.rstrip("/")
+        return f"{base}/api/chat"
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]

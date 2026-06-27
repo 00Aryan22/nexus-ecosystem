@@ -1,9 +1,8 @@
 from collections.abc import AsyncGenerator
 
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import text
-from sqlalchemy.exc import DBAPIError, OperationalError
 
 from app.core.config import settings
 
@@ -33,7 +32,7 @@ class Base(DeclarativeBase):
 
 
 async def _ensure_engine():
-    """Return a working engine, lazily creating the primary engine and falling back to in‑memory SQLite if the primary DB is unreachable."""
+    """Return a working engine, falling back to in-memory SQLite if DB is unreachable."""
     global engine, _fallback_engine
     # Primary engine already created at import; verify connectivity
     try:

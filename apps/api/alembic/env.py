@@ -9,12 +9,17 @@ from alembic import context
 from app.core.config import settings
 from app.core.database import Base
 from app.models import (  # noqa: F401
+    AIOutput,
+    AgentConversation,
+    AgentMessage,
     AnalyticsEvent,
     Audit,
     NftRecord,
     Project,
     Session,
     SkillPassport,
+    StartupPlan,
+    UsageStat,
     User,
     Wallet,
 )

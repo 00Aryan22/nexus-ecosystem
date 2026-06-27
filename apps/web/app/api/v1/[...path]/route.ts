@@ -45,6 +45,17 @@ async function handleProxy(
     });
 
     const contentType = upstream.headers.get("content-type") || "";
+    if (contentType.includes("text/event-stream") && upstream.body) {
+      return new NextResponse(upstream.body, {
+        status: upstream.status,
+        headers: {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache, no-transform",
+          Connection: "keep-alive",
+          "X-Accel-Buffering": "no",
+        },
+      });
+    }
     if (contentType.includes("application/json")) {
       const data = await upstream.json();
       return NextResponse.json(data, { status: upstream.status });
