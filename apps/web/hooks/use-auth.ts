@@ -56,6 +56,7 @@ export function useAuth() {
 
   return {
     user,
+    setUser,
     loading,
     signingIn,
     isConnected,
