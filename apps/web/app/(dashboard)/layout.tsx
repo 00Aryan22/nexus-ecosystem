@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, Wallet, ShieldCheck, Activity } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { PageTransition } from "@/components/layout/page-transition";
+import { useUIStore } from "@/store/ui-store";
+import { isFeatureEnabled, routeToFeatureFlag } from "@/lib/feature-flags";
 
 export default function DashboardLayout({
   children,
@@ -14,7 +17,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { loading, isAuthenticated, address, user, signOut } = useAuth();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { mobileMenuOpen, setMobileMenuOpen } = useUIStore();
   const pathname = usePathname();
 
   const getPageTitle = () => {
@@ -164,7 +167,21 @@ export default function DashboardLayout({
 
         {/* Content body */}
         <main className="flex-1 px-4 py-8 md:px-10 md:py-10">
-          <div className="animate-fade-in">{children}</div>
+          <PageTransition>
+            {isFeatureEnabled(routeToFeatureFlag(pathname) ?? "dashboard") ? (
+              children
+            ) : (
+              <div className="flex h-[50vh] flex-col items-center justify-center text-center">
+                <div className="rounded-xl bg-surface-slate/60 border border-border-muted p-4 mb-4">
+                  <Activity className="h-8 w-8 text-neon-blue" />
+                </div>
+                <h2 className="text-xl font-bold tracking-tight">Feature in Development</h2>
+                <p className="mt-2 max-w-md text-muted-foreground">
+                  This module is currently disabled by a feature flag. Check back later!
+                </p>
+              </div>
+            )}
+          </PageTransition>
         </main>
       </div>
     </div>

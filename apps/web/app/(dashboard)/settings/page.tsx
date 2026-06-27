@@ -13,6 +13,8 @@ import {
   Key,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/ui/page-header";
+import { Badge } from "@/components/ui/badge";
 
 export default function SettingsPage() {
   const { user, setUser, address } = useAuth();
@@ -62,11 +64,10 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
-      {/* Title bar */}
-      <div>
-        <h2 className="font-heading text-2xl font-bold tracking-tight">OS Configuration & Settings</h2>
-        <p className="text-sm text-muted-foreground">Manage Web3 identity roles and inspect platform endpoints.</p>
-      </div>
+      <PageHeader 
+        title="OS Configuration & Settings" 
+        description="Manage Web3 identity roles and inspect platform endpoints."
+      />
 
       <div className="grid gap-6 md:grid-cols-3">
         {/* Profile metadata panel (Col 1) */}
@@ -95,9 +96,9 @@ export default function SettingsPage() {
               </div>
               <div>
                 <p className="text-muted-foreground text-[9px] uppercase tracking-wider">Status</p>
-                <span className="mt-1 inline-block rounded bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[9px] text-emerald-400 capitalize font-bold">
-                  Active
-                </span>
+                <div className="mt-1">
+                  <Badge variant="success">Active</Badge>
+                </div>
               </div>
             </div>
           </div>

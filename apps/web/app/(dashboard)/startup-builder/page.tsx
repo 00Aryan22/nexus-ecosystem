@@ -24,6 +24,21 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/ui/page-header";
+import { PageSpinner } from "@/components/ui/spinner";
+import { ErrorState } from "@/components/ui/error-state";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogHeader,
+  DialogTitle,
+  DialogBody,
+  DialogFooter,
+  DialogCloseButton,
+} from "@/components/ui/dialog";
 
 export default function StartupBuilderPage() {
   const [projects, setProjects] = useState<ProjectPublic[]>([]);
@@ -142,41 +157,40 @@ export default function StartupBuilderPage() {
     }
   };
 
-  const getStageColor = (stage: string) => {
+  const getStageVariant = (stage: string): "neutral" | "primary" | "secondary" | "success" => {
     switch (stage) {
       case "idea":
-        return "border-neutral-500/20 bg-neutral-500/10 text-neutral-400";
+        return "neutral";
       case "validated":
-        return "border-blue-500/20 bg-blue-500/10 text-neon-blue";
+        return "primary";
       case "building":
-        return "border-purple-500/20 bg-purple-500/10 text-neon-purple";
+        return "secondary";
       case "launched":
-        return "border-emerald-500/20 bg-emerald-500/10 text-emerald-400";
+        return "success";
       default:
-        return "border-neutral-500/20 bg-neutral-500/10 text-neutral-400";
+        return "neutral";
     }
   };
 
   if (loading) {
-    return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-neon-blue border-t-transparent" />
-      </div>
-    );
+    return <PageSpinner label="Loading startup workspace..." />;
+  }
+
+  if (error) {
+    return <ErrorState message={error} onRetry={() => window.location.reload()} />;
   }
 
   return (
     <div className="space-y-6">
-      {/* Top action header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="font-heading text-2xl font-bold tracking-tight">Startup Workspace</h2>
-          <p className="text-sm text-muted-foreground">Scaffold plans, model tokenomics, and monitor development stages.</p>
-        </div>
-        <Button className="neon-glow bg-neon-blue hover:bg-neon-blue/80 text-white" onClick={handleOpenCreateModal}>
-          <Plus className="mr-2 h-4 w-4" /> Add Project
-        </Button>
-      </div>
+      <PageHeader
+        title="Startup Workspace"
+        description="Scaffold plans, model tokenomics, and monitor development stages."
+        action={
+          <Button className="neon-glow bg-neon-blue hover:bg-neon-blue/80 text-white" onClick={handleOpenCreateModal}>
+            <Plus className="mr-2 h-4 w-4" /> Add Project
+          </Button>
+        }
+      />
 
       {/* Main Grid: Projects sidebar (left 4 cols) & detailed blueprints (right 8 cols) */}
       <div className="grid gap-6 lg:grid-cols-12 items-start">
@@ -217,9 +231,9 @@ export default function StartupBuilderPage() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className={`rounded-full border px-2 py-0.5 text-[9px] font-mono capitalize ${getStageColor(proj.stage)}`}>
+                      <Badge variant={getStageVariant(proj.stage)}>
                         {proj.stage}
-                      </span>
+                      </Badge>
                       <ChevronRight className="h-4.5 w-4.5 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
                     </div>
                   </div>
@@ -243,9 +257,9 @@ export default function StartupBuilderPage() {
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="font-heading text-xl font-bold tracking-tight">{selectedProject.name}</h3>
-                      <span className={`rounded-full border px-2 py-0.5 text-[10px] font-mono capitalize ${getStageColor(selectedProject.stage)}`}>
+                      <Badge variant={getStageVariant(selectedProject.stage)}>
                         {selectedProject.stage}
-                      </span>
+                      </Badge>
                     </div>
                     <p className="text-xs text-neon-blue mt-1 font-semibold">{selectedProject.industry}</p>
                   </div>
@@ -364,126 +378,110 @@ export default function StartupBuilderPage() {
         </div>
       </div>
 
-      {/* Creation / Edit Glass Custom Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="glass-card w-full max-w-xl p-6 relative bg-surface-slate shadow-2xl border border-border">
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute right-4 top-4 rounded p-1 hover:bg-white/5 text-muted-foreground hover:text-foreground"
-            >
-              <X className="h-5 w-5" />
-            </button>
-
-            <h3 className="font-heading text-lg font-bold tracking-tight mb-6">
-              {isEditing ? "Edit Startup Project" : "Create Startup Project"}
-            </h3>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Project Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full rounded border border-border-muted bg-surface-obsidian p-2.5 text-sm focus:border-neon-blue focus:outline-none"
-                    placeholder="e.g. DeFi Staking Hub"
-                    value={formData.name}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Industry *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full rounded border border-border-muted bg-surface-obsidian p-2.5 text-sm focus:border-neon-blue focus:outline-none"
-                    placeholder="e.g. DeFi, Identity, Gaming"
-                    value={formData.industry}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, industry: e.target.value }))}
-                  />
-                </div>
-              </div>
-
+      <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <DialogCloseButton onClose={() => setIsModalOpen(false)} />
+        <DialogHeader>
+          <DialogTitle>
+            {isEditing ? "Edit Startup Project" : "Create Startup Project"}
+          </DialogTitle>
+        </DialogHeader>
+        <DialogBody>
+          <form onSubmit={handleSubmit} className="space-y-4" id="project-form">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Problem Statement * (min 10 characters)
+                  Project Name *
                 </label>
-                <textarea
+                <Input
                   required
-                  rows={3}
-                  className="w-full rounded border border-border-muted bg-surface-obsidian p-2.5 text-sm focus:border-neon-blue focus:outline-none resize-none"
-                  placeholder="Describe the problem your startup aims to solve..."
-                  value={formData.problem_statement}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, problem_statement: e.target.value }))}
+                  placeholder="e.g. DeFi Staking Hub"
+                  value={formData.name}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                 />
               </div>
-
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Unique Selling Proposition (USP)
+                  Industry *
                 </label>
-                <textarea
-                  rows={2}
-                  className="w-full rounded border border-border-muted bg-surface-obsidian p-2.5 text-sm focus:border-neon-blue focus:outline-none resize-none"
-                  placeholder="What makes your solution different and better?"
-                  value={formData.usp}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, usp: e.target.value }))}
+                <Input
+                  required
+                  placeholder="e.g. DeFi, Identity, Gaming"
+                  value={formData.industry}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, industry: e.target.value }))}
                 />
               </div>
+            </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Project Stage
-                  </label>
-                  <select
-                    className="w-full rounded border border-border-muted bg-surface-obsidian p-2.5 text-sm focus:border-neon-blue focus:outline-none"
-                    value={formData.stage}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, stage: e.target.value as any }))}
-                  >
-                    <option value="idea">Idea Stage</option>
-                    <option value="validated">Market Validated</option>
-                    <option value="building">Building MVP</option>
-                    <option value="launched">Launched Product</option>
-                  </select>
-                </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Problem Statement *
+              </label>
+              <Textarea
+                required
+                rows={3}
+                placeholder="Describe the problem your startup aims to solve..."
+                value={formData.problem_statement}
+                onChange={(e) => setFormData((prev) => ({ ...prev, problem_statement: e.target.value }))}
+              />
+            </div>
 
-                <div className="flex items-center gap-2 pt-6">
-                  <input
-                    type="checkbox"
-                    id="is_public"
-                    className="h-4 w-4 rounded border-border-muted text-neon-blue bg-surface-obsidian focus:ring-0 focus:ring-offset-0"
-                    checked={formData.is_public}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, is_public: e.target.checked }))}
-                  />
-                  <label htmlFor="is_public" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer">
-                    Publish Publicly (Visible to Audits)
-                  </label>
-                </div>
-              </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Unique Selling Proposition (USP)
+              </label>
+              <Textarea
+                rows={2}
+                placeholder="What makes your solution different and better?"
+                value={formData.usp}
+                onChange={(e) => setFormData((prev) => ({ ...prev, usp: e.target.value }))}
+              />
+            </div>
 
-              <div className="pt-4 flex justify-end gap-3">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="border-border-muted hover:bg-white/5"
-                  onClick={() => setIsModalOpen(false)}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Project Stage
+                </label>
+                <Select
+                  value={formData.stage}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, stage: e.target.value as any }))}
                 >
-                  Cancel
-                </Button>
-                <Button type="submit" className="bg-neon-blue hover:bg-neon-blue/80 text-white font-semibold px-6">
-                  {isEditing ? "Save Changes" : "Create Project"}
-                </Button>
+                  <option value="idea">Idea Stage</option>
+                  <option value="validated">Market Validated</option>
+                  <option value="building">Building MVP</option>
+                  <option value="launched">Launched Product</option>
+                </Select>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+
+              <div className="flex items-center gap-2 pt-6">
+                <input
+                  type="checkbox"
+                  id="is_public"
+                  className="h-4 w-4 rounded border-border-muted text-neon-blue bg-surface-obsidian focus:ring-0 focus:ring-offset-0"
+                  checked={formData.is_public}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, is_public: e.target.checked }))}
+                />
+                <label htmlFor="is_public" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer">
+                  Publish Publicly (Visible to Audits)
+                </label>
+              </div>
+            </div>
+          </form>
+        </DialogBody>
+        <DialogFooter>
+          <Button
+            type="button"
+            variant="outline"
+            className="border-border-muted hover:bg-white/5"
+            onClick={() => setIsModalOpen(false)}
+          >
+            Cancel
+          </Button>
+          <Button form="project-form" type="submit" className="bg-neon-blue hover:bg-neon-blue/80 text-white font-semibold px-6">
+            {isEditing ? "Save Changes" : "Create Project"}
+          </Button>
+        </DialogFooter>
+      </Dialog>
     </div>
   );
 }

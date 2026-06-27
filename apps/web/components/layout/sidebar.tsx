@@ -15,42 +15,57 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
+import { isFeatureEnabled, FeatureFlag } from "@/lib/feature-flags";
 
-const NAV_ITEMS = [
+type NavItem = {
+  name: string;
+  href: string;
+  icon: any;
+  flag: FeatureFlag;
+};
+
+const NAV_ITEMS: NavItem[] = [
   {
     name: "Dashboard",
     href: "/dashboard",
     icon: LayoutDashboard,
+    flag: "dashboard",
   },
   {
     name: "Startup Builder",
     href: "/startup-builder",
     icon: Rocket,
+    flag: "startup_builder",
   },
   {
     name: "Skill Passport",
     href: "/skill-passport",
     icon: Award,
+    flag: "skill_passport",
   },
   {
     name: "Contract Auditor",
     href: "/auditor",
     icon: ShieldAlert,
+    flag: "contract_auditor",
   },
   {
     name: "Analytics",
     href: "/analytics",
     icon: BarChart3,
+    flag: "analytics",
   },
   {
     name: "Founder Agent",
     href: "/founder-agent",
     icon: Bot,
+    flag: "founder_agent",
   },
   {
     name: "Settings",
     href: "/settings",
     icon: SettingsIcon,
+    flag: "settings",
   },
 ];
 
@@ -79,6 +94,8 @@ export function Sidebar() {
       {/* Navigation Links */}
       <nav className="flex-1 space-y-1 px-3 py-6">
         {NAV_ITEMS.map((item) => {
+          if (!isFeatureEnabled(item.flag)) return null;
+          
           const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
           const Icon = item.icon;
 

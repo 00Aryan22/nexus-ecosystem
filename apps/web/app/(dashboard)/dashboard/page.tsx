@@ -12,6 +12,11 @@ import {
   Clock,
 } from "lucide-react";
 import Link from "next/link";
+import { StatCard } from "@/components/ui/stat-card";
+import { PageHeader } from "@/components/ui/page-header";
+import { PageSpinner } from "@/components/ui/spinner";
+import { ErrorState } from "@/components/ui/error-state";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export default function DashboardOverviewPage() {
   const [data, setData] = useState<DashboardSummary | null>(null);
@@ -33,11 +38,11 @@ export default function DashboardOverviewPage() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-neon-blue border-t-transparent" />
-      </div>
-    );
+    return <PageSpinner label="Loading dashboard metrics..." />;
+  }
+
+  if (error) {
+    return <ErrorState message={error} />;
   }
 
   const statCards = [
@@ -90,39 +95,9 @@ export default function DashboardOverviewPage() {
 
       {/* Statistical Cards Grid */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {statCards.map((card, idx) => {
-          const Icon = card.icon;
-          return (
-            <Link
-              key={idx}
-              href={card.link}
-              className="glass-card group relative block overflow-hidden p-6 transition-all duration-300 hover:-translate-y-1 hover:border-border hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)]"
-            >
-              <div
-                className={`absolute -right-4 -top-4 h-24 w-24 rounded-full bg-gradient-to-br ${card.color} opacity-40 blur-xl transition-all group-hover:scale-125`}
-              />
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    {card.title}
-                  </p>
-                  <p className="mt-2 font-heading text-4xl font-extrabold tracking-tight">
-                    {card.value}
-                  </p>
-                </div>
-                <div className={`rounded-lg bg-surface-slate border border-border-muted p-3 ${card.iconColor} shadow-inner`}>
-                  <Icon className="h-6 w-6" />
-                </div>
-              </div>
-              <div className="mt-4 flex items-center justify-between border-t border-border-muted/50 pt-4">
-                <span className="text-xs text-muted-foreground">{card.description}</span>
-                <span className="flex items-center text-xs font-medium text-neon-blue opacity-0 group-hover:opacity-100 transition-opacity">
-                  Workspace <ArrowUpRight className="ml-1 h-3 w-3" />
-                </span>
-              </div>
-            </Link>
-          );
-        })}
+        {statCards.map((card, idx) => (
+          <StatCard key={idx} {...card} />
+        ))}
       </div>
 
       {/* Main grids: Quick launch & Event logs */}
@@ -183,10 +158,12 @@ export default function DashboardOverviewPage() {
 
             <div className="mt-6 flex-1 divide-y divide-border-muted/50 overflow-hidden">
               {!data?.recent_events || data.recent_events.length === 0 ? (
-                <div className="flex h-36 flex-col items-center justify-center text-muted-foreground text-xs">
-                  <Clock className="h-6 w-6 mb-2 text-muted-foreground/50 animate-pulse" />
-                  No events recorded yet.
-                </div>
+                <EmptyState 
+                  icon={Clock}
+                  title="No Recent Activity"
+                  description="System events and user actions will appear here."
+                  className="py-8"
+                />
               ) : (
                 data.recent_events.slice(0, 5).map((ev) => (
                   <div key={ev.id} className="py-3 flex items-center justify-between text-xs">

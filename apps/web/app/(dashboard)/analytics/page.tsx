@@ -7,23 +7,37 @@ import {
   AnalyticsEventPublic,
 } from "@/lib/api/client";
 import {
-  BarChart3,
   RefreshCcw,
-  Plus,
-  Play,
-  Calendar,
+  Users,
+  Briefcase,
+  ShieldAlert,
+  Award,
   Activity,
-  User,
+  Play,
 } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { PageSpinner } from "@/components/ui/spinner";
+import { ErrorState } from "@/components/ui/error-state";
+import { StatCard } from "@/components/ui/stat-card";
+import {
+  DataTable,
+  DataTableHeader,
+  DataTableContent,
+  DataTableHead,
+  DataTableBody,
+  DataTableRow,
+  DataTableCell,
+  DataTableHeadCell,
+} from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 
 export default function AnalyticsPage() {
   const [events, setEvents] = useState<AnalyticsEventPublic[]>([]);
+  const [metrics, setMetrics] = useState<any>({ top_users: [], total_users: 0, active_startups: 0, contracts_audited: 0, passports_minted: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Form state
-  const [simEventType, setSimEventType] = useState("wallet_connected");
+  const [simEventType] = useState("wallet_connected");
   const [simulating, setSimulating] = useState(false);
 
   const loadEvents = async () => {
@@ -71,110 +85,114 @@ export default function AnalyticsPage() {
     }
   };
 
-  if (loading && events.length === 0) {
-    return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-neon-blue border-t-transparent" />
-      </div>
-    );
+  if (loading) {
+    return <PageSpinner label="Loading analytics..." />;
+  }
+
+  if (error) {
+    return <ErrorState message={error} onRetry={() => window.location.reload()} />;
   }
 
   return (
     <div className="space-y-6">
-      {/* Action title bar */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h2 className="font-heading text-2xl font-bold tracking-tight">System Logs & Analytics</h2>
-          <p className="text-sm text-muted-foreground">Monitor platform events, session startups, and credential audit logs.</p>
+      <div className="space-y-6 max-w-6xl mx-auto">
+        <PageHeader 
+          title="Ecosystem Analytics"
+          description="Global metrics, active users, and system health overview."
+        />
+        
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { label: "Total Users", val: metrics.total_users, icon: Users, col: "text-neon-blue" },
+            { label: "Active Startups", val: metrics.active_startups, icon: Briefcase, col: "text-neon-purple" },
+            { label: "Smart Contracts Audited", val: metrics.contracts_audited, icon: ShieldAlert, col: "text-amber-500" },
+            { label: "Passports Minted", val: metrics.passports_minted, icon: Award, col: "text-emerald-400" },
+          ].map((stat, i) => (
+            <StatCard
+              key={i}
+              title={stat.label}
+              value={stat.val}
+              icon={stat.icon}
+              iconColor={stat.col}
+              gradientColor="from-transparent to-transparent"
+            />
+          ))}
         </div>
-        <Button variant="outline" className="border-border-muted hover:bg-white/5" onClick={loadEvents}>
-          <RefreshCcw className="mr-2 h-4 w-4" /> Refresh Logs
-        </Button>
+
+        <div className="flex justify-end">
+          <Button variant="outline" className="border-border-muted hover:bg-white/5" onClick={loadEvents}>
+            <RefreshCcw className="mr-2 h-4 w-4" /> Refresh Logs
+          </Button>
+        </div>
       </div>
 
-      {/* Grid: Events Table & Ingestion Simulator */}
       <div className="grid gap-6 lg:grid-cols-12 items-start">
-        {/* Left: Events Feed */}
         <div className="lg:col-span-8 space-y-4">
-          <div className="glass-card overflow-hidden">
-            <div className="p-6 border-b border-border-muted flex items-center justify-between">
-              <div>
-                <h3 className="font-heading font-semibold text-base">Ecosystem Event Stream</h3>
-                <p className="text-xs text-muted-foreground">Raw analytics payload ingestion ledger.</p>
-              </div>
-              <span className="text-xs font-mono px-2.5 py-0.5 rounded-full border border-neon-blue/20 bg-neon-blue/5 text-neon-blue">
-                {events.length} logs
-              </span>
-            </div>
-
-            {events.length === 0 ? (
-              <div className="text-center py-16 text-muted-foreground text-sm">
-                No events recorded. Use the simulator to inject test payloads.
-              </div>
-            ) : (
-              <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
-                <table className="w-full text-left text-xs border-collapse">
-                  <thead>
-                    <tr className="border-b border-border-muted bg-surface-slate/40 text-muted-foreground uppercase font-bold tracking-wider text-[10px] sticky top-0">
-                      <th className="p-4 bg-surface-slate/90">Event Type</th>
-                      <th className="p-4 bg-surface-slate/90">Metadata JSON</th>
-                      <th className="p-4 bg-surface-slate/90">Wallet Address</th>
-                      <th className="p-4 bg-surface-slate/90">Timestamp</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border-muted/50">
-                    {events.map((e) => (
-                      <tr key={e.id} className="hover:bg-white/[0.01] transition-colors">
-                        <td className="p-4">
-                          <span className="font-mono font-semibold text-foreground bg-surface-slate border border-border-muted px-2 py-0.5 rounded text-[10px]">
-                            {e.event_type}
-                          </span>
-                        </td>
-                        <td className="p-4 font-mono text-[10px] text-muted-foreground break-all max-w-[240px]">
-                          {e.event_data ? JSON.stringify(e.event_data) : "{}"}
-                        </td>
-                        <td className="p-4 font-mono text-[10px] text-muted-foreground">
-                          {e.wallet_address ? `${e.wallet_address.slice(0, 8)}...${e.wallet_address.slice(-6)}` : "—"}
-                        </td>
-                        <td className="p-4 text-muted-foreground font-mono text-[10px]">
-                          {new Date(e.created_at).toLocaleString()}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+          <DataTable>
+            <DataTableHeader>
+              <h3 className="font-heading font-semibold text-base">Ecosystem Event Stream</h3>
+              <p className="text-xs text-muted-foreground">Raw analytics payload ingestion ledger.</p>
+            </DataTableHeader>
+            <DataTableContent>
+              <DataTableHead>
+                <tr>
+                  <DataTableHeadCell>Event Type</DataTableHeadCell>
+                  <DataTableHeadCell>Metadata</DataTableHeadCell>
+                  <DataTableHeadCell>Timestamp</DataTableHeadCell>
+                </tr>
+              </DataTableHead>
+              <DataTableBody>
+                {events.map((e) => (
+                  <DataTableRow key={e.id}>
+                    <DataTableCell>
+                      <span className="font-mono text-xs bg-surface-slate px-2 py-0.5 rounded border border-border-muted">
+                        {e.event_type}
+                      </span>
+                    </DataTableCell>
+                    <DataTableCell className="font-mono text-[10px] text-muted-foreground">
+                      {JSON.stringify(e.event_data)}
+                    </DataTableCell>
+                    <DataTableCell className="text-muted-foreground text-xs">
+                      {new Date(e.created_at).toLocaleString()}
+                    </DataTableCell>
+                  </DataTableRow>
+                ))}
+              </DataTableBody>
+            </DataTableContent>
+          </DataTable>
         </div>
 
-        {/* Right: Simulator Pane */}
         <div className="lg:col-span-4 space-y-4">
+          <DataTable>
+            <DataTableHeader>
+              <h3 className="font-heading font-semibold text-base">Top Active Wallets</h3>
+              <p className="text-xs text-muted-foreground">Addresses with the most interaction.</p>
+            </DataTableHeader>
+            <DataTableContent>
+              <DataTableHead>
+                <tr>
+                  <DataTableHeadCell>Address</DataTableHeadCell>
+                  <DataTableHeadCell className="text-right">Score</DataTableHeadCell>
+                </tr>
+              </DataTableHead>
+              <DataTableBody>
+                {metrics.top_users.map((u: any, i: number) => (
+                  <DataTableRow key={i}>
+                    <DataTableCell className="font-mono text-neon-blue">
+                      {u.address.substring(0, 8)}...
+                    </DataTableCell>
+                    <DataTableCell className="text-right font-bold">{u.score}</DataTableCell>
+                  </DataTableRow>
+                ))}
+              </DataTableBody>
+            </DataTableContent>
+          </DataTable>
+
           <div className="glass-card p-5">
             <h4 className="text-xs font-bold uppercase tracking-wider text-neon-blue flex items-center gap-1.5 border-b border-border-muted pb-3 mb-4">
               <Activity className="h-4 w-4" /> Ingestion Simulator
             </h4>
-            <p className="text-xs text-muted-foreground leading-relaxed mb-4">
-              Inject custom actions directly into the database. Highly recommended to test schema parsing and DB triggers.
-            </p>
-
             <form onSubmit={handleSimulateEvent} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                  Select Event Type
-                </label>
-                <select
-                  className="w-full rounded border border-border-muted bg-surface-obsidian p-2.5 text-xs focus:border-neon-blue focus:outline-none"
-                  value={simEventType}
-                  onChange={(e) => setSimEventType(e.target.value)}
-                >
-                  <option value="wallet_connected">wallet_connected</option>
-                  <option value="startup_created">startup_created</option>
-                  <option value="audit_submitted">audit_submitted</option>
-                  <option value="profile_updated">profile_updated</option>
-                  <option value="dashboard_viewed">dashboard_viewed</option>
-                </select>
-              </div>
 
               <Button
                 type="submit"
