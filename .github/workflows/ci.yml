@@ -47,6 +47,37 @@ jobs:
           python -m venv .venv
           . .venv/bin/activate
           pip install -r requirements.txt
+      - name: Wait for services and verify connections
+        run: |
+          . .venv/bin/activate
+          sleep 5
+          python -c "
+import asyncio
+from sqlalchemy.ext.asyncio import create_async_engine
+import redis
+
+async def test_db():
+    engine = create_async_engine('postgresql+asyncpg://nexus:nexus@localhost:5432/nexus')
+    try:
+        async with engine.begin() as conn:
+            await conn.execute(__import__('sqlalchemy').text('SELECT 1'))
+        print('✓ PostgreSQL OK')
+    except Exception as e:
+        print(f'✗ PostgreSQL FAILED: {e}')
+        raise
+    finally:
+        await engine.dispose()
+
+try:
+    r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+    r.ping()
+    print('✓ Redis OK')
+except Exception as e:
+    print(f'✗ Redis FAILED: {e}')
+    raise
+
+asyncio.run(test_db())
+"
       - name: Run backend lint
         run: |
           . .venv/bin/activate
@@ -55,7 +86,7 @@ jobs:
       - name: Run backend tests
         run: |
           . .venv/bin/activate
-          pytest -vv --tb=short
+          pytest -vv --tb=short 2>&1
         env:
           DATABASE_URL: postgresql+asyncpg://nexus:nexus@localhost:5432/nexus
           REDIS_URL: redis://localhost:6379/0
