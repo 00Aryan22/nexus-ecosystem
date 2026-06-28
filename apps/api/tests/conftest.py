@@ -68,8 +68,6 @@ async def db_session() -> AsyncGenerator[AsyncSession, None]:
 @pytest.fixture
 async def test_user(db_session: AsyncSession) -> User:
     wallet = "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd"
-    from sqlalchemy import delete
-
     await db_session.execute(delete(User).where(User.wallet_address == wallet))
     await db_session.commit()
     user = User(wallet_address=wallet, role="founder", is_active=True)
