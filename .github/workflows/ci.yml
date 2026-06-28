@@ -78,6 +78,11 @@ except Exception as e:
 
 asyncio.run(test_db())
 "
+      - name: Run diagnostic test
+        working-directory: .
+        run: |
+          . apps/api/.venv/bin/activate
+          python test_ci_setup.py
       - name: Run backend lint
         run: |
           . .venv/bin/activate
