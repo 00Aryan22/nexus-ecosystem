@@ -25,6 +25,7 @@ async def setup_database():
     and create all tables so tests can run without a real database."""
 
     from app.core.database import Base, get_engine
+    from sqlalchemy import text
 
     # Force engine initialisation
     engine = await get_engine()
@@ -35,9 +36,19 @@ async def setup_database():
         await conn.run_sync(Base.metadata.create_all)
 
     # Clear any existing data so test sessions start from a clean state.
-    async with engine.begin() as conn:
-        for table in reversed(Base.metadata.sorted_tables):
-            await conn.execute(delete(table))
+    # Skip clearing on SQLite (in-memory), always clear on PostgreSQL
+    try:
+        db_url = str(engine.url)
+        if "postgresql" in db_url:
+            async with engine.begin() as conn:
+                # Disable and re-enable foreign key constraints for PostgreSQL
+                await conn.execute(text("SET session_replication_role = 'replica'"))
+                for table in reversed(Base.metadata.sorted_tables):
+                    stmt = delete(table)
+                    await conn.execute(stmt)
+                await conn.execute(text("SET session_replication_role = 'origin'"))
+    except Exception as e:
+        print(f"Warning: Could not clear tables: {e}")
 
     yield
 
