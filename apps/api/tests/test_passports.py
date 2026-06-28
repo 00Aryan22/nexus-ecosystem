@@ -26,6 +26,26 @@ async def test_create_and_get_passport(client: AsyncClient) -> None:
 
 
 @pytest.mark.asyncio
+async def test_mint_passport_creates_nft_record(client: AsyncClient) -> None:
+    payload = {
+        "skill_category": "Engineering",
+        "skill_name": "Solidity Smart Contracts",
+        "evidence_url": "https://github.com/example/repo",
+        "evidence_description": "Audited 3 production DeFi protocols.",
+    }
+    create = await client.post("/api/v1/passports", json=payload)
+    passport_id = create.json()["data"]["id"]
+
+    mint = await client.post(f"/api/v1/passports/{passport_id}/mint")
+    assert mint.status_code == 200
+    body = mint.json()["data"]
+    assert body["status"] == "minted"
+    assert body["nft_record"] is not None
+    assert body["nft_record"]["contract_address"]
+    assert body["ipfs_metadata_uri"] is not None
+
+
+@pytest.mark.asyncio
 async def test_passports_require_auth() -> None:
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:

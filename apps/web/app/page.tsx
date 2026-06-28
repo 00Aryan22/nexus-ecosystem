@@ -26,17 +26,17 @@ export default function Home() {
         >
           <div className="mb-6 inline-flex items-center rounded-full border border-neon-blue/30 bg-neon-blue/10 px-3 py-1 text-xs font-medium text-neon-blue backdrop-blur-sm">
             <span className="flex h-2 w-2 rounded-full bg-neon-blue mr-2 animate-pulse"></span>
-            Nexus AI OS Phase 1 Live
+            Ethereum Build Camp • Demo Ready
           </div>
           <h1 className="font-heading text-5xl font-extrabold tracking-tight text-foreground sm:text-7xl">
             Agentic OS for <br className="hidden sm:block" />
             <span className="bg-gradient-to-r from-neon-blue to-neon-purple bg-clip-text text-transparent">
-              Web3 Founders
+              Ethereum Builders
             </span>
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-            AI-powered startup building, verifiable skill passports, smart contract
-            audits, and ecosystem analytics — one decentralized platform.
+            Built for rapid demoing: AI-assisted founder workflows, soulbound skill passports,
+            and instant Solidity audits in a single polished experience for the Build Week showcase.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
             <ConnectWalletButton />
@@ -46,8 +46,17 @@ export default function Home() {
               className="border-border-muted hover:bg-white/5 w-full sm:w-auto"
               asChild
             >
-              <Link href="/auth/connect">
-                Access Dashboard <ArrowRight className="ml-2 h-4 w-4" />
+              <Link href="/dashboard">
+                Open Dashboard <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+            <Button
+              size="lg"
+              className="bg-neon-purple hover:bg-neon-purple/80 text-white w-full sm:w-auto"
+              asChild
+            >
+              <Link href="/skill-passport">
+                Mint Passport <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </div>

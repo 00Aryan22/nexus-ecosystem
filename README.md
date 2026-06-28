@@ -86,6 +86,33 @@ npm run compile
 npm test
 ```
 
+## Ethereum Build Camp Demo
+
+This repository is now positioned as an event-ready demo for the Ethereum Build Camp experience:
+
+- AI founder workflows for startup ideation and planning
+- Skill passport verification and NFT minting flow
+- Instant Solidity audit summaries for rapid product demos
+- Supabase-backed persistence and wallet-connected frontend flow
+
+Optional third-party integrations such as Gemini, Pinata, and blockchain RPC providers can be enabled through the environment file when you want richer live demo behavior.
+
+### Optional Integrations (environment variables)
+
+To enable Alchemy and Pinata integrations for richer demo behavior, add the following to your root `.env.local` (server-side only):
+
+- `ALCHEMY_API_KEY` — Alchemy dashboard API key (server use)
+- `ALCHEMY_POLYGON_AMOY_RPC_URL` — Alchemy Polygon Amoy RPC endpoint (or use `POLYGON_AMOY_RPC_URL`)
+- `PINATA_API_KEY`, `PINATA_API_SECRET` — Pinata keypair (server use)
+- `PINATA_JWT` — Pinata JWT (server-only; used for pinning metadata)
+
+For frontend-only read access (safe public values), copy these into `apps/web/.env.local` if desired:
+
+- `NEXT_PUBLIC_ALCHEMY_POLYGON_AMOY_RPC_URL` — public read-only RPC endpoint
+- `NEXT_PUBLIC_PINATA_GATEWAY` — Pinata gateway URL (default: `https://gateway.pinata.cloud/ipfs`)
+
+Keep all private keys and JWTs in server `.env.local` and never commit them.
+
 ## Development Phases
 
 | Phase | Status |
@@ -95,10 +122,10 @@ npm test
 | 3 — Database | Pending |
 | 4 — Frontend UI (Stitch) | Pending |
 | 5 — AI Founder Agent | Pending |
-| 6 — Skill Passport NFT | Pending |
+| 6 — Skill Passport NFT | Implemented (core mint flow, metadata, reputation, frontend integration) |
 | 7 — Smart Contract Auditor | Pending |
 | 8 — Analytics Dashboard | Pending |
-| 9 — Testing | Pending |
+| 9 — Testing | In progress |
 | 10 — Deployment | Pending |
 
 ## Security

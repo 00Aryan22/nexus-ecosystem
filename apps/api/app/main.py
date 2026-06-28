@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.redis import close_redis
 from app.modules.analytics.router import router as analytics_router
+from app.modules.auditor.router import router as auditor_router
 from app.modules.audits.router import router as audits_router
 from app.modules.auth.router import router as auth_router
 from app.modules.founder_agent.router import router as founder_agent_router
@@ -40,7 +41,8 @@ app = FastAPI(
         {"name": "auth", "description": "SIWE wallet authentication and sessions"},
         {"name": "projects", "description": "Startup builder projects"},
         {"name": "skill-passports", "description": "Skill passport credentials and NFT linkage"},
-        {"name": "audits", "description": "Smart contract audit submissions and reports"},
+        {"name": "audits", "description": "Audit history (legacy CRUD)"},
+        {"name": "auditor", "description": "AI Smart Contract Auditor with SSE streaming"},
         {"name": "analytics", "description": "Product analytics and dashboard metrics"},
         {
             "name": "founder_agent",
@@ -61,6 +63,7 @@ app.include_router(auth_router, prefix=settings.api_v1_prefix)
 app.include_router(projects_router, prefix=settings.api_v1_prefix)
 app.include_router(passports_router, prefix=settings.api_v1_prefix)
 app.include_router(audits_router, prefix=settings.api_v1_prefix)
+app.include_router(auditor_router, prefix=settings.api_v1_prefix)
 app.include_router(analytics_router, prefix=settings.api_v1_prefix)
 app.include_router(founder_agent_router, prefix=settings.api_v1_prefix)
 

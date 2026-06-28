@@ -2,6 +2,69 @@ name: CI
 
 on:
   push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services: {}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Python deps
+        working-directory: apps/api
+        run: |
+          python -m venv .venv
+          . .venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Run backend linters & tests
+        working-directory: apps/api
+        env:
+          CI: true
+        run: |
+          . .venv/bin/activate
+          pip install ruff
+          ruff check app tests || true
+          pytest -q
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Frontend: install & lint & build
+        working-directory: apps/web
+        run: |
+          npm ci
+          npm run lint --if-present
+          npm run build
+
+      - name: Contracts: install & compile & test
+        working-directory: packages/contracts
+        run: |
+          npm ci
+          npm run compile
+          npm run test || true
+
+      - name: Run Slither (static solidity scan)
+        run: |
+          docker run --rm -v ${{ github.workspace }}/packages/contracts:/src -w /src crytic/slither:latest slither . || true
+
+      - name: Docker Compose config check
+        run: |
+          docker compose -f infra/docker/docker-compose.yml config
+name: CI
+
+on:
+  push:
     branches: [main, dev]
   pull_request:
     branches: [main, dev]

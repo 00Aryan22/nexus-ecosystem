@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user
@@ -12,6 +13,7 @@ from app.models.auth import User
 from app.schemas.audit import AuditDetail, AuditPublic, AuditSubmit
 from app.schemas.common import ApiResponse, PaginationParams
 from app.services.audit_service import get_audit, list_audits, submit_audit
+from app.services.auditor.service import stream_audit_analysis, run_audit_analysis
 from app.services.project_service import pagination_meta
 
 router = APIRouter(
@@ -90,3 +92,53 @@ async def get_audit_report_endpoint(
     db: AsyncSession = Depends(get_db),
 ) -> ApiResponse[AuditDetail]:
     return await get_audit_endpoint(audit_id, user, db)
+
+
+@router.post(
+    "/{audit_id}/analyze",
+    summary="Analyze audit with streaming",
+    description="Start AI security analysis on a queued audit, stream progress via Server-Sent Events (SSE).",
+)
+async def analyze_audit_stream(
+    audit_id: UUID,
+    request: Request,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Stream SSE events for audit analysis."""
+    await check_rate_limit(request, bucket=f"audits:analyze:{audit_id}", limit=5, window_seconds=60)
+    
+    audit = await get_audit(db, audit_id)
+    if audit is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Audit not found")
+    ensure_owner(audit.user_id, user)
+    
+    async def event_generator():
+        async for event_str in stream_audit_analysis(db, audit_id, audit.source_code, audit.contract_name):
+            yield f"data: {event_str}\n\n"
+    
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+
+@router.post(
+    "/{audit_id}/analyze-sync",
+    response_model=ApiResponse[AuditDetail],
+    summary="Analyze audit (synchronous)",
+    description="Synchronously run AI security analysis on a queued audit (no streaming).",
+)
+async def analyze_audit_sync(
+    audit_id: UUID,
+    request: Request,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> ApiResponse[AuditDetail]:
+    """Run analysis synchronously and return result."""
+    await check_rate_limit(request, bucket=f"audits:analyze:{audit_id}", limit=5, window_seconds=60)
+    
+    audit = await get_audit(db, audit_id)
+    if audit is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Audit not found")
+    ensure_owner(audit.user_id, user)
+    
+    analyzed = await run_audit_analysis(db, audit_id, audit.source_code, audit.contract_name)
+    return ApiResponse(data=AuditDetail.model_validate(analyzed))

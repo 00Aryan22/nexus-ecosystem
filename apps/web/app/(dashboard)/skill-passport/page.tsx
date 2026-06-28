@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import {
   fetchPassports,
   createPassport,
-  mintMockPassportNFT,
+  mintPassportNFT,
   SkillPassportPublic,
 } from "@/lib/api/client";
 import {
@@ -104,7 +104,7 @@ export default function SkillPassportPage() {
 
   const handleMint = async (id: string) => {
     try {
-      const updated = await mintMockPassportNFT(id);
+      const updated = await mintPassportNFT(id);
       setPassports((prev) => prev.map((p) => (p.id === id ? updated : p)));
     } catch (err: any) {
       alert(err.message || "Failed to mint NFT");
@@ -270,6 +270,20 @@ export default function SkillPassportPage() {
                 <div className="grid grid-cols-3 border-b border-border-muted/50 pb-2">
                   <span className="text-muted-foreground">Chain ID:</span>
                   <span className="col-span-2 text-foreground">{selectedNft.chain_id} (Polygon Amoy Testnet)</span>
+                </div>
+                <div className="grid grid-cols-3 border-b border-border-muted/50 pb-2">
+                  <span className="text-muted-foreground">Reputation:</span>
+                  <span className="col-span-2 text-foreground">
+                    {(selectedNft.metadata_json?.reputation?.score ?? 0).toFixed(2)} / 100
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 border-b border-border-muted/50 pb-2">
+                  <span className="text-muted-foreground">XP:</span>
+                  <span className="col-span-2 text-foreground">{selectedNft.metadata_json?.reputation?.xp_points ?? 0} XP</span>
+                </div>
+                <div className="grid grid-cols-3 border-b border-border-muted/50 pb-2">
+                  <span className="text-muted-foreground">Badges:</span>
+                  <span className="col-span-2 text-foreground">{(selectedNft.metadata_json?.reputation?.badges ?? []).join(", ") || "None yet"}</span>
                 </div>
                 <div className="grid grid-cols-3 border-b border-border-muted/50 pb-2">
                   <span className="text-muted-foreground">Tx Hash:</span>

@@ -492,38 +492,60 @@ export async function createPassport(body: {
   );
 }
 
-// Trigger mint status for a passport (helper for demo workflow)
-export async function mintMockPassportNFT(id: string): Promise<SkillPassportPublic> {
-  const passports = getLocalItem("passports", INITIAL_PASSPORTS);
-  const index = passports.findIndex((p) => p.id === id);
-  if (index === -1) throw new Error("Passport not found");
-
-  const p = passports[index];
-  const updatedPass: SkillPassportPublic = {
-    ...p,
-    status: "minted",
-    ipfs_metadata_uri: `ipfs://QmMintedMockNFTMetadata-${id}`,
-    nft_record: {
-      id: `nft-${id}`,
-      passport_id: id,
-      user_id: p.user_id,
-      token_id: Math.floor(Math.random() * 5000) + 1,
-      contract_address: "0x9812A27c5950ECf7c4A4EF3dFdB02CDa6BbeF21A",
-      chain_id: 80002,
-      tx_hash: `0x${Array.from({ length: 64 }, () =>
-        Math.floor(Math.random() * 16).toString(16)
-      ).join("")}`,
-      block_number: 4561000 + Math.floor(Math.random() * 5000),
-      metadata_json: { name: p.skill_name, description: `Verifiable ${p.skill_category} Skill NFT` },
-      minted_at: new Date().toISOString(),
+// Trigger mint status for a passport through the backend flow, with local fallback for demos.
+export async function mintPassportNFT(id: string): Promise<SkillPassportPublic> {
+  return apiRequest(
+    `/api/v1/passports/${id}/mint`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
     },
-    updated_at: new Date().toISOString(),
-  };
+    () => {
+      const passports = getLocalItem("passports", INITIAL_PASSPORTS);
+      const index = passports.findIndex((p) => p.id === id);
+      if (index === -1) throw new Error("Passport not found");
 
-  passports[index] = updatedPass;
-  setLocalItem("passports", passports);
-  recordMockEvent("nft_minted", { skill_name: p.skill_name });
-  return updatedPass;
+      const p = passports[index];
+      const updatedPass: SkillPassportPublic = {
+        ...p,
+        status: "minted",
+        ipfs_metadata_uri: `ipfs://QmMintedMockNFTMetadata-${id}`,
+        nft_record: {
+          id: `nft-${id}`,
+          passport_id: id,
+          user_id: p.user_id,
+          token_id: Math.floor(Math.random() * 5000) + 1,
+          contract_address: "0x9812A27c5950ECf7c4A4EF3dFdB02CDa6BbeF21A",
+          chain_id: 80002,
+          tx_hash: `0x${Array.from({ length: 64 }, () =>
+            Math.floor(Math.random() * 16).toString(16)
+          ).join("")}`,
+          block_number: 4561000 + Math.floor(Math.random() * 5000),
+          metadata_json: {
+            name: p.skill_name,
+            description: `Verifiable ${p.skill_category} Skill NFT`,
+            reputation: {
+              score: p.evaluation_score,
+              xp_points: Math.round(p.evaluation_score * 2.5) + 100,
+              badges: [p.evaluation_score >= 90 ? "Diamond" : "Verified"],
+              network: "Polygon Amoy",
+            },
+          },
+          minted_at: new Date().toISOString(),
+        },
+        updated_at: new Date().toISOString(),
+      };
+
+      passports[index] = updatedPass;
+      setLocalItem("passports", passports);
+      recordMockEvent("nft_minted", { skill_name: p.skill_name });
+      return updatedPass;
+    }
+  );
+}
+
+export async function mintMockPassportNFT(id: string): Promise<SkillPassportPublic> {
+  return mintPassportNFT(id);
 }
 
 // --- AUDIT APIs ---

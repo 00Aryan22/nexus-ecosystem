@@ -10,11 +10,17 @@ from app.core.database import get_db
 from app.core.rate_limit import check_rate_limit
 from app.models.auth import User
 from app.schemas.common import ApiResponse, PaginationParams
-from app.schemas.passport import SkillPassportCreate, SkillPassportPublic, SkillPassportUpdate
+from app.schemas.passport import (
+    PassportMintRequest,
+    SkillPassportCreate,
+    SkillPassportPublic,
+    SkillPassportUpdate,
+)
 from app.services.passport_service import (
     create_passport,
     get_passport,
     list_passports,
+    mint_passport_nft,
     update_passport,
 )
 from app.services.project_service import pagination_meta
@@ -84,6 +90,29 @@ async def get_passport_endpoint(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Passport not found")
     ensure_owner(passport.user_id, user)
     return ApiResponse(data=SkillPassportPublic.model_validate(passport))
+
+
+@router.post(
+    "/{passport_id}/mint",
+    response_model=ApiResponse[SkillPassportPublic],
+    summary="Mint a soulbound skill passport NFT",
+    description="Generates IPFS metadata and records a minted NFT receipt for the passport.",
+)
+async def mint_passport_endpoint(
+    passport_id: UUID,
+    request: Request,
+    body: PassportMintRequest | None = None,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> ApiResponse[SkillPassportPublic]:
+    await check_rate_limit(request, bucket=f"passports:mint:{passport_id}", limit=20, window_seconds=60)
+    passport = await get_passport(db, passport_id)
+    if passport is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Passport not found")
+    ensure_owner(passport.user_id, user)
+    minted = await mint_passport_nft(db, user, passport, wallet_address=body.wallet_address if body else None)
+    refreshed = await get_passport(db, minted.id)
+    return ApiResponse(data=SkillPassportPublic.model_validate(refreshed))
 
 
 @router.put(

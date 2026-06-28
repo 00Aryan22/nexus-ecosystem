@@ -2,7 +2,7 @@
 
 > **Repository:** [00Aryan22/nexus-ecosystem](https://github.com/00Aryan22/nexus-ecosystem)
 > **Last updated:** June 27, 2026
-> **Current state:** Phases 1–5 complete · CI stabilized · Phase 6 pending
+> **Current state:** Phases 1–5 complete · CI stabilized · Phase 6 core flow implemented
 
 ---
 
@@ -267,9 +267,18 @@ All 7 dashboard pages render and build clean:
 
 ---
 
-## What's Next — Phase 6 (Pending Approval)
+## What's Next — Phase 6 (Core Flow Implemented)
 
 **Phase 6 — Skill Passport NFT & Blockchain Implementation**
+
+Implemented in this pass:
+- Backend mint endpoint for soulbound passport NFTs
+- Server-side metadata generation for IPFS payloads
+- Reputation summary with XP and badge metadata
+- Frontend flow that submits mint requests and renders NFT receipt details
+- Local demo fallback while blockchain credentials remain optional
+
+Remaining polish for full production onboarding:
 
 The full Phase 6 scope (from the roadmap) covers:
 
