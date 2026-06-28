@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
+import "@nomicfoundation/hardhat-chai-matchers";
 import type { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
 
 describe("SkillPassportNFT", function () {
