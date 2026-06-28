@@ -105,12 +105,22 @@ async def mint_passport_endpoint(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> ApiResponse[SkillPassportPublic]:
-    await check_rate_limit(request, bucket=f"passports:mint:{passport_id}", limit=20, window_seconds=60)
+    await check_rate_limit(
+        request,
+        bucket=f"passports:mint:{passport_id}",
+        limit=20,
+        window_seconds=60,
+    )
     passport = await get_passport(db, passport_id)
     if passport is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Passport not found")
     ensure_owner(passport.user_id, user)
-    minted = await mint_passport_nft(db, user, passport, wallet_address=body.wallet_address if body else None)
+    minted = await mint_passport_nft(
+        db,
+        user,
+        passport,
+        wallet_address=body.wallet_address if body else None,
+    )
     refreshed = await get_passport(db, minted.id)
     return ApiResponse(data=SkillPassportPublic.model_validate(refreshed))
 

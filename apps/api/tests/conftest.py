@@ -4,6 +4,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 from httpx import ASGITransport, AsyncClient
+from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 # Ensure all models are registered with Base.metadata before create_all
@@ -32,6 +33,11 @@ async def setup_database():
     # Alembic in CI, but creating them again is harmless (checkfirst=True).
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+    # Clear any existing data so test sessions start from a clean state.
+    async with engine.begin() as conn:
+        for table in reversed(Base.metadata.sorted_tables):
+            await conn.execute(delete(table))
 
     yield
 

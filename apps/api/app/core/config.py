@@ -54,16 +54,34 @@ class Settings(BaseSettings):
     )
     passport_contract_address: str = Field(
         default="0x9812A27c5950ECf7c4A4EF3dFdB02CDa6BbeF21A",
-        validation_alias=AliasChoices("passport_contract_address", "SKILL_PASSPORT_CONTRACT_ADDRESS"),
+        validation_alias=AliasChoices(
+            "passport_contract_address",
+            "SKILL_PASSPORT_CONTRACT_ADDRESS",
+        ),
     )
     passport_chain_id: int = Field(
         default=80002,
         validation_alias=AliasChoices("passport_chain_id", "NEXT_PUBLIC_CHAIN_ID"),
     )
-    polygon_amoy_rpc_url: str = Field(default="", validation_alias=AliasChoices("polygon_amoy_rpc_url", "POLYGON_AMOY_RPC_URL"))
-    deployer_private_key: str = Field(default="", validation_alias=AliasChoices("deployer_private_key", "DEPLOYER_PRIVATE_KEY"))
-    alchemy_api_key: str = Field(default="", validation_alias=AliasChoices("alchemy_api_key", "ALCHEMY_API_KEY"))
-    alchemy_polygon_amoy_rpc_url: str = Field(default="", validation_alias=AliasChoices("alchemy_polygon_amoy_rpc_url", "ALCHEMY_POLYGON_AMOY_RPC_URL"))
+    polygon_amoy_rpc_url: str = Field(
+        default="",
+        validation_alias=AliasChoices("polygon_amoy_rpc_url", "POLYGON_AMOY_RPC_URL"),
+    )
+    deployer_private_key: str = Field(
+        default="",
+        validation_alias=AliasChoices("deployer_private_key", "DEPLOYER_PRIVATE_KEY"),
+    )
+    alchemy_api_key: str = Field(
+        default="",
+        validation_alias=AliasChoices("alchemy_api_key", "ALCHEMY_API_KEY"),
+    )
+    alchemy_polygon_amoy_rpc_url: str = Field(
+        default="",
+        validation_alias=AliasChoices(
+            "alchemy_polygon_amoy_rpc_url",
+            "ALCHEMY_POLYGON_AMOY_RPC_URL",
+        ),
+    )
 
     @property
     def ollama_chat_url(self) -> str:

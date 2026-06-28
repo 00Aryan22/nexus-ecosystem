@@ -1,6 +1,5 @@
 import hashlib
-import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from decimal import Decimal
 from typing import Any
 from uuid import UUID
@@ -74,7 +73,10 @@ async def update_passport(
     return passport
 
 
-def _build_reputation_summary(passport: SkillPassport, wallet_address: str | None) -> dict[str, Any]:
+def _build_reputation_summary(
+    passport: SkillPassport,
+    wallet_address: str | None,
+) -> dict[str, Any]:
     score = float(passport.evaluation_score or Decimal("0"))
     xp_points = min(1000, int(score * 2.5) + 100)
     badges: list[str] = []
@@ -150,8 +152,11 @@ async def mint_passport_nft(
     }
 
     metadata_uri = await _pin_metadata_to_ipfs(metadata_payload, passport.id)
-    token_id = int(hashlib.sha256(str(passport.id).encode("utf-8")).hexdigest()[:8], 16) % 1000000 + 1
-    tx_hash = "0x" + hashlib.sha256(f"{passport.id}:{wallet}".encode("utf-8")).hexdigest()
+    token_id = int(
+        hashlib.sha256(str(passport.id).encode("utf-8")).hexdigest()[:8],
+        16,
+    ) % 1000000 + 1
+    tx_hash = "0x" + hashlib.sha256(f"{passport.id}:{wallet}".encode()).hexdigest()
 
     nft_record = NftRecord(
         passport_id=passport.id,
@@ -166,7 +171,7 @@ async def mint_passport_nft(
 
     passport.status = "minted"
     passport.ipfs_metadata_uri = metadata_uri
-    passport.updated_at = datetime.now(timezone.utc)
+    passport.updated_at = datetime.now(UTC)
     db.add(nft_record)
     await db.flush()
     await db.refresh(passport)
