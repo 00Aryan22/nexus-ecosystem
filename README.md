@@ -27,7 +27,7 @@ docs/              Blueprint, Stitch tokens, diagrams
 
 ## Prerequisites
 
-- Node.js 20+
+- Node.js 22+
 - Python 3.11+
 - Docker Desktop
 
