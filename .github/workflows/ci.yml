@@ -21,20 +21,10 @@ jobs:
           POSTGRES_DB: nexus
         ports:
           - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U nexus -d nexus"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
       redis:
         image: redis:7-alpine
         ports:
           - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     env:
       DATABASE_URL: postgresql+asyncpg://nexus:nexus@localhost:5432/nexus
       REDIS_URL: redis://localhost:6379/0
@@ -56,12 +46,26 @@ jobs:
 
       - name: Wait for Postgres and Redis
         run: |
-          for i in $(seq 1 10); do
-            pg_isready -h localhost -U nexus -d nexus && break
-            echo "Waiting for Postgres... attempt $i"
-            sleep 3
-          done
-          redis-cli -h localhost ping
+          python - <<'PY'
+          import socket
+          import sys
+          import time
+
+          targets = [("127.0.0.1", 5432), ("127.0.0.1", 6379)]
+          for host, port in targets:
+              for attempt in range(1, 31):
+                  try:
+                      with socket.create_connection((host, port), timeout=2):
+                          print(f"Connected to {host}:{port} on attempt {attempt}")
+                          break
+                  except OSError as exc:
+                      if attempt == 30:
+                          print(f"ERROR: Could not connect to {host}:{port}: {exc}", file=sys.stderr)
+                          raise SystemExit(1)
+                      print(f"Waiting for {host}:{port} (attempt {attempt})")
+                      time.sleep(2)
+          print("Postgres and Redis are available")
+          PY
 
       - name: Ruff lint
         run: python -m ruff check app tests
