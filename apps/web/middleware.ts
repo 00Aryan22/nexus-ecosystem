@@ -4,7 +4,23 @@ import type { NextRequest } from "next/server";
 import { ACCESS_COOKIE } from "@/lib/constants";
 import { handleSupabaseCookies } from "@/utils/supabase/middleware";
 
-const PROTECTED_PREFIXES = ["/dashboard", "/founder-agent", "/startup-builder", "/skill-passport", "/auditor", "/analytics", "/settings"];
+const PROTECTED_PREFIXES = [
+  "/dashboard",
+  "/founder-agent",
+  "/startup-builder",
+  "/skill-passport",
+  "/auditor",
+  "/analytics",
+  "/settings",
+  "/ai-founder",
+  "/dao-center",
+  "/support",
+  "/profile",
+  "/notifications",
+  "/contracts/deploy",
+  "/dashboard/history",
+  "/contract-audit",
+];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -32,10 +48,17 @@ export const config = {
   matcher: [
     "/dashboard/:path*",
     "/founder-agent/:path*",
+    "/ai-founder/:path*",
     "/startup-builder/:path*",
     "/skill-passport/:path*",
     "/auditor/:path*",
+    "/contract-audit/:path*",
+    "/contracts/deploy/:path*",
     "/analytics/:path*",
+    "/dao-center/:path*",
+    "/notifications/:path*",
+    "/profile/:path*",
+    "/support/:path*",
     "/settings/:path*",
   ],
 };

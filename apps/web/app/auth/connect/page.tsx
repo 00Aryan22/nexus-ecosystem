@@ -2,9 +2,9 @@
 
 import { ConnectWalletButton } from "@/components/auth/connect-wallet-button";
 import { motion } from "framer-motion";
-import { ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { NexusLogo } from "@/components/layout/logo";
 
 export default function AuthConnectPage() {
   return (
@@ -25,7 +25,7 @@ export default function AuthConnectPage() {
         className="glass-card relative z-10 mx-5 w-full max-w-md p-8 text-center shadow-2xl"
       >
         <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-surface-slate border border-border-muted shadow-inner">
-          <ShieldCheck className="h-8 w-8 text-neon-blue" />
+          <NexusLogo className="h-10 w-10" showText={false} small />
         </div>
         
         <p className="font-mono text-[10px] uppercase tracking-widest text-neon-blue font-semibold mb-2">

@@ -267,6 +267,9 @@ const INITIAL_EVENTS: AnalyticsEventPublic[] = [
   },
 ];
 
+// Control whether local mock fallbacks are allowed. Default: false (use real API).
+const USE_MOCKS = (process.env.NEXT_PUBLIC_USE_MOCKS ?? "false") === "true";
+
 // Helper to interact with LocalStorage
 function getLocalItem<T>(key: string, initial: T): T {
   if (typeof window === "undefined") return initial;
@@ -319,8 +322,10 @@ async function apiRequest<T>(
     if (error.message === "UNAUTHORIZED") {
       throw error;
     }
-    console.warn(`API call to ${url} failed, falling back to mock storage.`, error);
-    if (mockFallback) {
+    console.warn(`API call to ${url} failed.`, error);
+    // Only fall back to local mocks when explicitly enabled via env.
+    if (USE_MOCKS && mockFallback) {
+      console.warn(`Falling back to mock storage because NEXT_PUBLIC_USE_MOCKS=true`);
       return mockFallback();
     }
     throw error;
