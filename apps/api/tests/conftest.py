@@ -24,8 +24,9 @@ async def setup_database():
     """Initialise the engine (SQLite fallback when Postgres is unavailable)
     and create all tables so tests can run without a real database."""
 
+    from sqlalchemy import text  # noqa: E402
+
     from app.core.database import Base, get_engine
-    from sqlalchemy import text
 
     # Force engine initialisation
     engine = await get_engine()

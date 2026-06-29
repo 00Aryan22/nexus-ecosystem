@@ -1,0 +1,144 @@
+/* ============================================================
+   NEXUS AI — Design System Variables
+   Source of truth: Stitch UI export
+   ============================================================ */
+
+:root {
+  /* ── Surface Colors ────────────────────────────────────── */
+  --surface-obsidian:        #08090A;
+  --surface-slate:           #111214;
+  --surface:                 #121315;
+  --surface-dim:             #121315;
+  --surface-container:       #1f2021;
+  --surface-container-low:   #1b1c1d;
+  --surface-container-high:  #292a2b;
+  --surface-container-highest: #343536;
+  --surface-container-lowest: #0d0e0f;
+  --surface-bright:          #38393a;
+  --surface-variant:         #343536;
+
+  /* ── On-Surface Colors ─────────────────────────────────── */
+  --on-surface:              #e3e2e3;
+  --on-surface-variant:      #c2c6d6;
+  --on-background:           #e3e2e3;
+  --background:              #121315;
+
+  /* ── Primary / Neon Colors ─────────────────────────────── */
+  --neon-blue:               #3b82f6;
+  --neon-purple:             #a855f7;
+  --neon-green:              #00ff9d;
+  --neon-red:                #ff4d4d;
+  --neon-amber:              #ffbf00;
+  --warning-yellow:          #E4F222;
+  --tertiary:                #c3d000;
+
+  /* ── Primary Palette ───────────────────────────────────── */
+  --primary:                 #adc6ff;
+  --primary-container:       #4d8eff;
+  --on-primary:              #002e6a;
+  --on-primary-container:    #00285d;
+  --primary-fixed:           #d8e2ff;
+  --primary-fixed-dim:       #adc6ff;
+
+  /* ── Secondary Palette ─────────────────────────────────── */
+  --secondary:               #ddb7ff;
+  --secondary-container:     #6f00be;
+  --on-secondary:            #490080;
+
+  /* ── Error ──────────────────────────────────────────────── */
+  --error:                   #ffb4ab;
+  --error-container:         #93000a;
+  --on-error:                #690005;
+  --on-error-container:      #ffdad6;
+
+  /* ── Outline / Border ──────────────────────────────────── */
+  --outline:                 #8c909f;
+  --outline-variant:         #424754;
+  --border-muted:            rgba(255, 255, 255, 0.08);
+  --border-subtle:           rgba(255, 255, 255, 0.05);
+
+  /* ── Inverse ────────────────────────────────────────────── */
+  --inverse-surface:         #e3e2e3;
+  --inverse-on-surface:      #303032;
+  --inverse-primary:         #005ac2;
+
+  /* ── Typography ─────────────────────────────────────────── */
+  --font-display:            'Geist', sans-serif;
+  --font-body:               'Inter', sans-serif;
+  --font-mono:               'JetBrains Mono', monospace;
+
+  /* ── Font Sizes ─────────────────────────────────────────── */
+  --text-display-lg:         64px;
+  --text-display-lg-mobile:  40px;
+  --text-headline-xl:        32px;
+  --text-headline-lg:        24px;
+  --text-body-lg:            18px;
+  --text-body-md:            16px;
+  --text-body-sm:            14px;
+  --text-label-md:           14px;
+  --text-label-sm:           12px;
+
+  /* ── Line Heights ───────────────────────────────────────── */
+  --lh-display:              1.1;
+  --lh-headline:             1.4;
+  --lh-body:                 1.6;
+  --lh-label:                1;
+
+  /* ── Letter Spacing ─────────────────────────────────────── */
+  --ls-display:              -0.04em;
+  --ls-headline:             -0.01em;
+  --ls-label:                0.05em;
+
+  /* ── Spacing Scale ──────────────────────────────────────── */
+  --unit:                    4px;
+  --stack-xs:                4px;
+  --stack-sm:                8px;
+  --stack-md:                16px;
+  --stack-lg:                32px;
+  --stack-xl:                64px;
+  --gutter:                  24px;
+  --margin-page:             40px;
+  --margin-mobile:           20px;
+
+  /* ── Border Radius ──────────────────────────────────────── */
+  --radius-sm:               2px;
+  --radius-md:               4px;
+  --radius-lg:               8px;
+  --radius-xl:               12px;
+  --radius-2xl:              16px;
+  --radius-full:             9999px;
+
+  /* ── Glass Effects ──────────────────────────────────────── */
+  --glass-bg:                rgba(17, 18, 20, 0.8);
+  --glass-border:            rgba(255, 255, 255, 0.08);
+  --glass-blur:              20px;
+
+  /* ── Shadows / Glows ────────────────────────────────────── */
+  --shadow-neon-blue:        0 0 20px rgba(59, 130, 246, 0.3);
+  --shadow-neon-purple:      0 0 20px rgba(168, 85, 247, 0.3);
+  --shadow-neon-red:         0 0 15px rgba(255, 77, 77, 0.3);
+  --shadow-card:             0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-sidebar:          2px 0 32px rgba(0, 0, 0, 0.6);
+
+  /* ── Sidebar ─────────────────────────────────────────────── */
+  --sidebar-width:           256px;
+  --topbar-height:           64px;
+
+  /* ── Transitions ─────────────────────────────────────────── */
+  --transition-fast:         0.15s ease;
+  --transition-base:         0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow:         0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ── Z-Index Scale ───────────────────────────────────────── */
+  --z-base:     0;
+  --z-raised:   10;
+  --z-sidebar:  40;
+  --z-topbar:   50;
+  --z-modal:    100;
+  --z-tooltip:  200;
+}
+
+/* Dark mode is always active for NEXUS AI */
+*, *::before, *::after {
+  box-sizing: border-box;
+}

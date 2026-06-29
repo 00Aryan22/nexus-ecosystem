@@ -34,3 +34,17 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+---
+
+Stitch integration
+
+The Stitch integration page (`/stitch`) contains a `StitchProxy` test UI which can:
+
+- Inspect vendor headers via `/api/v1/stitch/inspect`
+- Attempt to fetch vendor widget HTML via `/api/v1/stitch/widget` (may return 404 if vendor endpoint is not accessible server-side)
+- Open the vendor site in the user's browser session via `/api/v1/stitch/launch?url=...` (preferred for interactive use)
+
+Notes:
+- The Stitch API key must remain server-side in environment variables: `STITCH_URL`, `STITCH_API_KEY`, `STITCH_HEADER_NAME`.
+- Many vendor pages block embedding; use the "Open vendor site" button to run interactive flows in your browser where cookies and authentication are available.

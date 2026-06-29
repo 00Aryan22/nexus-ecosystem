@@ -1,0 +1,441 @@
+<!-- Settings - NEXUS AI -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nexus AI | Fraud Detection Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Geist:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#1f2021",
+                    "on-primary-fixed-variant": "#004395",
+                    "tertiary-fixed": "#dfed1a",
+                    "secondary-container": "#6f00be",
+                    "primary-container": "#4d8eff",
+                    "neon-purple": "#a855f7",
+                    "surface-container-high": "#292a2b",
+                    "on-tertiary-fixed-variant": "#454a00",
+                    "warning-yellow": "#E4F222",
+                    "on-background": "#e3e2e3",
+                    "surface-obsidian": "#08090A",
+                    "secondary-fixed": "#f0dbff",
+                    "error-container": "#93000a",
+                    "surface-tint": "#adc6ff",
+                    "surface-slate": "#111214",
+                    "secondary-fixed-dim": "#ddb7ff",
+                    "outline-variant": "#424754",
+                    "on-error-container": "#ffdad6",
+                    "on-secondary-fixed-variant": "#6900b3",
+                    "primary": "#adc6ff",
+                    "on-secondary": "#490080",
+                    "surface-variant": "#343536",
+                    "on-surface-variant": "#c2c6d6",
+                    "surface": "#121315",
+                    "surface-container-low": "#1b1c1d",
+                    "error": "#ffb4ab",
+                    "tertiary": "#c3d000",
+                    "surface-dim": "#121315",
+                    "on-surface": "#e3e2e3",
+                    "primary-fixed": "#d8e2ff",
+                    "primary-fixed-dim": "#adc6ff",
+                    "outline": "#8c909f",
+                    "tertiary-fixed-dim": "#c3d000",
+                    "on-tertiary-fixed": "#1b1d00",
+                    "inverse-on-surface": "#303032",
+                    "on-secondary-fixed": "#2c0051",
+                    "neon-blue": "#3b82f6",
+                    "on-primary": "#002e6a",
+                    "surface-bright": "#38393a",
+                    "surface-container-lowest": "#0d0e0f",
+                    "on-secondary-container": "#d6a9ff",
+                    "on-tertiary-container": "#292c00",
+                    "inverse-primary": "#005ac2",
+                    "on-error": "#690005",
+                    "tertiary-container": "#8e9800",
+                    "inverse-surface": "#e3e2e3",
+                    "border-muted": "rgba(255, 255, 255, 0.08)",
+                    "background": "#121315",
+                    "secondary": "#ddb7ff",
+                    "surface-container-highest": "#343536",
+                    "on-tertiary": "#2f3300",
+                    "on-primary-container": "#00285d",
+                    "on-primary-fixed": "#001a42",
+                    "neon-red": "#ff4d4d",
+                    "neon-amber": "#ffbf00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-page": "40px",
+                    "unit": "4px",
+                    "stack-lg": "32px",
+                    "stack-md": "16px",
+                    "stack-xs": "4px",
+                    "stack-xl": "64px",
+                    "stack-sm": "8px",
+                    "margin-mobile": "20px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "headline-xl": ["Geist"],
+                    "body-md": ["Inter"],
+                    "display-lg-mobile": ["Geist"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["JetBrains Mono"],
+                    "display-lg": ["Geist"],
+                    "headline-lg": ["Geist"],
+                    "body-sm": ["Inter"],
+                    "label-md": ["JetBrains Mono"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body {
+            background-color: #08090A;
+            color: #e3e2e3;
+            overflow: hidden;
+        }
+        .glass-card {
+            background: rgba(17, 18, 20, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glow-red { box-shadow: 0 0 15px rgba(255, 77, 77, 0.3); }
+        .glow-amber { box-shadow: 0 0 15px rgba(255, 191, 0, 0.3); }
+        .node-pulse {
+            animation: pulse 2s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+    </style>
+</head>
+<body class="font-body-md text-body-md h-screen flex overflow-hidden">
+<!-- Sidebar Navigation (From JSON) -->
+<aside class="h-screen w-64 flex flex-col sticky top-0 left-0 bg-surface-slate/80 backdrop-blur-xl border-r border-border-muted shadow-2xl shadow-surface-obsidian py-stack-md px-gutter z-50">
+<div class="flex flex-col gap-stack-sm mb-stack-xl">
+<h1 class="font-display-lg text-headline-lg font-bold text-on-surface tracking-tighter">NEXUS AI</h1>
+<span class="text-label-sm font-label-sm text-neon-blue uppercase tracking-widest">Web3 OS</span>
+</div>
+<nav class="flex-1 flex flex-col gap-1">
+<!-- Navigation Items Mapping -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/5 duration-200" href="#">
+<span class="material-symbols-outlined text-lg">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/5 duration-200" href="#">
+<span class="material-symbols-outlined text-lg">smart_toy</span>
+<span class="font-body-md">AI Agent</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/5 duration-200" href="#">
+<span class="material-symbols-outlined text-lg">rocket_launch</span>
+<span class="font-body-md">Startup Builder</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/5 duration-200" href="#">
+<span class="material-symbols-outlined text-lg">verified_user</span>
+<span class="font-body-md">Auditor</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/5 duration-200" href="#">
+<span class="material-symbols-outlined text-lg">badge</span>
+<span class="font-body-md">Skill Passport</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/5 duration-200" href="#">
+<span class="material-symbols-outlined text-lg">account_balance</span>
+<span class="font-body-md">DAO Center</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-neon-blue bg-primary-container/10 border-r-2 border-neon-blue font-bold transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">shield_lock</span>
+<span class="font-body-md">Fraud Detection</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/5 duration-200" href="#">
+<span class="material-symbols-outlined text-lg">storefront</span>
+<span class="font-body-md">Marketplace</span>
+</a>
+</nav>
+<div class="mt-auto pt-stack-md flex flex-col gap-1 border-t border-border-muted/50">
+<button class="bg-neon-blue text-white font-label-md text-label-md py-3 rounded hover:brightness-110 active:scale-[0.98] transition-all mb-4">
+                Deploy Contract
+            </button>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface" href="#">
+<span class="material-symbols-outlined text-lg">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface" href="#">
+<span class="material-symbols-outlined text-lg">help</span>
+<span class="font-body-md">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col overflow-hidden relative">
+<!-- Top Nav (From JSON) -->
+<header class="w-full sticky top-0 z-40 flex justify-between items-center h-16 px-margin-page bg-surface-obsidian/60 backdrop-blur-md border-b border-border-muted">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-obsidian border border-border-muted rounded-lg pl-10 pr-4 py-2 font-label-md text-label-md focus:border-neon-blue focus:ring-1 focus:ring-neon-blue outline-none transition-all" placeholder="Scan address, Tx hash, or block..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-stack-md ml-stack-lg">
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-slate border border-border-muted rounded-full">
+<span class="w-2 h-2 rounded-full bg-tertiary node-pulse"></span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Mainnet Live</span>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface transition-all">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface transition-all">terminal</button>
+<button class="bg-neon-blue/10 border border-neon-blue text-neon-blue font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-neon-blue hover:text-white transition-all">
+                    Connect Wallet
+                </button>
+<div class="w-8 h-8 rounded-full bg-surface-variant border border-border-muted overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB76oj22bX8_wvABL8wtcmzhEJmgr-VE6hUUeKuyEIG0Krl3rzvm56hspZLzi3Vzq8I_6fZGM1dL06ObhZnZs6nIWjA6Dj0Gzl202JOB6Xz2GKizp_jhq3M56GIlSRLQ3_1Ttq9-N5A6WNY_KTqVRN20VUvc3oojY0vRCmUnjt20KsCqNtPDZSzSEhvVYF4oWIQS25TMfHXOq-hLORNJlP3Kt3KAYkpH4ktKOmZ_wd9MlrkNVjM3Sc7hbrfmtbHs25f2C_D6HiCDO8"/>
+</div>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Left Panel: Active Alerts -->
+<section class="w-80 flex flex-col border-r border-border-muted bg-surface-obsidian/40 custom-scrollbar overflow-y-auto">
+<div class="p-6 border-b border-border-muted">
+<h2 class="font-headline-lg text-headline-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-neon-red">report</span>
+                        Live Alerts
+                    </h2>
+<p class="text-label-sm text-on-surface-variant mt-1">24 Active Threats Detected</p>
+</div>
+<div class="flex flex-col">
+<!-- Alert Item (High) -->
+<div class="p-4 border-b border-border-muted/50 bg-neon-red/5 hover:bg-neon-red/10 transition-colors cursor-pointer group">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded bg-neon-red text-white uppercase">Critical</span>
+<span class="text-label-sm text-on-surface-variant">2m ago</span>
+</div>
+<p class="font-body-md font-semibold text-on-surface group-hover:text-neon-red transition-colors">Reentrancy Attack Detected</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant truncate mt-1">Contract: 0x71C...4e5f</p>
+<div class="mt-3 flex items-center gap-2">
+<span class="text-label-sm text-neon-red flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span> $1.2M at risk
+                            </span>
+</div>
+</div>
+<!-- Alert Item (Medium) -->
+<div class="p-4 border-b border-border-muted/50 hover:bg-white/5 transition-colors cursor-pointer border-l-4 border-neon-amber">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded bg-neon-amber/20 text-neon-amber uppercase border border-neon-amber/50">Medium</span>
+<span class="text-label-sm text-on-surface-variant">15m ago</span>
+</div>
+<p class="font-body-md font-semibold text-on-surface">Flash Loan Anomaly</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant truncate mt-1">Pair: USDC/NXS</p>
+<div class="mt-3 flex items-center gap-2">
+<span class="text-label-sm text-neon-amber flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">data_exploration</span> Abnormal Volume
+                            </span>
+</div>
+</div>
+<!-- Alert Item (Low) -->
+<div class="p-4 border-b border-border-muted/50 hover:bg-white/5 transition-colors cursor-pointer border-l-4 border-neon-blue">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded bg-neon-blue/20 text-neon-blue uppercase border border-neon-blue/50">Low Risk</span>
+<span class="text-label-sm text-on-surface-variant">42m ago</span>
+</div>
+<p class="font-body-md font-semibold text-on-surface">Sybil Pattern Identified</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant truncate mt-1">ID: #SYS-8821</p>
+</div>
+<!-- Repeat High for list density -->
+<div class="p-4 border-b border-border-muted/50 bg-neon-red/5 hover:bg-neon-red/10 transition-colors cursor-pointer group">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded bg-neon-red text-white uppercase">Critical</span>
+<span class="text-label-sm text-on-surface-variant">1h ago</span>
+</div>
+<p class="font-body-md font-semibold text-on-surface">Phishing Drainer Active</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant truncate mt-1">Site: nexus-rewards.io</p>
+</div>
+</div>
+</section>
+<!-- Center Content: Map and Forensics -->
+<section class="flex-1 flex flex-col overflow-hidden relative">
+<!-- Threat Map Section (Bento Grid Style) -->
+<div class="h-1/2 p-6 flex flex-col gap-4 relative">
+<div class="flex justify-between items-center z-10">
+<h3 class="font-headline-lg text-headline-lg tracking-tight">Global Threat Monitor</h3>
+<div class="flex gap-2">
+<button class="bg-surface-slate border border-border-muted px-3 py-1 rounded text-label-sm font-label-sm hover:border-neon-blue transition-colors">Node View</button>
+<button class="bg-surface-slate border border-neon-blue px-3 py-1 rounded text-label-sm font-label-sm text-neon-blue">Geographic</button>
+</div>
+</div>
+<div class="flex-1 glass-card rounded-xl relative overflow-hidden">
+<!-- Simulated Map / Animation Layer -->
+<div class="absolute inset-0 opacity-40 grayscale contrast-125" data-alt="A dark, high-contrast digital world map featuring glowing interconnected nodes and data transmission lines. The aesthetic is cyber-security focused with deep obsidian backgrounds and neon blue data points illuminating the continents. Subtle glowing arcs represent real-time information flow between global tech hubs, reflecting a high-performance web3 operating system infrastructure." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBeu_bZybWOr_JB39DEHBCfkeSC2KDrfWIsjS0ri-ZCaOh4Cq_vqDpNvScDY55RYYFbUQT_3N6YwURjrl_8AYNz95EJpRNLk1Xm_NnrdpXWpOu6xWcu5kWWuR9aGVckSANu-ltfvCgu1IIqETuMH6WuzdNJlwBEK2L1T3GAsEFqeY7PVZBwFxhwifteVCvXOQ8EeDrc7raeiPEf2TFTBCtfegPO7T99wqNjta3TMMTDlG-31k-jzFYHUb0YHJh3m0cJkHraTpMUoIM'); background-size: cover; background-position: center;"></div>
+<!-- Overlaying Interactive Elements -->
+<div class="absolute inset-0 z-20 pointer-events-none">
+<!-- SVG for animated connections -->
+<svg class="w-full h-full">
+<circle class="node-pulse" cx="30%" cy="40%" fill="#ff4d4d" r="4"></circle>
+<circle class="node-pulse" cx="70%" cy="55%" fill="#ffbf00" r="4"></circle>
+<line opacity="0.4" stroke="#ff4d4d" stroke-dasharray="4" stroke-width="1" x1="30%" x2="70%" y1="40%" y2="55%"></line>
+</svg>
+</div>
+<div class="absolute bottom-4 left-4 z-20 flex flex-col gap-2">
+<div class="glass-card p-3 rounded-lg border-l-4 border-neon-red">
+<p class="text-label-sm font-bold text-neon-red">ACTIVE ATTACK</p>
+<p class="text-body-sm">Origin: Unknown (Tor Relay)</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Transaction Forensics Section -->
+<div class="h-1/2 p-6 pt-0 flex flex-col gap-4">
+<h3 class="font-headline-lg text-headline-lg tracking-tight">Transaction Forensics</h3>
+<div class="flex-1 glass-card rounded-xl flex">
+<!-- Forensics Visualizer -->
+<div class="flex-1 relative border-r border-border-muted/30 p-4">
+<div class="flex items-center justify-between mb-4">
+<span class="text-label-sm font-label-sm uppercase text-on-surface-variant tracking-widest">Flow Analysis: #TX-982</span>
+<span class="text-label-sm text-neon-blue font-label-sm">Depth: 4 Hops</span>
+</div>
+<!-- Node Link Simulation (Simplified Visual) -->
+<div class="h-full flex items-center justify-center gap-12">
+<div class="flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-lg bg-surface-container border border-border-muted flex items-center justify-center">
+<span class="material-symbols-outlined text-neon-blue">account_balance_wallet</span>
+</div>
+<span class="text-label-sm font-label-sm">Source</span>
+</div>
+<div class="h-px w-20 bg-gradient-to-r from-neon-blue to-neon-red relative">
+<span class="material-symbols-outlined absolute -top-3 left-1/2 -translate-x-1/2 text-sm text-on-surface-variant">arrow_forward</span>
+</div>
+<div class="flex flex-col items-center gap-2 relative">
+<div class="w-16 h-16 rounded-xl bg-neon-red/10 border-2 border-neon-red flex items-center justify-center glow-red">
+<span class="material-symbols-outlined text-neon-red text-3xl">token</span>
+</div>
+<span class="text-label-sm font-bold text-neon-red">Mixer (Tornado)</span>
+</div>
+<div class="h-px w-20 bg-gradient-to-r from-neon-red to-surface-variant relative border-dashed">
+<span class="material-symbols-outlined absolute -top-3 left-1/2 -translate-x-1/2 text-sm text-on-surface-variant">arrow_forward</span>
+</div>
+<div class="flex flex-col items-center gap-2 opacity-50">
+<div class="w-12 h-12 rounded-lg bg-surface-container border border-border-muted flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant">account_balance_wallet</span>
+</div>
+<span class="text-label-sm font-label-sm">Destination</span>
+</div>
+</div>
+</div>
+<!-- Forensics Details -->
+<div class="w-64 p-4 flex flex-col gap-4">
+<div class="bg-surface-obsidian rounded p-3 border border-border-muted">
+<p class="text-label-sm text-on-surface-variant mb-1">Probability</p>
+<p class="text-headline-lg font-bold text-neon-red">94.2%</p>
+<div class="w-full bg-surface-container h-1 mt-2 rounded-full overflow-hidden">
+<div class="bg-neon-red h-full w-[94.2%] shadow-lg shadow-neon-red/20"></div>
+</div>
+</div>
+<div class="space-y-3">
+<div>
+<p class="text-label-sm text-on-surface-variant">Methodology</p>
+<p class="text-body-sm font-medium">Recursive pattern matching</p>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant">Involved Protocols</p>
+<div class="flex flex-wrap gap-1 mt-1">
+<span class="px-2 py-0.5 rounded bg-surface-variant text-[10px] font-label-sm uppercase">Curve</span>
+<span class="px-2 py-0.5 rounded bg-surface-variant text-[10px] font-label-sm uppercase">Uniswap V3</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Panel: Automated Mitigation -->
+<section class="w-80 flex flex-col border-l border-border-muted bg-surface-obsidian/40 p-6 gap-6">
+<div>
+<h3 class="font-headline-lg text-headline-lg mb-2">Mitigation</h3>
+<p class="text-body-sm text-on-surface-variant leading-relaxed">AI-recommended actions based on current threat vectors and historical exploit patterns.</p>
+</div>
+<div class="space-y-4">
+<!-- Action Card 1 -->
+<div class="glass-card p-4 rounded-xl border-l-4 border-neon-red group hover:translate-x-1 transition-transform cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-neon-red">pause_circle</span>
+<span class="text-[10px] bg-neon-red text-white px-1.5 rounded font-label-sm">RECOMMENDED</span>
+</div>
+<h4 class="font-semibold text-on-surface">Pause Smart Contract</h4>
+<p class="text-label-sm text-on-surface-variant mt-1 mb-4">Temporarily halt all functions to prevent further fund drainage.</p>
+<button class="w-full py-2 bg-neon-red font-label-md text-label-md text-white rounded hover:brightness-110 active:scale-[0.98] transition-all">
+                            Execute Pause
+                        </button>
+</div>
+<!-- Action Card 2 -->
+<div class="glass-card p-4 rounded-xl border-l-4 border-neon-amber hover:translate-x-1 transition-transform cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-neon-amber">flag</span>
+</div>
+<h4 class="font-semibold text-on-surface">Flag Address</h4>
+<p class="text-label-sm text-on-surface-variant mt-1 mb-4">Add 0x71C...4e5f to the global blacklist across Nexus node ecosystem.</p>
+<button class="w-full py-2 bg-neon-amber/20 border border-neon-amber font-label-md text-label-md text-neon-amber rounded hover:bg-neon-amber/30 active:scale-[0.98] transition-all">
+                            Flag Address
+                        </button>
+</div>
+<!-- Action Card 3 -->
+<div class="glass-card p-4 rounded-xl border-l-4 border-neon-blue hover:translate-x-1 transition-transform cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-neon-blue">security</span>
+</div>
+<h4 class="font-semibold text-on-surface">Rollback Snapshot</h4>
+<p class="text-label-sm text-on-surface-variant mt-1 mb-4">Simulate a local fork rollback to recover transaction state.</p>
+<button class="w-full py-2 bg-neon-blue/20 border border-neon-blue font-label-md text-label-md text-neon-blue rounded hover:bg-neon-blue/30 active:scale-[0.98] transition-all">
+                            Run Simulation
+                        </button>
+</div>
+</div>
+<div class="mt-auto p-4 bg-surface-slate rounded-xl border border-border-muted">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-sm text-tertiary">bolt</span>
+<span class="text-label-sm font-bold text-on-surface">AI Agent Autonomous Mode</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-body-sm text-on-surface-variant">Status: <span class="text-neon-blue">Monitoring</span></span>
+<div class="w-10 h-5 bg-surface-container rounded-full relative p-1 cursor-pointer">
+<div class="w-3 h-3 bg-neon-blue rounded-full absolute right-1 shadow-sm shadow-neon-blue"></div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Micro-interaction Scripts -->
+<script>
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+                card.style.background = `radial-gradient(400px circle at ${x}px ${y}px, rgba(255,255,255,0.03), transparent), rgba(17, 18, 20, 0.8)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.background = `rgba(17, 18, 20, 0.8)`;
+            });
+        });
+    </script>
+</body></html>

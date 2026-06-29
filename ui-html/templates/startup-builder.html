@@ -1,0 +1,463 @@
+<!-- AI Founder Agent - NEXUS AI -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEXUS AI | Startup Builder</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Geist:wght@600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-container": "#4d8eff",
+                    "on-primary-container": "#00285d",
+                    "outline": "#8c909f",
+                    "surface-bright": "#38393a",
+                    "tertiary": "#c3d000",
+                    "inverse-on-surface": "#303032",
+                    "surface-tint": "#adc6ff",
+                    "secondary": "#ddb7ff",
+                    "surface-container": "#1f2021",
+                    "on-primary-fixed-variant": "#004395",
+                    "error": "#ffb4ab",
+                    "on-secondary-container": "#d6a9ff",
+                    "secondary-fixed-dim": "#ddb7ff",
+                    "inverse-surface": "#e3e2e3",
+                    "on-primary-fixed": "#001a42",
+                    "on-surface-variant": "#c2c6d6",
+                    "inverse-primary": "#005ac2",
+                    "background": "#121315",
+                    "neon-blue": "#3b82f6",
+                    "surface": "#121315",
+                    "secondary-fixed": "#f0dbff",
+                    "primary-fixed": "#d8e2ff",
+                    "surface-obsidian": "#08090A",
+                    "surface-dim": "#121315",
+                    "primary-fixed-dim": "#adc6ff",
+                    "on-surface": "#e3e2e3",
+                    "border-muted": "rgba(255, 255, 255, 0.08)",
+                    "warning-yellow": "#E4F222",
+                    "neon-purple": "#a855f7",
+                    "on-tertiary-fixed": "#1b1d00",
+                    "on-tertiary": "#2f3300",
+                    "outline-variant": "#424754",
+                    "surface-container-high": "#292a2b",
+                    "on-background": "#e3e2e3",
+                    "on-error": "#690005",
+                    "tertiary-fixed": "#dfed1a",
+                    "primary": "#adc6ff",
+                    "on-error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#c3d000",
+                    "on-secondary-fixed-variant": "#6900b3",
+                    "surface-slate": "#111214",
+                    "on-tertiary-fixed-variant": "#454a00",
+                    "secondary-container": "#6f00be",
+                    "error-container": "#93000a",
+                    "on-primary": "#002e6a",
+                    "on-tertiary-container": "#292c00",
+                    "surface-container-low": "#1b1c1d",
+                    "surface-container-highest": "#343536",
+                    "on-secondary": "#490080",
+                    "surface-container-lowest": "#0d0e0f",
+                    "surface-variant": "#343536",
+                    "on-secondary-fixed": "#2c0051",
+                    "tertiary-container": "#8e9800"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "stack-xl": "64px",
+                    "stack-xs": "4px",
+                    "stack-md": "16px",
+                    "margin-mobile": "20px",
+                    "margin-page": "40px",
+                    "unit": "4px",
+                    "stack-sm": "8px",
+                    "stack-lg": "32px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["JetBrains Mono"],
+                    "display-lg": ["Geist"],
+                    "headline-lg": ["Geist"],
+                    "label-md": ["JetBrains Mono"],
+                    "headline-xl": ["Geist"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                    "headline-lg": ["24px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-xl": ["32px", {"lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(17, 18, 20, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .spotlight {
+            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        .active-step-glow {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-surface-obsidian text-on-surface font-body-md overflow-hidden h-screen flex">
+<!-- Sidebar Navigation Shell -->
+<aside class="h-screen w-64 flex flex-col sticky top-0 left-0 bg-surface-slate/80 backdrop-blur-xl border-r border-border-muted shadow-2xl shadow-surface-obsidian hidden md:flex">
+<div class="flex flex-col h-full py-stack-md px-gutter">
+<!-- Brand Header -->
+<div class="mb-stack-xl">
+<div class="flex items-center gap-stack-sm mb-stack-xs">
+<span class="material-symbols-outlined text-neon-blue" style="font-variation-settings: 'FILL' 1;">rocket_launch</span>
+<h1 class="font-display-lg text-headline-lg font-bold text-on-surface tracking-tighter">NEXUS AI</h1>
+</div>
+<p class="font-label-sm text-on-surface-variant uppercase tracking-widest text-[10px]">Web3 OS</p>
+</div>
+<!-- Primary Nav -->
+<nav class="flex-1 space-y-stack-sm overflow-y-auto custom-scrollbar">
+<a class="flex items-center gap-stack-md p-stack-sm rounded-lg text-on-surface-variant hover:text-on-surface transition-all duration-200 hover:bg-white/5" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-stack-md p-stack-sm rounded-lg text-on-surface-variant hover:text-on-surface transition-all duration-200 hover:bg-white/5" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span>AI Agent</span>
+</a>
+<!-- ACTIVE STATE: Startup Builder -->
+<a class="flex items-center gap-stack-md p-stack-sm rounded-lg text-neon-blue bg-primary-container/10 border-r-2 border-neon-blue font-bold transition-all duration-200 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">rocket_launch</span>
+<span>Startup Builder</span>
+</a>
+<a class="flex items-center gap-stack-md p-stack-sm rounded-lg text-on-surface-variant hover:text-on-surface transition-all duration-200 hover:bg-white/5" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span>Auditor</span>
+</a>
+<a class="flex items-center gap-stack-md p-stack-sm rounded-lg text-on-surface-variant hover:text-on-surface transition-all duration-200 hover:bg-white/5" href="#">
+<span class="material-symbols-outlined">badge</span>
+<span>Skill Passport</span>
+</a>
+<a class="flex items-center gap-stack-md p-stack-sm rounded-lg text-on-surface-variant hover:text-on-surface transition-all duration-200 hover:bg-white/5" href="#">
+<span class="material-symbols-outlined">account_balance</span>
+<span>DAO Center</span>
+</a>
+</nav>
+<!-- Footer Nav -->
+<div class="mt-auto pt-stack-md border-t border-border-muted space-y-stack-sm">
+<a class="flex items-center gap-stack-md p-stack-sm rounded-lg text-on-surface-variant hover:text-on-surface transition-all duration-200 hover:bg-white/5" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+<div class="flex items-center gap-stack-md p-stack-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center border border-border-muted">
+<span class="material-symbols-outlined text-sm">person</span>
+</div>
+<div class="flex flex-col">
+<span class="text-label-sm font-bold truncate w-24">0x71...f3E</span>
+<span class="text-[10px] text-on-surface-variant">Admin Mode</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+<!-- Top Navigation Bar -->
+<header class="w-full sticky top-0 z-50 bg-surface-obsidian/60 backdrop-blur-md border-b border-border-muted flex justify-between items-center h-16 px-margin-page">
+<div class="flex items-center gap-stack-lg">
+<h2 class="font-display-lg text-headline-lg font-bold text-on-surface">Startup Builder</h2>
+<div class="hidden lg:flex items-center gap-stack-sm bg-surface-container px-stack-md py-stack-xs rounded-full border border-border-muted">
+<span class="material-symbols-outlined text-neon-blue text-sm">info</span>
+<span class="text-label-sm text-on-surface-variant">Step 2 of 4: Tokenomics Engine</span>
+</div>
+</div>
+<div class="flex items-center gap-stack-md">
+<div class="relative group">
+<span class="material-symbols-outlined p-2 text-on-surface-variant hover:text-on-surface cursor-pointer">terminal</span>
+<div class="absolute top-12 right-0 w-48 bg-surface-container p-2 rounded shadow-xl border border-border-muted opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none text-[10px] font-mono">
+                        View raw deployment logs
+                    </div>
+</div>
+<button class="bg-neon-blue text-white font-label-md px-stack-lg py-2 rounded-full font-bold shadow-lg shadow-neon-blue/20 hover:brightness-110 active:brightness-125 transition-all">
+                    Connect Wallet
+                </button>
+</div>
+</header>
+<!-- Builder Interface Layout -->
+<div class="flex-1 flex overflow-hidden">
+<!-- LEFT PANEL: Step Checklist -->
+<section class="w-72 glass-panel border-r-0 border-t-0 p-stack-lg flex flex-col gap-stack-lg overflow-y-auto">
+<h3 class="font-label-md text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">checklist</span> Development Roadmap
+                </h3>
+<div class="space-y-stack-md">
+<!-- Step 1: Completed -->
+<div class="flex items-start gap-stack-md group cursor-pointer">
+<div class="flex flex-col items-center">
+<div class="w-8 h-8 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<div class="w-[1px] h-12 bg-tertiary/30"></div>
+</div>
+<div class="pt-1">
+<p class="font-bold text-tertiary text-label-md">Brand Identity</p>
+<p class="text-xs text-on-surface-variant">Logo &amp; Metadata Configured</p>
+</div>
+</div>
+<!-- Step 2: Active -->
+<div class="flex items-start gap-stack-md group cursor-pointer">
+<div class="flex flex-col items-center">
+<div class="w-8 h-8 rounded-full bg-neon-blue text-white flex items-center justify-center active-step-glow">
+<span class="material-symbols-outlined text-sm">toll</span>
+</div>
+<div class="w-[1px] h-12 bg-border-muted"></div>
+</div>
+<div class="pt-1">
+<p class="font-bold text-white text-label-md">Tokenomics</p>
+<p class="text-xs text-on-surface-variant">Supply, Tax &amp; Vesting Logic</p>
+</div>
+</div>
+<!-- Step 3: Pending -->
+<div class="flex items-start gap-stack-md group opacity-40 hover:opacity-100 transition-opacity cursor-not-allowed">
+<div class="flex flex-col items-center">
+<div class="w-8 h-8 rounded-full border border-border-muted flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">terminal</span>
+</div>
+<div class="w-[1px] h-12 bg-border-muted"></div>
+</div>
+<div class="pt-1">
+<p class="font-bold text-label-md">Contract Deployment</p>
+<p class="text-xs text-on-surface-variant">Solidity/Rust compilation</p>
+</div>
+</div>
+<!-- Step 4: Pending -->
+<div class="flex items-start gap-stack-md group opacity-40 cursor-not-allowed">
+<div class="flex flex-col items-center">
+<div class="w-8 h-8 rounded-full border border-border-muted flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">water_drop</span>
+</div>
+</div>
+<div class="pt-1">
+<p class="font-bold text-label-md">Liquidity Seeding</p>
+<p class="text-xs text-on-surface-variant">DEX Pool Creation</p>
+</div>
+</div>
+</div>
+<!-- Guidance Note -->
+<div class="mt-auto bg-surface-container/50 border border-border-muted p-stack-md rounded-xl">
+<p class="text-xs text-on-surface-variant leading-relaxed">
+<span class="text-neon-blue font-bold">Pro Tip:</span> Using a linear vesting schedule increases investor confidence by 42% on Nexus DEX.
+                    </p>
+</div>
+</section>
+<!-- CENTER PANEL: Configuration Form -->
+<section class="flex-1 p-margin-page overflow-y-auto custom-scrollbar relative">
+<!-- Background ambient glow -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] spotlight opacity-50 pointer-events-none"></div>
+<div class="max-w-3xl mx-auto space-y-stack-xl relative z-10">
+<header>
+<h2 class="font-headline-xl text-white mb-2">Configure Genesis Token</h2>
+<p class="text-on-surface-variant text-body-md">Define the core economic parameters of your dApp's native utility token.</p>
+</header>
+<form class="space-y-stack-lg">
+<!-- Token Core Section -->
+<div class="grid grid-cols-2 gap-stack-lg">
+<div class="space-y-stack-sm">
+<label class="text-label-sm text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
+                                    Token Name
+                                    <span class="material-symbols-outlined text-[14px] cursor-help" title="The full human-readable name of your token">help</span>
+</label>
+<input class="w-full bg-surface-obsidian border border-border-muted rounded-lg px-stack-md py-3 text-on-surface font-body-md focus:border-neon-blue focus:ring-2 focus:ring-neon-blue/20 transition-all outline-none" placeholder="e.g. Nexus Protocol" type="text"/>
+</div>
+<div class="space-y-stack-sm">
+<label class="text-label-sm text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
+                                    Symbol
+                                    <span class="material-symbols-outlined text-[14px] cursor-help" title="Short identifier (3-5 characters)">help</span>
+</label>
+<input class="w-full bg-surface-obsidian border border-border-muted rounded-lg px-stack-md py-3 text-on-surface font-mono focus:border-neon-blue focus:ring-2 focus:ring-neon-blue/20 transition-all outline-none uppercase" placeholder="NXS" type="text"/>
+</div>
+</div>
+<!-- Supply Slider -->
+<div class="space-y-stack-md p-stack-lg glass-panel rounded-xl">
+<div class="flex justify-between items-center">
+<label class="text-label-sm text-on-surface-variant uppercase tracking-widest">Initial Supply</label>
+<span class="font-mono text-neon-blue font-bold">1,000,000,000</span>
+</div>
+<input class="w-full h-1 bg-surface-container rounded-lg appearance-none cursor-pointer accent-neon-blue" type="range"/>
+<div class="flex justify-between text-[10px] text-on-surface-variant font-mono">
+<span>1M</span>
+<span>10B</span>
+</div>
+</div>
+<!-- Advanced Logic Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-lg">
+<div class="p-stack-lg glass-panel rounded-xl flex items-start gap-stack-md hover:border-white/20 transition-colors">
+<div class="w-10 h-10 rounded bg-white/5 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-neon-purple">local_fire_department</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold mb-1">Deflationary Burn</h4>
+<p class="text-xs text-on-surface-variant mb-4">Burn 2% of every transaction to increase scarcity.</p>
+<div class="flex items-center gap-stack-sm">
+<button class="px-3 py-1 bg-neon-purple/20 text-neon-purple text-xs rounded border border-neon-purple/50" type="button">Enabled</button>
+<button class="px-3 py-1 bg-surface-container text-on-surface-variant text-xs rounded" type="button">Settings</button>
+</div>
+</div>
+</div>
+<div class="p-stack-lg glass-panel rounded-xl flex items-start gap-stack-md hover:border-white/20 transition-colors">
+<div class="w-10 h-10 rounded bg-white/5 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-warning-yellow">lock</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold mb-1">Cliff Vesting</h4>
+<p class="text-xs text-on-surface-variant mb-4">Lock team tokens for 12 months with linear release.</p>
+<div class="flex items-center gap-stack-sm">
+<button class="px-3 py-1 bg-surface-container text-on-surface-variant text-xs rounded" type="button">Disabled</button>
+<button class="px-3 py-1 bg-warning-yellow/10 text-warning-yellow text-xs rounded border border-warning-yellow/30" type="button">Activate</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Bar -->
+<div class="pt-stack-lg flex justify-between items-center border-t border-border-muted">
+<button class="text-on-surface-variant hover:text-white flex items-center gap-2 text-label-md transition-colors" type="button">
+<span class="material-symbols-outlined text-sm">arrow_back</span> Back
+                            </button>
+<button class="bg-white text-surface-obsidian font-bold px-stack-xl py-3 rounded font-label-md hover:bg-neon-blue hover:text-white transition-all shadow-xl" type="button">
+                                Confirm &amp; Compile
+                            </button>
+</div>
+</form>
+</div>
+</section>
+<!-- RIGHT PANEL: Preview -->
+<section class="w-80 glass-panel border-l border-r-0 border-t-0 p-stack-lg flex flex-col gap-stack-lg">
+<h3 class="font-label-md text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">visibility</span> Genesis Token Preview
+                </h3>
+<!-- Holographic Token Card -->
+<div class="aspect-[3/4] rounded-2xl relative overflow-hidden group shadow-2xl">
+<!-- Dynamic Texture Background -->
+<div class="absolute inset-0 bg-gradient-to-br from-surface-slate via-surface-obsidian to-surface-container"></div>
+<div class="absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay">
+
+</div>
+<!-- Card Content -->
+<div class="relative h-full flex flex-col p-stack-lg text-center justify-between">
+<div class="flex justify-between items-start">
+<span class="text-[10px] font-mono text-neon-blue border border-neon-blue/30 px-2 py-0.5 rounded">ERC-20 PRO</span>
+<span class="material-symbols-outlined text-white/40">nfc</span>
+</div>
+<div class="space-y-stack-sm">
+<div class="w-20 h-20 mx-auto rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-stack-md shadow-inner">
+<span class="material-symbols-outlined text-5xl text-white group-hover:scale-110 transition-transform">toll</span>
+</div>
+<h4 class="text-headline-lg font-bold tracking-tight text-white">NXS</h4>
+<p class="text-label-sm text-neon-blue font-mono">Nexus Protocol</p>
+</div>
+<div class="space-y-stack-sm">
+<div class="h-[1px] w-full bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+<div class="flex justify-between text-[10px] font-mono text-on-surface-variant">
+<span>TYPE: UTILITY</span>
+<span>MAX: 1B</span>
+</div>
+</div>
+</div>
+<!-- Inner Glow -->
+<div class="absolute inset-0 pointer-events-none rounded-2xl border border-white/5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"></div>
+</div>
+<!-- Preview Analytics -->
+<div class="space-y-stack-md">
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-xs">
+<span class="text-on-surface-variant">Contract Security</span>
+<span class="text-tertiary">98/100</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="w-[98%] h-full bg-tertiary"></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-xs">
+<span class="text-on-surface-variant">Gas Efficiency</span>
+<span class="text-neon-blue">A+</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="w-[92%] h-full bg-neon-blue"></div>
+</div>
+</div>
+</div>
+<!-- Audit Simulation -->
+<div class="mt-auto bg-error/5 border border-error/20 p-stack-md rounded-xl">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-error text-sm">warning</span>
+<h5 class="text-xs font-bold text-error">Compliance Alert</h5>
+</div>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">
+                        Tax rates above 10% may trigger "honeypot" warnings on third-party aggregators. Adjust logic to remain compliant.
+                    </p>
+</div>
+</section>
+</div>
+<!-- Floating Feedback Action -->
+<button class="fixed bottom-margin-page right-margin-page w-12 h-12 rounded-full bg-surface-container border border-border-muted flex items-center justify-center hover:bg-surface-bright transition-all active:scale-95 group">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-white">chat_bubble</span>
+<div class="absolute right-14 bg-surface-container border border-border-muted px-3 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                AI Assistant Help
+            </div>
+</button>
+</main>
+<script>
+        // Simple micro-interaction for tooltips and hover effects
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.classList.add('scale-[1.01]');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.classList.remove('scale-[1.01]');
+            });
+        });
+
+        // Simulating some "Stripe-level" smoothness
+        const progressBar = document.querySelector('.bg-tertiary');
+        let width = 0;
+        setInterval(() => {
+            if (width < 98) {
+                width += 0.5;
+                progressBar.style.width = width + '%';
+            }
+        }, 50);
+    </script>
+</body></html>

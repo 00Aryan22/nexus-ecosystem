@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings — NEXUS AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/variables.css"/>
+  <link rel="stylesheet" href="assets/css/animations.css"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="stylesheet" href="assets/css/responsive.css"/>
+  <style>
+    .dash-shell{display:flex;height:100vh;overflow:hidden;}
+    .dash-main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+    .settings-shell{flex:1;display:grid;grid-template-columns:240px 1fr;overflow:hidden;}
+    .settings-nav{border-right:1px solid var(--border-muted);padding:var(--stack-lg);background:rgba(17,18,20,0.6);overflow-y:auto;}
+    .settings-content{overflow-y:auto;padding:var(--stack-xl);}
+    .settings-content::-webkit-scrollbar{width:4px;}
+    .settings-content::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);}
+    .settings-nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-md);cursor:pointer;transition:var(--transition-fast);font-size:var(--text-body-sm);color:var(--on-surface-variant);margin-bottom:2px;}
+    .settings-nav-item:hover{background:rgba(255,255,255,0.04);color:var(--on-surface);}
+    .settings-nav-item--active{background:rgba(59,130,246,0.1);color:var(--neon-blue);font-weight:500;}
+    .settings-section{margin-bottom:var(--stack-xl);}
+    .settings-row{display:flex;justify-content:space-between;align-items:center;padding:var(--stack-md) 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+    .settings-row:last-child{border-bottom:none;}
+    .settings-row__label{font-size:var(--text-body-sm);font-weight:500;}
+    .settings-row__desc{font-size:11px;color:var(--on-surface-variant);margin-top:2px;}
+    .danger-zone{border:1px solid rgba(255,77,77,0.3);border-radius:var(--radius-xl);padding:var(--stack-lg);background:rgba(255,77,77,0.03);}
+  </style>
+</head>
+<body>
+<div class="dash-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__brand">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;border-radius:var(--radius-lg);background:rgba(59,130,246,0.2);border:1px solid var(--neon-blue);display:flex;align-items:center;justify-content:center;">
+          <span class="material-symbols-outlined" style="color:var(--neon-blue);font-variation-settings:'FILL' 1;">dataset</span>
+        </div>
+        <div><a href="index.html" class="sidebar__brand-name">NEXUS AI</a><div class="sidebar__brand-tag">Web3 OS</div></div>
+      </div>
+    </div>
+    <nav class="sidebar__nav">
+      <a href="dashboard.html"        class="nav-item"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></a>
+      <a href="founder-agent.html"    class="nav-item"><span class="material-symbols-outlined">smart_toy</span><span>AI Agent</span></a>
+      <a href="startup-builder.html"  class="nav-item"><span class="material-symbols-outlined">rocket_launch</span><span>Startup Builder</span></a>
+      <a href="contract-auditor.html" class="nav-item"><span class="material-symbols-outlined">verified_user</span><span>Auditor</span></a>
+      <a href="skill-passport.html"   class="nav-item"><span class="material-symbols-outlined">badge</span><span>Skill Passport</span></a>
+      <a href="dao.html"              class="nav-item"><span class="material-symbols-outlined">account_balance</span><span>DAO Center</span></a>
+      <a href="wallet.html"           class="nav-item"><span class="material-symbols-outlined">account_balance_wallet</span><span>Wallet</span></a>
+      <a href="analytics.html"        class="nav-item"><span class="material-symbols-outlined">analytics</span><span>Analytics</span></a>
+      <a href="notifications.html"    class="nav-item"><span class="material-symbols-outlined">notifications</span><span>Activity</span></a>
+    </nav>
+    <div class="sidebar__footer">
+      <button class="btn btn--primary btn--full" style="margin-bottom:var(--stack-md);border-radius:var(--radius-md);">Deploy Contract</button>
+      <a href="settings.html" class="nav-item nav-item--active"><span class="material-symbols-outlined">settings</span><span>Settings</span></a>
+    </div>
+  </aside>
+
+  <div class="dash-main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:var(--stack-md);">
+        <button class="topbar__icon-btn" id="sidebarToggle"><span class="material-symbols-outlined">menu</span></button>
+        <div style="font-family:var(--font-display);font-size:var(--text-headline-lg);font-weight:700;">Settings</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--stack-md);">
+        <button class="btn btn--primary btn--sm">Save Changes</button>
+        <button class="topbar__icon-btn" style="position:relative;"><span class="material-symbols-outlined">notifications</span><span class="notification-dot"></span></button>
+        <div class="avatar"><img src="https://placehold.co/32x32/3b82f6/fff?text=N" alt="avatar"/></div>
+      </div>
+    </header>
+
+    <div class="settings-shell">
+      <!-- Settings Nav -->
+      <div class="settings-nav">
+        <div style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--on-surface-variant);margin-bottom:var(--stack-md);">Account</div>
+        <div class="settings-nav-item settings-nav-item--active" onclick="showSection(event,'profile')"><span class="material-symbols-outlined" style="font-size:18px;">person</span>Profile</div>
+        <div class="settings-nav-item" onclick="showSection(event,'wallet')"><span class="material-symbols-outlined" style="font-size:18px;">account_balance_wallet</span>Wallet</div>
+        <div class="settings-nav-item" onclick="showSection(event,'notifications-s')"><span class="material-symbols-outlined" style="font-size:18px;">notifications</span>Notifications</div>
+        <div style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--on-surface-variant);margin:var(--stack-lg) 0 var(--stack-md);">Platform</div>
+        <div class="settings-nav-item" onclick="showSection(event,'ai')"><span class="material-symbols-outlined" style="font-size:18px;">smart_toy</span>AI Model</div>
+        <div class="settings-nav-item" onclick="showSection(event,'security')"><span class="material-symbols-outlined" style="font-size:18px;">security</span>Security</div>
+        <div class="settings-nav-item" onclick="showSection(event,'features')"><span class="material-symbols-outlined" style="font-size:18px;">toggle_on</span>Feature Flags</div>
+        <div style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--on-surface-variant);margin:var(--stack-lg) 0 var(--stack-md);">Danger</div>
+        <div class="settings-nav-item" onclick="showSection(event,'danger')" style="color:var(--neon-red);"><span class="material-symbols-outlined" style="font-size:18px;">warning</span>Danger Zone</div>
+      </div>
+
+      <!-- Settings Content -->
+      <div class="settings-content">
+        <!-- Profile Section -->
+        <div id="section-profile">
+          <div class="settings-section">
+            <h2 style="font-family:var(--font-display);font-size:var(--text-headline-xl);font-weight:700;margin-bottom:4px;">Profile</h2>
+            <p style="color:var(--on-surface-variant);margin-bottom:var(--stack-xl);">Your on-chain identity and display preferences.</p>
+
+            <div class="glass-panel" style="border-radius:var(--radius-xl);padding:var(--stack-lg);margin-bottom:var(--stack-lg);">
+              <div style="display:flex;align-items:center;gap:var(--stack-lg);margin-bottom:var(--stack-xl);">
+                <div style="position:relative;">
+                  <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:28px;font-weight:700;">N</div>
+                  <button style="position:absolute;bottom:0;right:0;width:24px;height:24px;border-radius:50%;background:var(--neon-blue);border:2px solid var(--surface-obsidian);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+                    <span class="material-symbols-outlined" style="font-size:12px;color:white;">edit</span>
+                  </button>
+                </div>
+                <div>
+                  <div style="font-family:var(--font-display);font-size:var(--text-headline-lg);font-weight:700;">nexus.eth</div>
+                  <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">0x3f4a…d82b · Level 7 Builder</div>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--stack-md);">
+                <div class="form-group"><label class="form-label">Display Name</label><input class="input" type="text" value="nexus.eth"/></div>
+                <div class="form-group"><label class="form-label">ENS Name</label><input class="input" type="text" value="nexus.eth" placeholder="your.eth"/></div>
+                <div class="form-group" style="grid-column:1/-1;"><label class="form-label">Bio</label><textarea class="textarea" rows="2" placeholder="Tell the ecosystem about yourself…">Builder. Web3 founder. AI enthusiast. Building the future of decentralized infrastructure.</textarea></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Section (hidden) -->
+        <div id="section-ai" style="display:none;">
+          <h2 style="font-family:var(--font-display);font-size:var(--text-headline-xl);font-weight:700;margin-bottom:4px;">AI Model Settings</h2>
+          <p style="color:var(--on-surface-variant);margin-bottom:var(--stack-xl);">Configure the AI provider and model preferences.</p>
+          <div class="glass-panel" style="border-radius:var(--radius-xl);padding:var(--stack-lg);">
+            <div class="settings-row">
+              <div><div class="settings-row__label">Primary LLM Provider</div><div class="settings-row__desc">First provider in the fallback chain</div></div>
+              <select class="input" style="width:200px;cursor:pointer;"><option>Gemini 1.5 Pro</option><option>Emergent Universal</option><option>Ollama (Local)</option></select>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-row__label">Streaming Responses</div><div class="settings-row__desc">Show AI responses as they generate</div></div>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle__slider"></span></label>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-row__label">Auto-detect Framework</div><div class="settings-row__desc">Automatically select the best planning framework</div></div>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle__slider"></span></label>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-row__label">Max Tokens per Response</div></div>
+              <input class="input" type="number" value="4096" style="width:120px;"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Section (hidden) -->
+        <div id="section-security" style="display:none;">
+          <h2 style="font-family:var(--font-display);font-size:var(--text-headline-xl);font-weight:700;margin-bottom:4px;">Security</h2>
+          <p style="color:var(--on-surface-variant);margin-bottom:var(--stack-xl);">Authentication and session management.</p>
+          <div class="glass-panel" style="border-radius:var(--radius-xl);padding:var(--stack-lg);">
+            <div class="settings-row">
+              <div><div class="settings-row__label">SIWE Authentication</div><div class="settings-row__desc">Sign-In with Ethereum — currently active</div></div>
+              <span class="badge badge--green">Active</span>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-row__label">Session Expiry</div></div>
+              <select class="input" style="width:160px;cursor:pointer;"><option>24 hours</option><option>7 days</option><option>30 days</option></select>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-row__label">Rate Limiting</div><div class="settings-row__desc">Max 100 AI requests per hour</div></div>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle__slider"></span></label>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-row__label">Fraud Detection</div><div class="settings-row__desc">AI-powered anomaly detection on all API calls</div></div>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle__slider"></span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature Flags Section (hidden) -->
+        <div id="section-features" style="display:none;">
+          <h2 style="font-family:var(--font-display);font-size:var(--text-headline-xl);font-weight:700;margin-bottom:4px;">Feature Flags</h2>
+          <p style="color:var(--on-surface-variant);margin-bottom:var(--stack-xl);">Enable or disable platform features.</p>
+          <div class="glass-panel" style="border-radius:var(--radius-xl);padding:var(--stack-lg);">
+            <div class="settings-row">
+              <div><div class="settings-row__label">AI Founder Agent</div><div class="settings-row__desc">SSE streaming chat with LLM</div></div>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle__slider"></span></label>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-row__label">Smart Contract Auditor</div><div class="settings-row__desc">AI-powered Solidity analysis</div></div>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle__slider"></span></label>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-row__label">Skill Passport NFT</div><div class="settings-row__desc">Soulbound NFT minting on Polygon</div></div>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle__slider"></span></label>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-row__label">DAO Governance</div><div class="settings-row__desc">Proposal creation and voting</div></div>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle__slider"></span></label>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-row__label">Startup Builder (Beta)</div><div class="settings-row__desc">Token wizard and deployment tools</div></div>
+              <label class="toggle"><input type="checkbox"/><span class="toggle__slider"></span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notifications Section (hidden) -->
+        <div id="section-notifications-s" style="display:none;">
+          <h2 style="font-family:var(--font-display);font-size:var(--text-headline-xl);font-weight:700;margin-bottom:4px;">Notifications</h2>
+          <p style="color:var(--on-surface-variant);margin-bottom:var(--stack-xl);">Control what alerts you receive.</p>
+          <div class="glass-panel" style="border-radius:var(--radius-xl);padding:var(--stack-lg);">
+            <div class="settings-row"><div><div class="settings-row__label">AI Agent Completions</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle__slider"></span></label></div>
+            <div class="settings-row"><div><div class="settings-row__label">Audit Results</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle__slider"></span></label></div>
+            <div class="settings-row"><div><div class="settings-row__label">DAO Proposals</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle__slider"></span></label></div>
+            <div class="settings-row"><div><div class="settings-row__label">NFT Transactions</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle__slider"></span></label></div>
+            <div class="settings-row"><div><div class="settings-row__label">Security Alerts</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle__slider"></span></label></div>
+          </div>
+        </div>
+
+        <!-- Wallet Section (hidden) -->
+        <div id="section-wallet" style="display:none;">
+          <h2 style="font-family:var(--font-display);font-size:var(--text-headline-xl);font-weight:700;margin-bottom:4px;">Wallet Settings</h2>
+          <p style="color:var(--on-surface-variant);margin-bottom:var(--stack-xl);">Connected wallets and network preferences.</p>
+          <div class="glass-panel" style="border-radius:var(--radius-xl);padding:var(--stack-lg);">
+            <div class="settings-row">
+              <div style="display:flex;align-items:center;gap:var(--stack-md);">
+                <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,165,0,0.15);border:1px solid rgba(255,165,0,0.3);display:flex;align-items:center;justify-content:center;font-size:18px;">🦊</div>
+                <div><div class="settings-row__label">MetaMask</div><div class="settings-row__desc">0x3f4a…d82b · Primary</div></div>
+              </div>
+              <span class="badge badge--green">Connected</span>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-row__label">Default Network</div></div>
+              <select class="input" style="width:200px;cursor:pointer;"><option>Polygon Amoy (Testnet)</option><option>Ethereum Mainnet</option><option>Arbitrum</option></select>
+            </div>
+            <div class="settings-row" style="border-bottom:none;">
+              <div><div class="settings-row__label">Auto-approve small transactions</div><div class="settings-row__desc">Transactions under 0.01 ETH</div></div>
+              <label class="toggle"><input type="checkbox"/><span class="toggle__slider"></span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danger Zone (hidden) -->
+        <div id="section-danger" style="display:none;">
+          <h2 style="font-family:var(--font-display);font-size:var(--text-headline-xl);font-weight:700;margin-bottom:4px;">Danger Zone</h2>
+          <p style="color:var(--on-surface-variant);margin-bottom:var(--stack-xl);">Irreversible account actions.</p>
+          <div class="danger-zone">
+            <div class="settings-row">
+              <div><div class="settings-row__label" style="color:var(--neon-red);">Delete All AI Conversations</div><div class="settings-row__desc">Permanently remove all chat history</div></div>
+              <button class="btn btn--danger btn--sm">Delete</button>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-row__label" style="color:var(--neon-red);">Revoke Skill Passport</div><div class="settings-row__desc">Burns NFT #0042 — cannot be undone</div></div>
+              <button class="btn btn--danger btn--sm">Revoke</button>
+            </div>
+            <div class="settings-row" style="border-bottom:none;">
+              <div><div class="settings-row__label" style="color:var(--neon-red);">Delete Account</div><div class="settings-row__desc">Remove all off-chain data. On-chain data remains.</div></div>
+              <button class="btn btn--danger btn--sm">Delete Account</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/js/navigation.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+function showSection(e, id) {
+  document.querySelectorAll('.settings-nav-item').forEach(el=>el.classList.remove('settings-nav-item--active'));
+  e.currentTarget.classList.add('settings-nav-item--active');
+  document.querySelectorAll('[id^="section-"]').forEach(el=>el.style.display='none');
+  const el = document.getElementById('section-'+id);
+  if(el) el.style.display='block';
+}
+</script>
+</body>
+</html>

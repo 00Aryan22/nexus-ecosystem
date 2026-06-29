@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NEXUS AI | Web3 OS for the AI Era</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/variables.css"/>
+  <link rel="stylesheet" href="assets/css/animations.css"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="stylesheet" href="assets/css/responsive.css"/>
+  <style>
+    @font-face { font-family:'Geist'; src:url('https://cdn.jsdelivr.net/font-geist/1.0.0/geist-sans-regular.woff2') format('woff2'); font-weight:400; }
+    @font-face { font-family:'Geist'; src:url('https://cdn.jsdelivr.net/font-geist/1.0.0/geist-sans-bold.woff2')    format('woff2'); font-weight:700; }
+    .spotlight-fixed { position:absolute; width:600px; height:600px;
+      background:radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+      pointer-events:none; z-index:0; }
+    .hero-badge { display:inline-flex; align-items:center; gap:8px; padding:4px 14px;
+      border-radius:999px; border:1px solid rgba(59,130,246,0.3);
+      background:rgba(59,130,246,0.05); color:var(--neon-blue);
+      font-family:var(--font-mono); font-size:12px; letter-spacing:0.05em;
+      margin-bottom:var(--stack-lg); }
+    .hero-badge .dot-wrap { position:relative; display:flex; width:8px; height:8px; }
+    .hero-badge .dot-ping { position:absolute; inset:0; border-radius:50%;
+      background:rgba(59,130,246,0.75); animation:ping 1s cubic-bezier(0,0,0.2,1) infinite; }
+    .hero-badge .dot-solid { position:relative; width:8px; height:8px;
+      border-radius:50%; background:var(--neon-blue); display:inline-block; }
+    .hero-visual { position:relative; margin-top:var(--stack-xl); border-radius:var(--radius-xl);
+      border:1px solid var(--border-muted); overflow:hidden; }
+    .hero-visual img { width:100%; aspect-ratio:16/9; object-fit:cover; opacity:0.8; transition:opacity 0.3s; }
+    .hero-visual:hover img { opacity:1; }
+    .hero-visual-overlay { position:absolute; inset:0;
+      background:linear-gradient(to top, var(--surface-obsidian), transparent 60%); }
+    .feature-icon { width:48px; height:48px; border-radius:var(--radius-lg);
+      display:flex; align-items:center; justify-content:center; margin-bottom:var(--stack-md); }
+    .roadmap-line { display:flex; gap:var(--stack-lg); position:relative; }
+    .roadmap-line::before { content:''; position:absolute; top:8px; left:0; right:0;
+      height:1px; background:var(--border-muted); }
+    .roadmap-step { flex:1; position:relative; padding-top:var(--stack-xl); }
+    .roadmap-dot { position:absolute; top:-8px; width:16px; height:16px;
+      border-radius:50%; background:var(--neon-blue); z-index:1; }
+    .roadmap-dot--active { box-shadow:0 0 0 8px rgba(59,130,246,0.15); animation:pulse 2s infinite; }
+    .roadmap-dot--pending { background:var(--on-surface-variant); }
+    .pricing-card { padding:var(--stack-lg); border-radius:var(--radius-xl);
+      display:flex; flex-direction:column; height:100%; position:relative; }
+    .pricing-card--featured { transform:scale(1.04); box-shadow:0 0 40px rgba(59,130,246,0.15); }
+    .pricing-badge { position:absolute; top:0; right:0; background:var(--neon-blue);
+      color:white; padding:4px 14px; font-family:var(--font-mono); font-size:10px; font-weight:700; }
+    .pricing-price { font-family:var(--font-display); font-size:var(--text-headline-xl); font-weight:700; }
+    .pricing-list { list-style:none; flex:1; margin:var(--stack-lg) 0; display:flex; flex-direction:column; gap:var(--stack-sm); }
+    .pricing-list li { display:flex; align-items:center; gap:8px;
+      font-size:var(--text-body-sm); color:var(--on-surface-variant); }
+    .pricing-list .material-symbols-outlined { font-size:16px; color:var(--neon-blue); }
+    .faq-section { max-width:768px; margin:0 auto; }
+  </style>
+</head>
+<body>
+
+<!-- Background spotlights -->
+<div class="spotlight-fixed" style="top:-100px;left:-100px;"></div>
+<div class="spotlight-fixed" style="bottom:20%;right:-100px;"></div>
+
+<!-- ── NAV ───────────────────────────────────────────────── -->
+<header style="position:sticky;top:0;z-index:50;background:rgba(8,9,10,0.6);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-muted);">
+  <div style="display:flex;justify-content:space-between;align-items:center;height:64px;padding:0 var(--margin-page);max-width:1400px;margin:0 auto;">
+    <div style="display:flex;align-items:center;gap:var(--stack-xl);">
+      <span style="font-family:var(--font-display);font-size:var(--text-headline-lg);font-weight:700;letter-spacing:-0.04em;text-transform:uppercase;">NEXUS AI</span>
+      <nav style="display:flex;gap:var(--stack-lg);" class="hide-mobile">
+        <a href="#features" style="font-family:var(--font-mono);font-size:var(--text-label-md);color:var(--on-surface-variant);" onmouseover="this.style.color='var(--on-surface)'" onmouseout="this.style.color='var(--on-surface-variant)'">Features</a>
+        <a href="#roadmap"  style="font-family:var(--font-mono);font-size:var(--text-label-md);color:var(--on-surface-variant);" onmouseover="this.style.color='var(--on-surface)'" onmouseout="this.style.color='var(--on-surface-variant)'">Roadmap</a>
+        <a href="#pricing"  style="font-family:var(--font-mono);font-size:var(--text-label-md);color:var(--on-surface-variant);" onmouseover="this.style.color='var(--on-surface)'" onmouseout="this.style.color='var(--on-surface-variant)'">Pricing</a>
+      </nav>
+    </div>
+    <div style="display:flex;align-items:center;gap:var(--stack-md);">
+      <span class="material-symbols-outlined" style="color:var(--on-surface-variant);cursor:pointer;">notifications</span>
+      <span class="material-symbols-outlined" style="color:var(--on-surface-variant);cursor:pointer;">terminal</span>
+      <a href="templates/authentication.html" class="btn btn--primary btn--rounded">Connect Wallet</a>
+    </div>
+  </div>
+</header>
+
+<!-- ── HERO ─────────────────────────────────────────────── -->
+<main style="position:relative;">
+  <section style="min-height:920px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--stack-xl) var(--margin-page);text-align:center;overflow:hidden;position:relative;">
+    <div style="position:relative;z-index:1;max-width:900px;">
+      <div class="hero-badge">
+        <span class="dot-wrap"><span class="dot-ping"></span><span class="dot-solid"></span></span>
+        V1.0 MAINNET IS LIVE
+      </div>
+      <h1 style="font-family:var(--font-display);font-size:clamp(40px,7vw,64px);font-weight:700;letter-spacing:-0.04em;line-height:1.1;margin-bottom:var(--stack-md);">
+        The <span style="color:var(--neon-blue);">Web3 Operating System</span><br>for the AI Era.
+      </h1>
+      <p style="font-size:var(--text-body-lg);color:var(--on-surface-variant);max-width:640px;margin:0 auto var(--stack-xl);">
+        Deploy AI-powered protocols, manage DAO centers, and secure your digital identity on the world's most advanced computational kernel. Built for the architects of the next web.
+      </p>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:var(--stack-md);">
+        <a href="templates/dashboard.html" class="btn btn--primary btn--rounded btn--lg">Launch Nexus Dashboard</a>
+        <a href="#features" class="btn btn--outline btn--rounded btn--lg" style="display:flex;align-items:center;gap:8px;">
+          Read Documentation <span class="material-symbols-outlined">arrow_forward</span>
+        </a>
+      </div>
+    </div>
+    <div class="hero-visual" style="width:100%;max-width:1100px;margin-top:var(--stack-xl);">
+      <img src="https://placehold.co/1100x620/08090A/3b82f6?text=NEXUS+AI+Network+Visualization" alt="NEXUS AI Visualization"/>
+      <div class="hero-visual-overlay"></div>
+    </div>
+  </section>
+
+  <!-- ── FEATURES ─────────────────────────────────────────── -->
+  <section id="features" style="padding:var(--stack-xl) var(--margin-page);">
+    <div style="text-align:center;margin-bottom:var(--stack-xl);">
+      <span style="font-family:var(--font-mono);font-size:var(--text-label-sm);color:var(--neon-blue);text-transform:uppercase;letter-spacing:0.2em;">Core Infrastructure</span>
+      <h2 style="font-family:var(--font-display);font-size:var(--text-headline-xl);margin-top:var(--stack-sm);">Engineered for Complexity</h2>
+    </div>
+    <div class="grid grid-3" style="max-width:1200px;margin:0 auto;">
+      <!-- AI Agent -->
+      <div class="glass-card card-hover" style="padding:var(--stack-lg);border-radius:var(--radius-xl);">
+        <div class="feature-icon" style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);">
+          <span class="material-symbols-outlined" style="color:var(--neon-blue);">smart_toy</span>
+        </div>
+        <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);margin-bottom:var(--stack-sm);">AI Agent</h3>
+        <p style="color:var(--on-surface-variant);font-size:var(--text-body-sm);">Autonomous LLM-driven agents capable of executing smart contracts and managing treasury operations without human intervention.</p>
+      </div>
+      <!-- Startup Builder -->
+      <div class="glass-card card-hover" style="padding:var(--stack-lg);border-radius:var(--radius-xl);">
+        <div class="feature-icon" style="background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.2);">
+          <span class="material-symbols-outlined" style="color:var(--neon-purple);">rocket_launch</span>
+        </div>
+        <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);margin-bottom:var(--stack-sm);">Startup Builder</h3>
+        <p style="color:var(--on-surface-variant);font-size:var(--text-body-sm);">Zero-code interface for deploying production-grade dApps, tokenomics models, and liquidity pools in minutes.</p>
+      </div>
+      <!-- Auditor -->
+      <div class="glass-card card-hover" style="padding:var(--stack-lg);border-radius:var(--radius-xl);">
+        <div class="feature-icon" style="background:rgba(228,242,34,0.1);border:1px solid rgba(228,242,34,0.2);">
+          <span class="material-symbols-outlined" style="color:var(--warning-yellow);">verified_user</span>
+        </div>
+        <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);margin-bottom:var(--stack-sm);">Smart Auditor</h3>
+        <p style="color:var(--on-surface-variant);font-size:var(--text-body-sm);">Real-time formal verification and security auditing for every line of code deployed through the Nexus kernel.</p>
+      </div>
+      <!-- Skill Passport (wide) -->
+      <div class="glass-card card-hover col-span-2" style="padding:var(--stack-lg);border-radius:var(--radius-xl);">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--stack-md);">
+          <div class="feature-icon" style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);margin-bottom:0;">
+            <span class="material-symbols-outlined" style="color:var(--neon-blue);">badge</span>
+          </div>
+          <span class="badge badge--solid-blue">IDENTITY V2</span>
+        </div>
+        <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);margin-bottom:var(--stack-sm);">Skill Passport</h3>
+        <p style="color:var(--on-surface-variant);font-size:var(--text-body-sm);">Decentralized proof-of-work identity. Port your reputation and verified skills across the entire Web3 ecosystem seamlessly.</p>
+      </div>
+      <!-- DAO Center -->
+      <div class="glass-card card-hover" style="padding:var(--stack-lg);border-radius:var(--radius-xl);">
+        <div class="feature-icon" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);">
+          <span class="material-symbols-outlined">account_balance</span>
+        </div>
+        <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);margin-bottom:var(--stack-sm);">DAO Center</h3>
+        <p style="color:var(--on-surface-variant);font-size:var(--text-body-sm);">Institutional-grade governance suite with cross-chain voting and automated treasury distribution.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ROADMAP ──────────────────────────────────────────── -->
+  <section id="roadmap" style="padding:var(--stack-xl) var(--margin-page);background:rgba(8,9,10,0.4);">
+    <div style="max-width:900px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:var(--stack-xl);">
+        <h2 style="font-family:var(--font-display);font-size:var(--text-headline-xl);">Project Trajectory</h2>
+        <p style="color:var(--on-surface-variant);margin-top:8px;">Our path to universal decentralized intelligence.</p>
+      </div>
+      <div style="display:flex;gap:var(--stack-lg);padding-top:var(--stack-lg);border-top:1px solid var(--border-muted);position:relative;">
+        <div style="flex:1;padding-top:32px;">
+          <div style="position:absolute;top:-8px;width:16px;height:16px;border-radius:50%;background:var(--neon-blue);box-shadow:0 0 0 8px rgba(59,130,246,0.1);"></div>
+          <span style="font-family:var(--font-mono);font-size:var(--text-label-sm);color:var(--neon-blue);text-transform:uppercase;display:block;margin-bottom:8px;">Completed</span>
+          <h4 style="font-family:var(--font-display);font-size:var(--text-headline-lg);margin-bottom:8px;">Genesis Node</h4>
+          <p style="color:var(--on-surface-variant);font-size:var(--text-body-sm);">Kernel architecture design, initial L2 integration, and closed beta for AI agents.</p>
+        </div>
+        <div style="flex:1;padding-top:32px;">
+          <div style="position:absolute;top:-8px;width:16px;height:16px;border-radius:50%;background:var(--neon-blue);box-shadow:0 0 0 8px rgba(59,130,246,0.15);animation:pulse 2s infinite;left:calc(33% - 8px);"></div>
+          <span style="font-family:var(--font-mono);font-size:var(--text-label-sm);color:var(--neon-blue);text-transform:uppercase;display:block;margin-bottom:8px;">Active</span>
+          <h4 style="font-family:var(--font-display);font-size:var(--text-headline-lg);margin-bottom:8px;">Expansion Phase</h4>
+          <p style="color:var(--on-surface-variant);font-size:var(--text-body-sm);">Public mainnet launch, Skill Passport V1, and cross-chain bridging for DAO governance.</p>
+        </div>
+        <div style="flex:1;padding-top:32px;">
+          <div style="position:absolute;top:-8px;width:16px;height:16px;border-radius:50%;background:var(--on-surface-variant);right:0;"></div>
+          <span style="font-family:var(--font-mono);font-size:var(--text-label-sm);color:var(--on-surface-variant);text-transform:uppercase;display:block;margin-bottom:8px;">Q4 2024</span>
+          <h4 style="font-family:var(--font-display);font-size:var(--text-headline-lg);margin-bottom:8px;">Neural Mesh</h4>
+          <p style="color:var(--on-surface-variant);font-size:var(--text-body-sm);">Decentralized AI inference network and institutional-grade fraud detection layer.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PRICING ────────────────────────────────────────────── -->
+  <section id="pricing" style="padding:var(--stack-xl) var(--margin-page);">
+    <div style="text-align:center;margin-bottom:var(--stack-xl);">
+      <h2 style="font-family:var(--font-display);font-size:var(--text-headline-xl);">Flexible OS Licensing</h2>
+      <p style="color:var(--on-surface-variant);margin-top:8px;">Scale your operations from sandbox to global enterprise.</p>
+    </div>
+    <div class="grid grid-3" style="max-width:1100px;margin:0 auto;align-items:start;">
+      <!-- Builder -->
+      <div class="glass-card" style="padding:var(--stack-lg);border-radius:var(--radius-xl);display:flex;flex-direction:column;">
+        <span style="font-family:var(--font-mono);font-size:var(--text-label-sm);color:var(--on-surface-variant);margin-bottom:var(--stack-sm);display:block;">BUILDER</span>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:var(--stack-md);"><span style="font-family:var(--font-display);font-size:var(--text-headline-xl);font-weight:700;">$0</span><span style="color:var(--on-surface-variant);">/mo</span></div>
+        <ul style="list-style:none;flex:1;margin-bottom:var(--stack-xl);display:flex;flex-direction:column;gap:var(--stack-sm);">
+          <li style="display:flex;align-items:center;gap:8px;color:var(--on-surface-variant);font-size:var(--text-body-sm);"><span class="material-symbols-outlined" style="font-size:16px;color:var(--neon-blue);">check</span>1 AI Agent Instance</li>
+          <li style="display:flex;align-items:center;gap:8px;color:var(--on-surface-variant);font-size:var(--text-body-sm);"><span class="material-symbols-outlined" style="font-size:16px;color:var(--neon-blue);">check</span>Basic DAO Toolkit</li>
+          <li style="display:flex;align-items:center;gap:8px;color:var(--on-surface-variant);font-size:var(--text-body-sm);"><span class="material-symbols-outlined" style="font-size:16px;color:var(--neon-blue);">check</span>Standard Skill Passport</li>
+        </ul>
+        <button class="btn btn--outline btn--full" style="border-radius:var(--radius-md);text-transform:uppercase;">Start Building</button>
+      </div>
+      <!-- Startup (featured) -->
+      <div class="glass-card" style="padding:var(--stack-lg);border-radius:var(--radius-xl);display:flex;flex-direction:column;transform:scale(1.04);box-shadow:0 0 40px rgba(59,130,246,0.15);border-color:rgba(59,130,246,0.4);position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;right:0;background:var(--neon-blue);color:white;padding:4px 14px;font-family:var(--font-mono);font-size:10px;font-weight:700;">Most Popular</div>
+        <span style="font-family:var(--font-mono);font-size:var(--text-label-sm);color:var(--neon-blue);margin-bottom:var(--stack-sm);display:block;">STARTUP</span>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:var(--stack-md);"><span style="font-family:var(--font-display);font-size:var(--text-headline-xl);font-weight:700;">$99</span><span style="color:var(--on-surface-variant);">/mo</span></div>
+        <ul style="list-style:none;flex:1;margin-bottom:var(--stack-xl);display:flex;flex-direction:column;gap:var(--stack-sm);">
+          <li style="display:flex;align-items:center;gap:8px;font-size:var(--text-body-sm);"><span class="material-symbols-outlined" style="font-size:16px;color:var(--neon-blue);">check</span>5 AI Agent Instances</li>
+          <li style="display:flex;align-items:center;gap:8px;font-size:var(--text-body-sm);"><span class="material-symbols-outlined" style="font-size:16px;color:var(--neon-blue);">check</span>Full Startup Builder Suite</li>
+          <li style="display:flex;align-items:center;gap:8px;font-size:var(--text-body-sm);"><span class="material-symbols-outlined" style="font-size:16px;color:var(--neon-blue);">check</span>Advanced Audit Reports</li>
+          <li style="display:flex;align-items:center;gap:8px;font-size:var(--text-body-sm);"><span class="material-symbols-outlined" style="font-size:16px;color:var(--neon-blue);">check</span>Priority Support</li>
+        </ul>
+        <button class="btn btn--primary btn--full" style="border-radius:var(--radius-md);text-transform:uppercase;">Deploy Professional</button>
+      </div>
+      <!-- Enterprise -->
+      <div class="glass-card" style="padding:var(--stack-lg);border-radius:var(--radius-xl);display:flex;flex-direction:column;">
+        <span style="font-family:var(--font-mono);font-size:var(--text-label-sm);color:var(--on-surface-variant);margin-bottom:var(--stack-sm);display:block;">ENTERPRISE</span>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:var(--stack-md);"><span style="font-family:var(--font-display);font-size:var(--text-headline-xl);font-weight:700;">Custom</span></div>
+        <ul style="list-style:none;flex:1;margin-bottom:var(--stack-xl);display:flex;flex-direction:column;gap:var(--stack-sm);">
+          <li style="display:flex;align-items:center;gap:8px;color:var(--on-surface-variant);font-size:var(--text-body-sm);"><span class="material-symbols-outlined" style="font-size:16px;color:var(--neon-blue);">check</span>Unlimited AI Agents</li>
+          <li style="display:flex;align-items:center;gap:8px;color:var(--on-surface-variant);font-size:var(--text-body-sm);"><span class="material-symbols-outlined" style="font-size:16px;color:var(--neon-blue);">check</span>Custom Kernel Hooks</li>
+          <li style="display:flex;align-items:center;gap:8px;color:var(--on-surface-variant);font-size:var(--text-body-sm);"><span class="material-symbols-outlined" style="font-size:16px;color:var(--neon-blue);">check</span>Dedicated Node Hosting</li>
+          <li style="display:flex;align-items:center;gap:8px;color:var(--on-surface-variant);font-size:var(--text-body-sm);"><span class="material-symbols-outlined" style="font-size:16px;color:var(--neon-blue);">check</span>SLA Guarantees</li>
+        </ul>
+        <button class="btn btn--outline btn--full" style="border-radius:var(--radius-md);text-transform:uppercase;">Contact Sales</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FAQ ──────────────────────────────────────────────── -->
+  <section style="padding:var(--stack-xl) var(--margin-page);background:rgba(8,9,10,0.4);">
+    <div style="max-width:768px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:var(--stack-xl);">
+        <h2 style="font-family:var(--font-display);font-size:var(--text-headline-xl);">System Information</h2>
+      </div>
+      <div>
+        <div class="accordion-item glass-panel" style="border-radius:var(--radius-lg);overflow:hidden;margin-bottom:var(--stack-md);">
+          <div class="accordion-trigger"><h4 style="font-family:var(--font-mono);font-size:var(--text-label-md);text-transform:uppercase;">Is NEXUS AI truly decentralized?</h4><span class="material-symbols-outlined icon">expand_more</span></div>
+          <div class="accordion-content"><p style="padding-bottom:var(--stack-md);color:var(--on-surface-variant);font-size:var(--text-body-sm);">Yes. The Nexus kernel runs on a peer-to-peer network of validator nodes. Governance is controlled by the NEXUS DAO, ensuring no single entity has control.</p></div>
+        </div>
+        <div class="accordion-item glass-panel" style="border-radius:var(--radius-lg);overflow:hidden;margin-bottom:var(--stack-md);">
+          <div class="accordion-trigger"><h4 style="font-family:var(--font-mono);font-size:var(--text-label-md);text-transform:uppercase;">Can I migrate existing smart contracts?</h4><span class="material-symbols-outlined icon">expand_more</span></div>
+          <div class="accordion-content"><p style="padding-bottom:var(--stack-md);color:var(--on-surface-variant);font-size:var(--text-body-sm);">Nexus is EVM-compatible and supports easy migration via our Auditor tool.</p></div>
+        </div>
+        <div class="accordion-item glass-panel" style="border-radius:var(--radius-lg);overflow:hidden;">
+          <div class="accordion-trigger"><h4 style="font-family:var(--font-mono);font-size:var(--text-label-md);text-transform:uppercase;">What chains does Nexus support?</h4><span class="material-symbols-outlined icon">expand_more</span></div>
+          <div class="accordion-content"><p style="padding-bottom:var(--stack-md);color:var(--on-surface-variant);font-size:var(--text-body-sm);">Ethereum, Polygon, Arbitrum, and Solana natively, with more planned for Q4.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────── -->
+  <footer style="padding:var(--stack-xl) var(--margin-page);border-top:1px solid var(--border-muted);text-align:center;position:relative;">
+    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:1px;height:80px;background:linear-gradient(to bottom,var(--neon-blue),transparent);"></div>
+    <h2 style="font-family:var(--font-display);font-size:var(--text-headline-xl);margin-top:var(--stack-lg);margin-bottom:var(--stack-md);">Ready to build the future?</h2>
+    <p style="color:var(--on-surface-variant);max-width:480px;margin:0 auto var(--stack-lg);">Join 10,000+ architects building autonomous systems on NEXUS AI.</p>
+    <button class="btn btn--white btn--rounded btn--lg">Launch Your Startup</button>
+    <div style="margin-top:var(--stack-xl);padding-top:var(--stack-xl);border-top:1px solid var(--border-muted);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--stack-md);">
+      <div style="display:flex;align-items:center;gap:8px;"><span style="font-family:var(--font-display);font-size:var(--text-headline-lg);font-weight:700;">NEXUS AI</span><span style="font-family:var(--font-mono);font-size:var(--text-label-sm);color:var(--on-surface-variant);">© 2024 WEB3 OS</span></div>
+      <div style="display:flex;gap:var(--stack-lg);font-family:var(--font-mono);font-size:var(--text-label-sm);color:var(--on-surface-variant);">
+        <a href="#" style="color:inherit;" onmouseover="this.style.color='var(--neon-blue)'" onmouseout="this.style.color='var(--on-surface-variant)'">Documentation</a>
+        <a href="#" style="color:inherit;" onmouseover="this.style.color='var(--neon-blue)'" onmouseout="this.style.color='var(--on-surface-variant)'">Security</a>
+        <a href="#" style="color:inherit;" onmouseover="this.style.color='var(--neon-blue)'" onmouseout="this.style.color='var(--on-surface-variant)'">Github</a>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<script src="assets/js/navigation.js"></script>
+<script src="assets/js/animations.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

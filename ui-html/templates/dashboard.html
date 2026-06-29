@@ -1,0 +1,495 @@
+<!-- Authentication - NEXUS AI -->
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>NEXUS AI | Web3 OS Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Geist:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        :root {
+            --neon-blue: #3b82f6;
+            --surface-obsidian: #08090A;
+        }
+        body {
+            background-color: var(--surface-obsidian);
+            color: #e3e2e3;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(17, 18, 20, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.05);
+        }
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 5;
+            background: linear-gradient(0deg, rgba(59, 130, 246, 0) 0%, rgba(59, 130, 246, 0.05) 50%, rgba(59, 130, 246, 0) 100%);
+            opacity: 0.1;
+            position: absolute;
+            pointer-events: none;
+            animation: scan 8s linear infinite;
+        }
+        @keyframes scan {
+            from { top: -100px; }
+            to { top: 100%; }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-container": "#4d8eff",
+                      "on-primary-container": "#00285d",
+                      "outline": "#8c909f",
+                      "surface-bright": "#38393a",
+                      "tertiary": "#c3d000",
+                      "inverse-on-surface": "#303032",
+                      "surface-tint": "#adc6ff",
+                      "secondary": "#ddb7ff",
+                      "surface-container": "#1f2021",
+                      "on-primary-fixed-variant": "#004395",
+                      "error": "#ffb4ab",
+                      "on-secondary-container": "#d6a9ff",
+                      "secondary-fixed-dim": "#ddb7ff",
+                      "inverse-surface": "#e3e2e3",
+                      "on-primary-fixed": "#001a42",
+                      "on-surface-variant": "#c2c6d6",
+                      "inverse-primary": "#005ac2",
+                      "background": "#121315",
+                      "neon-blue": "#3b82f6",
+                      "surface": "#121315",
+                      "secondary-fixed": "#f0dbff",
+                      "primary-fixed": "#d8e2ff",
+                      "surface-obsidian": "#08090A",
+                      "surface-dim": "#121315",
+                      "primary-fixed-dim": "#adc6ff",
+                      "on-surface": "#e3e2e3",
+                      "border-muted": "rgba(255, 255, 255, 0.08)",
+                      "warning-yellow": "#E4F222",
+                      "neon-purple": "#a855f7",
+                      "on-tertiary-fixed": "#1b1d00",
+                      "on-tertiary": "#2f3300",
+                      "outline-variant": "#424754",
+                      "surface-container-high": "#292a2b",
+                      "on-background": "#e3e2e3",
+                      "on-error": "#690005",
+                      "tertiary-fixed": "#dfed1a",
+                      "primary": "#adc6ff",
+                      "on-error-container": "#ffdad6",
+                      "tertiary-fixed-dim": "#c3d000",
+                      "on-secondary-fixed-variant": "#6900b3",
+                      "surface-slate": "#111214",
+                      "on-tertiary-fixed-variant": "#454a00",
+                      "secondary-container": "#6f00be",
+                      "error-container": "#93000a",
+                      "on-primary": "#002e6a",
+                      "on-tertiary-container": "#292c00",
+                      "surface-container-low": "#1b1c1d",
+                      "surface-container-highest": "#343536",
+                      "on-secondary": "#490080",
+                      "surface-container-lowest": "#0d0e0f",
+                      "surface-variant": "#343536",
+                      "on-secondary-fixed": "#2c0051",
+                      "tertiary-container": "#8e9800"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "stack-xl": "64px",
+                      "stack-xs": "4px",
+                      "stack-md": "16px",
+                      "margin-mobile": "20px",
+                      "margin-page": "40px",
+                      "unit": "4px",
+                      "stack-sm": "8px",
+                      "stack-lg": "32px"
+              },
+              "fontFamily": {
+                      "body-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["JetBrains Mono"],
+                      "display-lg": ["Geist"],
+                      "headline-lg": ["Geist"],
+                      "display-lg-mobile": ["Geist"],
+                      "label-md": ["JetBrains Mono"],
+                      "headline-xl": ["Geist"],
+                      "body-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                      "headline-lg": ["24px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "display-lg-mobile": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-xl": ["32px", {"lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="dark flex h-screen overflow-hidden">
+<!-- Global Background Shader Placeholder -->
+
+<!-- SideNavBar (Left) -->
+<aside class="h-screen w-64 flex flex-col sticky top-0 left-0 bg-surface-slate/80 backdrop-blur-xl border-r border-border-muted shadow-2xl shadow-surface-obsidian z-40">
+<div class="flex flex-col h-full py-stack-md px-4">
+<div class="mb-stack-xl px-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-neon-blue/20 border border-neon-blue flex items-center justify-center neon-glow">
+<span class="material-symbols-outlined text-neon-blue" style="font-variation-settings: 'FILL' 1;">dataset</span>
+</div>
+<div>
+<a href="{{DATA:SCREEN:SCREEN_13}}" class="font-display-lg text-headline-lg font-bold text-on-surface tracking-tighter">NEXUS AI</a>
+<p class="font-label-sm text-[10px] text-neon-blue uppercase tracking-widest opacity-80">Web3 OS</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Dashboard Active -->
+<a class="flex items-center gap-3 px-3 py-2 text-neon-blue bg-primary-container/10 border-r-2 border-neon-blue font-bold font-body-md transition-all duration-200" href="{{DATA:SCREEN:SCREEN_6}}">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200 font-body-md" href="{{DATA:SCREEN:SCREEN_15}}">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+<span class="">AI Agent</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200 font-body-md" href="{{DATA:SCREEN:SCREEN_17}}">
+<span class="material-symbols-outlined" data-icon="rocket_launch">rocket_launch</span>
+<span class="">Startup Builder</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200 font-body-md" href="{{DATA:SCREEN:SCREEN_16}}">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+<span class="">Auditor</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200 font-body-md" href="{{DATA:SCREEN:SCREEN_10}}">
+<span class="material-symbols-outlined" data-icon="badge">badge</span>
+<span class="">Skill Passport</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200 font-body-md" href="{{DATA:SCREEN:SCREEN_11}}">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+<span class="">DAO Center</span>
+</a>
+</nav>
+<div class="mt-auto space-y-4">
+<button class="w-full py-3 bg-neon-blue text-on-surface text-label-md font-bold rounded shadow-lg shadow-neon-blue/20 hover:brightness-110 active:scale-[0.98] transition-all">
+                    Deploy Contract
+                </button>
+<div class="pt-4 border-t border-border-muted space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="{{DATA:SCREEN:SCREEN_10}}">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="{{DATA:SCREEN:SCREEN_14}}">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="">Support</span>
+</a>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col relative overflow-hidden">
+<div class="scanline"></div>
+<!-- TopNavBar -->
+<header class="w-full sticky top-0 z-50 bg-surface-obsidian/60 backdrop-blur-md border-b border-border-muted flex justify-between items-center h-16 px-margin-page">
+<div class="flex items-center gap-stack-lg flex-1">
+<div class="relative max-w-md w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-body-md">search</span>
+<input class="w-full bg-surface-obsidian border border-border-muted rounded-lg pl-10 pr-4 py-2 text-label-md font-label-md focus:ring-1 focus:ring-neon-blue focus:border-neon-blue transition-all outline-none" placeholder="Search architecture, agents, contracts..." type="text">
+</div>
+</div>
+<div class="flex items-center gap-stack-md">
+<a href="{{DATA:SCREEN:SCREEN_14}}" class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-full transition-all"><span class="material-symbols-outlined" data-icon="notifications">notifications</span></a>
+<button class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 border border-neon-blue text-neon-blue font-label-md hover:bg-neon-blue/10 active:brightness-125 transition-all rounded">
+                    Connect Wallet
+                </button>
+<a href="{{DATA:SCREEN:SCREEN_10}}" class="w-8 h-8 rounded-full overflow-hidden border border-border-muted ml-2"><img alt="User Profile" class="w-full h-full object-cover" data-alt="A high-contrast black and white portrait of a tech-focused professional in a minimalist setting. The character exudes a visionary architect persona with sharp features, lit with cool blue rim lighting against a deep obsidian background to match the high-performance Web3 OS brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_90rtkIMEhV4FXeFb_DAt8o6labCDmCLye0Lzeua0fCiehCJof7ehHiwRnXq_SZ44hBqJT-P7n7hmNwiKjXG33G3HWh9kIx2V0xF_lgTAri3KQCXLzqEqsKGs1YYFEfuvtYtQvW_I1a8Z_9ycZcpLyJ1s4-vH9GMltXQgpijgfCHk0Fix6WG4NJ_awtQphUYw6Gxfy59j8VDh85i5HHaBX1NpIEHCMN7MpxMqPieI-n64Rp-Q0fkurOQipmgWyM5Z-YJuT-YxLDc"></a>
+</div>
+</header>
+<!-- Dashboard Canvas -->
+<div class="flex-1 overflow-y-auto custom-scrollbar p-margin-page">
+<!-- Hero Welcome -->
+<section class="mb-stack-xl">
+<h2 class="font-display-lg text-headline-xl text-on-surface mb-2">Welcome back, Architect.</h2>
+<p class="font-body-md text-on-surface-variant max-w-2xl">The Nexus is synchronized. Your active agents have processed 1,240 new blockchain events in the last hour. All systems nominal.</p>
+</section>
+<!-- Key Stats Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-stack-md mb-stack-xl">
+<div class="glass-card p-stack-md rounded-xl group">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-widest">Total Assets (TVL)</span>
+<span class="material-symbols-outlined text-neon-blue group-hover:scale-110 transition-transform">account_balance_wallet</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="font-display-lg text-headline-xl text-on-surface">$1.2M</span>
+<span class="text-tertiary font-label-sm pb-1">+12.5%</span>
+</div>
+<div class="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-neon-blue w-3/4 rounded-full"></div>
+</div>
+</div>
+<div class="glass-card p-stack-md rounded-xl group">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-widest">Active AI Agents</span>
+<span class="material-symbols-outlined text-neon-purple group-hover:scale-110 transition-transform">memory</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="font-display-lg text-headline-xl text-on-surface">14</span>
+<span class="text-on-surface-variant font-label-sm pb-1">/ 20 cap</span>
+</div>
+<div class="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-neon-purple w-1/2 rounded-full"></div>
+</div>
+</div>
+<div class="glass-card p-stack-md rounded-xl group">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-widest">Smart Contracts</span>
+<span class="material-symbols-outlined text-warning-yellow group-hover:scale-110 transition-transform">description</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="font-display-lg text-headline-xl text-on-surface">42</span>
+<span class="text-tertiary font-label-sm pb-1">Deployed</span>
+</div>
+<div class="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-warning-yellow w-2/3 rounded-full"></div>
+</div>
+</div>
+<div class="glass-card p-stack-md rounded-xl group border-l-4 border-l-neon-blue">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-widest">Security Score</span>
+<span class="material-symbols-outlined text-neon-blue group-hover:scale-110 transition-transform">gpp_good</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="font-display-lg text-headline-xl text-on-surface">98.4</span>
+<span class="text-neon-blue font-label-sm pb-1">OPTIMIZED</span>
+</div>
+<div class="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-neon-blue w-[98%] rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Content Split -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-stack-lg">
+<!-- Activity Feed -->
+<div class="lg:col-span-2 flex flex-col gap-stack-md">
+<div class="flex justify-between items-center mb-2">
+<h3 class="font-headline-lg text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-neon-blue">pulse_alert</span>
+                            Real-time Stream
+                        </h3>
+<button class="text-label-sm text-neon-blue hover:underline">View History</button>
+</div>
+<div class="glass-card rounded-xl overflow-hidden">
+<div class="bg-white/5 px-4 py-2 border-b border-border-muted flex justify-between">
+<span class="font-label-sm text-on-surface-variant">LOG_IDENTITY</span>
+<span class="font-label-sm text-on-surface-variant">STATUS</span>
+</div>
+<div class="divide-y divide-border-muted">
+<div class="p-4 hover:bg-white/5 transition-colors flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded bg-neon-blue/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-neon-blue text-body-md">swap_horiz</span>
+</div>
+<div>
+<p class="font-body-md text-on-surface">Wallet Transaction <span class="font-label-sm text-neon-blue ml-2">0x4a...9f2</span></p>
+<p class="font-label-sm text-on-surface-variant text-xs">Bridge initiated to Arbitrum L2</p>
+</div>
+</div>
+<span class="font-label-sm text-tertiary">PENDING</span>
+</div>
+<div class="p-4 hover:bg-white/5 transition-colors flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded bg-neon-purple/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-neon-purple text-body-md">psychology</span>
+</div>
+<div>
+<p class="font-body-md text-on-surface">Agent "Sentience-01" <span class="font-label-sm text-neon-purple ml-2">THOUGHT_STREAM</span></p>
+<p class="font-label-sm text-on-surface-variant text-xs">Rebalancing yield strategy in Convex pools</p>
+</div>
+</div>
+<span class="font-label-sm text-neon-blue">ACTIVE</span>
+</div>
+<div class="p-4 hover:bg-white/5 transition-colors flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded bg-warning-yellow/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-warning-yellow text-body-md">security</span>
+</div>
+<div>
+<p class="font-body-md text-on-surface">Contract Audit <span class="font-label-sm text-warning-yellow ml-2">SUCCESS</span></p>
+<p class="font-label-sm text-on-surface-variant text-xs">LiquidityProxy.sol verified with 0 vulnerabilities</p>
+</div>
+</div>
+<span class="font-label-sm text-on-surface-variant">2M AGO</span>
+</div>
+<div class="p-4 hover:bg-white/5 transition-colors flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded bg-neon-blue/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-neon-blue text-body-md">add_circle</span>
+</div>
+<div>
+<p class="font-body-md text-on-surface">Agent Summoned <span class="font-label-sm text-neon-blue ml-2">DEX_ARBITRAGE</span></p>
+<p class="font-label-sm text-on-surface-variant text-xs">New neural instance deployed to mainnet</p>
+</div>
+</div>
+<span class="font-label-sm text-on-surface-variant">5M AGO</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Sidebar (Quick Actions & Charts) -->
+<div class="flex flex-col gap-stack-lg">
+<!-- Quick Actions -->
+<div>
+<h3 class="font-headline-lg text-on-surface mb-stack-md flex items-center gap-2">
+<span class="material-symbols-outlined text-neon-blue">bolt</span>
+                            Quick Actions
+                        </h3>
+<div class="grid grid-cols-1 gap-stack-sm">
+<button class="glass-card flex items-center gap-4 p-4 rounded-xl hover:bg-white/10 transition-all text-left">
+<div class="w-10 h-10 rounded-lg bg-neon-blue/20 flex items-center justify-center text-neon-blue">
+<span class="material-symbols-outlined">add_box</span>
+</div>
+<div>
+<p class="font-body-md font-semibold text-on-surface">Deploy New Contract</p>
+<p class="text-xs text-on-surface-variant">Launch immutable architecture</p>
+</div>
+</button>
+<button class="glass-card flex items-center gap-4 p-4 rounded-xl hover:bg-white/10 transition-all text-left">
+<div class="w-10 h-10 rounded-lg bg-neon-purple/20 flex items-center justify-center text-neon-purple">
+<span class="material-symbols-outlined">magic_button</span>
+</div>
+<div>
+<p class="font-body-md font-semibold text-on-surface">Summon Agent</p>
+<p class="text-xs text-on-surface-variant">Instantiate autonomous AI intelligence</p>
+</div>
+</button>
+<button class="glass-card flex items-center gap-4 p-4 rounded-xl hover:bg-white/10 transition-all text-left">
+<div class="w-10 h-10 rounded-lg bg-warning-yellow/20 flex items-center justify-center text-warning-yellow">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<div>
+<p class="font-body-md font-semibold text-on-surface">Open DAO Center</p>
+<p class="text-xs text-on-surface-variant">Governance and treasury management</p>
+</div>
+</button>
+</div>
+</div>
+<!-- Mini Asset Visualization -->
+<div class="glass-card rounded-xl p-stack-md relative overflow-hidden">
+<div class="absolute -top-10 -right-10 w-40 h-40 bg-neon-blue/10 blur-[80px] rounded-full"></div>
+<h3 class="font-label-sm text-on-surface-variant uppercase tracking-widest mb-4">Neural Resource Usage</h3>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-xs mb-2">
+<span class="text-on-surface">CPU Load</span>
+<span class="text-neon-blue">42%</span>
+</div>
+<div class="h-1 bg-white/5 rounded-full">
+<div class="h-full bg-neon-blue w-[42%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs mb-2">
+<span class="text-on-surface">Chain Latency</span>
+<span class="text-tertiary">12ms</span>
+</div>
+<div class="h-1 bg-white/5 rounded-full">
+<div class="h-full bg-tertiary w-[15%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs mb-2">
+<span class="text-on-surface">Storage (IPFS)</span>
+<span class="text-on-surface-variant">88%</span>
+</div>
+<div class="h-1 bg-white/5 rounded-full">
+<div class="h-full bg-on-surface-variant w-[88%]"></div>
+</div>
+</div>
+</div>
+<div class="mt-6 pt-4 border-t border-border-muted">
+<div class="flex justify-center">
+<!-- Minimal Sparkline Replacement -->
+<div class="flex gap-1 items-end h-8">
+<div class="w-1 h-3 bg-neon-blue/30 rounded-full"></div>
+<div class="w-1 h-5 bg-neon-blue/50 rounded-full"></div>
+<div class="w-1 h-4 bg-neon-blue/40 rounded-full"></div>
+<div class="w-1 h-6 bg-neon-blue rounded-full"></div>
+<div class="w-1 h-2 bg-neon-blue/20 rounded-full"></div>
+<div class="w-1 h-5 bg-neon-blue/50 rounded-full"></div>
+<div class="w-1 h-7 bg-neon-blue rounded-full"></div>
+<div class="w-1 h-4 bg-neon-blue/40 rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Micro-interaction Script -->
+<script>
+        // Simple hover effect for cards to follow mouse slightly
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // Add visual interest to transaction stream
+        const statuses = ['ACTIVE', 'PENDING', 'SUCCESS', 'FAILED'];
+        const updateStatus = () => {
+            const labels = document.querySelectorAll('.divide-y .font-label-sm');
+            if (labels.length > 0) {
+                const randomIdx = Math.floor(Math.random() * labels.length);
+                const originalText = labels[randomIdx].innerText;
+                if (['PENDING', 'ACTIVE'].includes(originalText)) {
+                    labels[randomIdx].classList.add('opacity-50');
+                    setTimeout(() => labels[randomIdx].classList.remove('opacity-50'), 200);
+                }
+            }
+        };
+        setInterval(updateStatus, 3000);
+    </script>
+
+</body></html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analytics — NEXUS AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/variables.css"/>
+  <link rel="stylesheet" href="assets/css/animations.css"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="stylesheet" href="assets/css/responsive.css"/>
+  <style>
+    .dash-shell{display:flex;height:100vh;overflow:hidden;}
+    .dash-main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+    .dash-canvas{flex:1;overflow-y:auto;padding:var(--margin-page);}
+    .dash-canvas::-webkit-scrollbar{width:4px;}
+    .dash-canvas::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px;}
+    /* Fake bar chart */
+    .bar-chart{display:flex;align-items:flex-end;gap:8px;height:180px;padding:0 8px;}
+    .bar-chart__col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+    .bar-chart__bar{width:100%;border-radius:4px 4px 0 0;transition:height 0.4s ease;}
+    .bar-chart__label{font-family:var(--font-mono);font-size:9px;color:var(--on-surface-variant);text-transform:uppercase;}
+    /* Heat map */
+    .heatmap{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;}
+    .heatmap-cell{aspect-ratio:1;border-radius:3px;transition:var(--transition-fast);cursor:pointer;}
+    .heatmap-cell:hover{filter:brightness(1.4);}
+    /* Donut placeholder */
+    .donut{width:120px;height:120px;border-radius:50%;background:conic-gradient(var(--neon-blue) 0% 45%,var(--neon-purple) 45% 70%,#34d399 70% 85%,var(--neon-amber) 85% 100%);display:flex;align-items:center;justify-content:center;position:relative;}
+    .donut__hole{width:70%;height:70%;background:var(--surface-obsidian);border-radius:50%;display:flex;align-items:center;justify-content:center;}
+  </style>
+</head>
+<body>
+<div class="dash-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__brand">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;border-radius:var(--radius-lg);background:rgba(59,130,246,0.2);border:1px solid var(--neon-blue);display:flex;align-items:center;justify-content:center;">
+          <span class="material-symbols-outlined" style="color:var(--neon-blue);font-variation-settings:'FILL' 1;">dataset</span>
+        </div>
+        <div><a href="index.html" class="sidebar__brand-name">NEXUS AI</a><div class="sidebar__brand-tag">Web3 OS</div></div>
+      </div>
+    </div>
+    <nav class="sidebar__nav">
+      <a href="dashboard.html"        class="nav-item"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></a>
+      <a href="founder-agent.html"    class="nav-item"><span class="material-symbols-outlined">smart_toy</span><span>AI Agent</span></a>
+      <a href="startup-builder.html"  class="nav-item"><span class="material-symbols-outlined">rocket_launch</span><span>Startup Builder</span></a>
+      <a href="contract-auditor.html" class="nav-item"><span class="material-symbols-outlined">verified_user</span><span>Auditor</span></a>
+      <a href="skill-passport.html"   class="nav-item"><span class="material-symbols-outlined">badge</span><span>Skill Passport</span></a>
+      <a href="dao.html"              class="nav-item"><span class="material-symbols-outlined">account_balance</span><span>DAO Center</span></a>
+      <a href="wallet.html"           class="nav-item"><span class="material-symbols-outlined">account_balance_wallet</span><span>Wallet</span></a>
+      <a href="analytics.html"        class="nav-item nav-item--active"><span class="material-symbols-outlined">analytics</span><span>Analytics</span></a>
+      <a href="notifications.html"    class="nav-item"><span class="material-symbols-outlined">notifications</span><span>Activity</span></a>
+    </nav>
+    <div class="sidebar__footer">
+      <button class="btn btn--primary btn--full" style="margin-bottom:var(--stack-md);border-radius:var(--radius-md);">Deploy Contract</button>
+      <a href="settings.html" class="nav-item"><span class="material-symbols-outlined">settings</span><span>Settings</span></a>
+    </div>
+  </aside>
+
+  <div class="dash-main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:var(--stack-md);">
+        <button class="topbar__icon-btn" id="sidebarToggle"><span class="material-symbols-outlined">menu</span></button>
+        <div>
+          <div style="font-family:var(--font-display);font-size:var(--text-headline-lg);font-weight:700;">Ecosystem Analytics</div>
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">Last 30 days · Auto-refreshes every 5m</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--stack-md);">
+        <select style="background:var(--surface-obsidian);border:1px solid var(--border-muted);border-radius:var(--radius-md);padding:6px 12px;font-family:var(--font-mono);font-size:var(--text-label-sm);color:var(--on-surface);cursor:pointer;">
+          <option>Last 30 days</option><option>Last 7 days</option><option>Last 90 days</option>
+        </select>
+        <button class="btn btn--ghost btn--sm"><span class="material-symbols-outlined" style="font-size:14px;">download</span>Export</button>
+        <button class="topbar__icon-btn" style="position:relative;"><span class="material-symbols-outlined">notifications</span><span class="notification-dot"></span></button>
+        <div class="avatar"><img src="https://placehold.co/32x32/3b82f6/fff?text=N" alt="avatar"/></div>
+      </div>
+    </header>
+
+    <div class="dash-canvas">
+      <!-- KPI Row -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--stack-md);margin-bottom:var(--stack-xl);">
+        <div class="glass-card stat-card">
+          <div class="stat-card__label">Total Events</div>
+          <div class="stat-card__value">48,291</div>
+          <div class="stat-card__sub" style="color:#34d399;">↑ 22% vs last month</div>
+          <div class="stat-card__bar"><div class="stat-card__bar-fill" style="width:78%;background:var(--neon-blue);"></div></div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-card__label">Active Users</div>
+          <div class="stat-card__value">1,284</div>
+          <div class="stat-card__sub" style="color:#34d399;">↑ 12% vs last month</div>
+          <div class="stat-card__bar"><div class="stat-card__bar-fill" style="width:64%;background:var(--neon-purple);"></div></div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-card__label">AI Queries</div>
+          <div class="stat-card__value">9,842</div>
+          <div class="stat-card__sub" style="color:#34d399;">↑ 41% vs last month</div>
+          <div class="stat-card__bar"><div class="stat-card__bar-fill" style="width:90%;background:#34d399;"></div></div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-card__label">Contracts Audited</div>
+          <div class="stat-card__value">147</div>
+          <div class="stat-card__sub" style="color:var(--neon-amber);">23 critical found</div>
+          <div class="stat-card__bar"><div class="stat-card__bar-fill" style="width:45%;background:var(--neon-amber);"></div></div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:var(--stack-xl);margin-bottom:var(--stack-xl);">
+        <!-- Bar Chart -->
+        <div class="glass-panel" style="border-radius:var(--radius-xl);padding:var(--stack-lg);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--stack-lg);">
+            <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);">Daily Active Users</h3>
+            <div style="display:flex;gap:8px;">
+              <span class="badge badge--blue">Users</span>
+              <span class="badge badge--purple">AI Queries</span>
+            </div>
+          </div>
+          <div class="bar-chart">
+            <div class="bar-chart__col"><div class="bar-chart__bar" style="height:40%;background:rgba(59,130,246,0.5);"></div><span class="bar-chart__label">1</span></div>
+            <div class="bar-chart__col"><div class="bar-chart__bar" style="height:55%;background:rgba(59,130,246,0.5);"></div><span class="bar-chart__label">2</span></div>
+            <div class="bar-chart__col"><div class="bar-chart__bar" style="height:45%;background:rgba(59,130,246,0.5);"></div><span class="bar-chart__label">3</span></div>
+            <div class="bar-chart__col"><div class="bar-chart__bar" style="height:70%;background:rgba(59,130,246,0.6);"></div><span class="bar-chart__label">4</span></div>
+            <div class="bar-chart__col"><div class="bar-chart__bar" style="height:60%;background:rgba(59,130,246,0.5);"></div><span class="bar-chart__label">5</span></div>
+            <div class="bar-chart__col"><div class="bar-chart__bar" style="height:80%;background:var(--neon-blue);"></div><span class="bar-chart__label">6</span></div>
+            <div class="bar-chart__col"><div class="bar-chart__bar" style="height:75%;background:rgba(59,130,246,0.7);"></div><span class="bar-chart__label">7</span></div>
+            <div class="bar-chart__col"><div class="bar-chart__bar" style="height:90%;background:var(--neon-blue);box-shadow:0 0 10px rgba(59,130,246,0.4);"></div><span class="bar-chart__label">8</span></div>
+            <div class="bar-chart__col"><div class="bar-chart__bar" style="height:85%;background:rgba(59,130,246,0.7);"></div><span class="bar-chart__label">9</span></div>
+            <div class="bar-chart__col"><div class="bar-chart__bar" style="height:70%;background:rgba(59,130,246,0.6);"></div><span class="bar-chart__label">10</span></div>
+            <div class="bar-chart__col"><div class="bar-chart__bar" style="height:95%;background:var(--neon-blue);box-shadow:0 0 10px rgba(59,130,246,0.5);"></div><span class="bar-chart__label">11</span></div>
+            <div class="bar-chart__col"><div class="bar-chart__bar" style="height:88%;background:rgba(59,130,246,0.7);"></div><span class="bar-chart__label">12</span></div>
+          </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="glass-panel" style="border-radius:var(--radius-xl);padding:var(--stack-lg);">
+          <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);margin-bottom:var(--stack-lg);">Usage by Module</h3>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:var(--stack-lg);">
+            <div class="donut"><div class="donut__hole"><span style="font-family:var(--font-mono);font-size:12px;color:var(--on-surface);">Total</span></div></div>
+            <div style="width:100%;display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;"><span style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;background:var(--neon-blue);border-radius:2px;display:inline-block;"></span>AI Agent</span><span style="font-family:var(--font-mono);">45%</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;"><span style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;background:var(--neon-purple);border-radius:2px;display:inline-block;"></span>Auditor</span><span style="font-family:var(--font-mono);">25%</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;"><span style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;background:#34d399;border-radius:2px;display:inline-block;"></span>Passport</span><span style="font-family:var(--font-mono);">15%</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;"><span style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;background:var(--neon-amber);border-radius:2px;display:inline-block;"></span>DAO</span><span style="font-family:var(--font-mono);">15%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Heatmap -->
+      <div class="glass-panel" style="border-radius:var(--radius-xl);padding:var(--stack-lg);margin-bottom:var(--stack-xl);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--stack-lg);">
+          <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);">Activity Heatmap</h3>
+          <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">Less <div style="display:flex;gap:2px;"><div style="width:12px;height:12px;background:rgba(59,130,246,0.1);border-radius:2px;"></div><div style="width:12px;height:12px;background:rgba(59,130,246,0.3);border-radius:2px;"></div><div style="width:12px;height:12px;background:rgba(59,130,246,0.6);border-radius:2px;"></div><div style="width:12px;height:12px;background:var(--neon-blue);border-radius:2px;"></div></div> More</div>
+        </div>
+        <div style="display:flex;gap:var(--stack-md);overflow-x:auto;padding-bottom:4px;">
+          <div style="display:flex;flex-direction:column;gap:4px;font-family:var(--font-mono);font-size:9px;color:var(--on-surface-variant);padding-top:18px;">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+          <div id="heatmapGrid" style="display:flex;gap:4px;"></div>
+        </div>
+      </div>
+
+      <!-- Events Table -->
+      <div class="glass-panel" style="border-radius:var(--radius-xl);overflow:hidden;">
+        <div style="padding:var(--stack-lg);border-bottom:1px solid var(--border-muted);display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);">Recent Events</h3>
+          <select style="background:var(--surface-obsidian);border:1px solid var(--border-muted);border-radius:var(--radius-md);padding:4px 10px;font-family:var(--font-mono);font-size:var(--text-label-sm);color:var(--on-surface);cursor:pointer;"><option>All Events</option><option>AI Queries</option><option>Audits</option><option>DAO</option></select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Event</th><th>Module</th><th>User</th><th>Duration</th><th>Time</th></tr></thead>
+            <tbody>
+              <tr><td>lean_canvas_generated</td><td><span class="badge badge--blue">AI Agent</span></td><td style="font-family:var(--font-mono);font-size:12px;">0x3f4a…d82b</td><td style="font-family:var(--font-mono);">1.2s</td><td style="color:var(--on-surface-variant);">2m ago</td></tr>
+              <tr><td>audit_completed</td><td><span class="badge badge--red">Auditor</span></td><td style="font-family:var(--font-mono);font-size:12px;">0x3f4a…d82b</td><td style="font-family:var(--font-mono);">4.8s</td><td style="color:var(--on-surface-variant);">18m ago</td></tr>
+              <tr><td>passport_minted</td><td><span class="badge badge--green">Passport</span></td><td style="font-family:var(--font-mono);font-size:12px;">0x3f4a…d82b</td><td style="font-family:var(--font-mono);">12.3s</td><td style="color:var(--on-surface-variant);">1h ago</td></tr>
+              <tr><td>dao_vote_cast</td><td><span class="badge badge--purple">DAO</span></td><td style="font-family:var(--font-mono);font-size:12px;">0x7c91…a4f2</td><td style="font-family:var(--font-mono);">0.3s</td><td style="color:var(--on-surface-variant);">3h ago</td></tr>
+              <tr><td>competitor_analysis</td><td><span class="badge badge--blue">AI Agent</span></td><td style="font-family:var(--font-mono);font-size:12px;">0x2a11…9e73</td><td style="font-family:var(--font-mono);">2.1s</td><td style="color:var(--on-surface-variant);">5h ago</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/js/navigation.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+// Build heatmap
+(function(){
+  const grid = document.getElementById('heatmapGrid');
+  const intensities = [0.1,0.1,0.2,0.3,0.1,0,0,0.4,0.5,0.3,0.6,0.4,0.2,0.1,0.7,0.9,0.8,0.6,0.4,0.3,0.5,0.8,1,0.9,0.7,0.5,0.4];
+  for(let w=0; w<27; w++){
+    const col = document.createElement('div');
+    col.style.cssText='display:flex;flex-direction:column;gap:4px;';
+    if(w===0){const lbl=document.createElement('div');lbl.style.cssText='font-family:var(--font-mono);font-size:9px;color:var(--on-surface-variant);height:14px;display:flex;align-items:center;';lbl.textContent='';col.appendChild(lbl);}
+    else{const lbl=document.createElement('div');lbl.style.cssText='font-family:var(--font-mono);font-size:9px;color:var(--on-surface-variant);height:14px;display:flex;align-items:center;';lbl.textContent=w;col.appendChild(lbl);}
+    const intensity = intensities[w % intensities.length];
+    for(let d=0;d<7;d++){
+      const cell = document.createElement('div');
+      const v = Math.max(0.03, intensity * (0.5 + Math.random() * 0.5));
+      cell.style.cssText=`width:14px;height:14px;border-radius:2px;background:rgba(59,130,246,${v});cursor:pointer;transition:filter 0.2s;`;
+      cell.title=`${v>0.6?'High':v>0.3?'Medium':'Low'} activity`;
+      cell.onmouseover=function(){this.style.filter='brightness(1.5)';};
+      cell.onmouseout=function(){this.style.filter='';};
+      col.appendChild(cell);
+    }
+    grid.appendChild(col);
+  }
+})();
+</script>
+</body>
+</html>

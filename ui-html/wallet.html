@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wallet — NEXUS AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/variables.css"/>
+  <link rel="stylesheet" href="assets/css/animations.css"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="stylesheet" href="assets/css/responsive.css"/>
+  <style>
+    .dash-shell{display:flex;height:100vh;overflow:hidden;}
+    .dash-main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+    .dash-canvas{flex:1;overflow-y:auto;padding:var(--margin-page);}
+    .dash-canvas::-webkit-scrollbar{width:4px;}
+    .dash-canvas::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px;}
+    .wallet-card{border-radius:20px;padding:var(--stack-xl);background:linear-gradient(135deg,rgba(59,130,246,0.15) 0%,rgba(168,85,247,0.1) 100%);border:1px solid rgba(59,130,246,0.3);position:relative;overflow:hidden;}
+    .wallet-card::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,0.15),transparent 70%);}
+    .token-row{display:flex;align-items:center;gap:var(--stack-md);padding:var(--stack-md);border-radius:var(--radius-lg);transition:var(--transition-fast);}
+    .token-row:hover{background:rgba(255,255,255,0.03);}
+    .token-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+    .tx-row{display:flex;align-items:center;gap:var(--stack-md);padding:var(--stack-md);border-bottom:1px solid var(--border-muted);transition:var(--transition-fast);}
+    .tx-row:hover{background:rgba(255,255,255,0.02);}
+    .tx-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  </style>
+</head>
+<body>
+<div class="dash-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__brand">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;border-radius:var(--radius-lg);background:rgba(59,130,246,0.2);border:1px solid var(--neon-blue);display:flex;align-items:center;justify-content:center;">
+          <span class="material-symbols-outlined" style="color:var(--neon-blue);font-variation-settings:'FILL' 1;">dataset</span>
+        </div>
+        <div><a href="index.html" class="sidebar__brand-name">NEXUS AI</a><div class="sidebar__brand-tag">Web3 OS</div></div>
+      </div>
+    </div>
+    <nav class="sidebar__nav">
+      <a href="dashboard.html"        class="nav-item"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></a>
+      <a href="founder-agent.html"    class="nav-item"><span class="material-symbols-outlined">smart_toy</span><span>AI Agent</span></a>
+      <a href="startup-builder.html"  class="nav-item"><span class="material-symbols-outlined">rocket_launch</span><span>Startup Builder</span></a>
+      <a href="contract-auditor.html" class="nav-item"><span class="material-symbols-outlined">verified_user</span><span>Auditor</span></a>
+      <a href="skill-passport.html"   class="nav-item"><span class="material-symbols-outlined">badge</span><span>Skill Passport</span></a>
+      <a href="dao.html"              class="nav-item"><span class="material-symbols-outlined">account_balance</span><span>DAO Center</span></a>
+      <a href="wallet.html"           class="nav-item nav-item--active"><span class="material-symbols-outlined">account_balance_wallet</span><span>Wallet</span></a>
+      <a href="analytics.html"        class="nav-item"><span class="material-symbols-outlined">analytics</span><span>Analytics</span></a>
+      <a href="notifications.html"    class="nav-item"><span class="material-symbols-outlined">notifications</span><span>Activity</span></a>
+    </nav>
+    <div class="sidebar__footer">
+      <button class="btn btn--primary btn--full" style="margin-bottom:var(--stack-md);border-radius:var(--radius-md);">Deploy Contract</button>
+      <a href="settings.html" class="nav-item"><span class="material-symbols-outlined">settings</span><span>Settings</span></a>
+    </div>
+  </aside>
+
+  <div class="dash-main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:var(--stack-md);">
+        <button class="topbar__icon-btn" id="sidebarToggle"><span class="material-symbols-outlined">menu</span></button>
+        <div>
+          <div style="font-family:var(--font-display);font-size:var(--text-headline-lg);font-weight:700;">Wallet</div>
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">0x3f4a…d82b · Polygon Amoy</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--stack-md);">
+        <button class="btn btn--ghost btn--sm"><span class="material-symbols-outlined" style="font-size:14px;">qr_code</span>Receive</button>
+        <button class="btn btn--primary btn--sm"><span class="material-symbols-outlined" style="font-size:14px;">send</span>Send</button>
+        <button class="topbar__icon-btn" style="position:relative;"><span class="material-symbols-outlined">notifications</span><span class="notification-dot"></span></button>
+        <div class="avatar"><img src="https://placehold.co/32x32/3b82f6/fff?text=N" alt="avatar"/></div>
+      </div>
+    </header>
+
+    <div class="dash-canvas">
+      <!-- Wallet Card + Identity -->
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:var(--stack-xl);margin-bottom:var(--stack-xl);">
+        <!-- Wallet Card -->
+        <div class="wallet-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--stack-xl);">
+            <div>
+              <div style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;color:rgba(59,130,246,0.8);letter-spacing:0.15em;margin-bottom:4px;">Total Portfolio</div>
+              <div style="font-family:var(--font-display);font-size:clamp(28px,4vw,40px);font-weight:700;">$12,840.50</div>
+              <div style="font-family:var(--font-mono);font-size:var(--text-label-sm);color:#34d399;margin-top:4px;">↑ +$842.30 (7.02%) today</div>
+            </div>
+            <div style="width:48px;height:48px;border-radius:50%;background:rgba(59,130,246,0.2);border:2px solid rgba(59,130,246,0.5);display:flex;align-items:center;justify-content:center;">
+              <span class="material-symbols-outlined" style="color:var(--neon-blue);font-variation-settings:'FILL' 1;">account_balance_wallet</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:var(--stack-md);">
+            <code style="font-family:var(--font-mono);font-size:var(--text-label-md);padding:6px 14px;background:rgba(0,0,0,0.3);border-radius:var(--radius-full);border:1px solid rgba(255,255,255,0.1);">0x3f4a8b2c9d1e5f7a3b8c0d4e2f6a1b9d82b</code>
+            <button class="topbar__icon-btn" title="Copy"><span class="material-symbols-outlined" style="font-size:18px;">content_copy</span></button>
+          </div>
+          <div style="display:flex;gap:var(--stack-md);margin-top:var(--stack-lg);">
+            <div style="padding:6px 14px;background:rgba(255,255,255,0.05);border:1px solid var(--border-muted);border-radius:var(--radius-full);font-family:var(--font-mono);font-size:10px;display:flex;align-items:center;gap:6px;">
+              <span style="width:6px;height:6px;border-radius:50%;background:#34d399;display:inline-block;"></span>MetaMask
+            </div>
+            <div style="padding:6px 14px;background:rgba(255,255,255,0.05);border:1px solid var(--border-muted);border-radius:var(--radius-full);font-family:var(--font-mono);font-size:10px;">Polygon Amoy</div>
+            <div style="padding:6px 14px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:var(--radius-full);font-family:var(--font-mono);font-size:10px;color:var(--neon-blue);">Passport #0042</div>
+          </div>
+        </div>
+
+        <!-- Identity Panel -->
+        <div class="glass-panel" style="border-radius:var(--radius-xl);padding:var(--stack-lg);">
+          <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);margin-bottom:var(--stack-lg);">Web3 Identity</h3>
+          <div style="display:flex;align-items:center;gap:var(--stack-md);margin-bottom:var(--stack-lg);padding-bottom:var(--stack-lg);border-bottom:1px solid var(--border-muted);">
+            <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:22px;font-weight:700;flex-shrink:0;">N</div>
+            <div>
+              <div style="font-family:var(--font-display);font-size:var(--text-headline-lg);font-weight:700;">nexus.eth</div>
+              <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">ENS Name · Verified</div>
+            </div>
+            <span class="badge badge--green" style="margin-left:auto;">Active</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:var(--stack-md);">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:var(--text-body-sm);">
+              <span style="color:var(--on-surface-variant);">Skill Passport</span>
+              <span style="display:flex;align-items:center;gap:6px;"><span class="badge badge--blue">Level 7</span></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:var(--text-body-sm);">
+              <span style="color:var(--on-surface-variant);">Total XP</span><span style="font-family:var(--font-mono);color:var(--neon-blue);">8,420</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:var(--text-body-sm);">
+              <span style="color:var(--on-surface-variant);">DAO Votes</span><span style="font-family:var(--font-mono);">12</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:var(--text-body-sm);">
+              <span style="color:var(--on-surface-variant);">On-chain Since</span><span style="font-family:var(--font-mono);">Jan 2024</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Token Balances + Transactions -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--stack-xl);">
+        <!-- Tokens -->
+        <div class="glass-panel" style="border-radius:var(--radius-xl);padding:var(--stack-lg);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--stack-lg);">
+            <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);">Token Balances</h3>
+            <button class="btn btn--ghost btn--sm">+ Add Token</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div class="token-row">
+              <div class="token-icon" style="background:rgba(255,165,0,0.1);border:1px solid rgba(255,165,0,0.3);">Ξ</div>
+              <div style="flex:1;"><div style="font-weight:500;">Ethereum</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">2.4 ETH</div></div>
+              <div style="text-align:right;"><div style="font-weight:600;">$8,400</div><div style="font-family:var(--font-mono);font-size:10px;color:#34d399;">+3.2%</div></div>
+            </div>
+            <div class="token-row">
+              <div class="token-icon" style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);">◈</div>
+              <div style="flex:1;"><div style="font-weight:500;">DVT Token</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">42,000 DVT</div></div>
+              <div style="text-align:right;"><div style="font-weight:600;">$3,200</div><div style="font-family:var(--font-mono);font-size:10px;color:#34d399;">+8.1%</div></div>
+            </div>
+            <div class="token-row">
+              <div class="token-icon" style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);">$</div>
+              <div style="flex:1;"><div style="font-weight:500;">USDC</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">1,240 USDC</div></div>
+              <div style="text-align:right;"><div style="font-weight:600;">$1,240</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">0.0%</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transactions -->
+        <div class="glass-panel" style="border-radius:var(--radius-xl);overflow:hidden;">
+          <div style="padding:var(--stack-lg);border-bottom:1px solid var(--border-muted);display:flex;justify-content:space-between;align-items:center;">
+            <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);">Transactions</h3>
+            <a href="analytics.html" class="btn btn--ghost btn--sm">View All</a>
+          </div>
+          <div>
+            <div class="tx-row">
+              <div class="tx-icon" style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);">
+                <span class="material-symbols-outlined" style="font-size:16px;color:#34d399;">arrow_downward</span>
+              </div>
+              <div style="flex:1;"><div style="font-size:var(--text-body-sm);font-weight:500;">Passport Mint</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">1h ago · NFT #0042</div></div>
+              <span style="font-family:var(--font-mono);font-size:var(--text-body-sm);color:#34d399;">+NFT</span>
+            </div>
+            <div class="tx-row">
+              <div class="tx-icon" style="background:rgba(255,77,77,0.1);border:1px solid rgba(255,77,77,0.2);">
+                <span class="material-symbols-outlined" style="font-size:16px;color:var(--neon-red);">arrow_upward</span>
+              </div>
+              <div style="flex:1;"><div style="font-size:var(--text-body-sm);font-weight:500;">DVT Stake</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">3h ago · StakingPool</div></div>
+              <span style="font-family:var(--font-mono);font-size:var(--text-body-sm);color:var(--neon-red);">-5,000 DVT</span>
+            </div>
+            <div class="tx-row">
+              <div class="tx-icon" style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);">
+                <span class="material-symbols-outlined" style="font-size:16px;color:#34d399;">arrow_downward</span>
+              </div>
+              <div style="flex:1;"><div style="font-size:var(--text-body-sm);font-weight:500;">DVT Rewards</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">Yesterday · Auto-compound</div></div>
+              <span style="font-family:var(--font-mono);font-size:var(--text-body-sm);color:#34d399;">+120 DVT</span>
+            </div>
+            <div class="tx-row" style="border-bottom:none;">
+              <div class="tx-icon" style="background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.2);">
+                <span class="material-symbols-outlined" style="font-size:16px;color:var(--neon-purple);">how_to_vote</span>
+              </div>
+              <div style="flex:1;"><div style="font-size:var(--text-body-sm);font-weight:500;">DAO Vote #NXS-007</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">3h ago</div></div>
+              <span class="badge badge--purple">Gov</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/js/navigation.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

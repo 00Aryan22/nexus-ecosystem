@@ -1,0 +1,504 @@
+<!-- Design System -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEXUS AI | Web3 OS for the AI Era</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#4d8eff",
+                        "on-primary-container": "#00285d",
+                        "outline": "#8c909f",
+                        "surface-bright": "#38393a",
+                        "tertiary": "#c3d000",
+                        "inverse-on-surface": "#303032",
+                        "surface-tint": "#adc6ff",
+                        "secondary": "#ddb7ff",
+                        "surface-container": "#1f2021",
+                        "on-primary-fixed-variant": "#004395",
+                        "error": "#ffb4ab",
+                        "on-secondary-container": "#d6a9ff",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "inverse-surface": "#e3e2e3",
+                        "on-primary-fixed": "#001a42",
+                        "on-surface-variant": "#c2c6d6",
+                        "inverse-primary": "#005ac2",
+                        "background": "#121315",
+                        "neon-blue": "#3b82f6",
+                        "surface": "#121315",
+                        "secondary-fixed": "#f0dbff",
+                        "primary-fixed": "#d8e2ff",
+                        "surface-obsidian": "#08090A",
+                        "surface-dim": "#121315",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-surface": "#e3e2e3",
+                        "border-muted": "rgba(255, 255, 255, 0.08)",
+                        "warning-yellow": "#E4F222",
+                        "neon-purple": "#a855f7",
+                        "on-tertiary-fixed": "#1b1d00",
+                        "on-tertiary": "#2f3300",
+                        "outline-variant": "#424754",
+                        "surface-container-high": "#292a2b",
+                        "on-background": "#e3e2e3",
+                        "on-error": "#690005",
+                        "tertiary-fixed": "#dfed1a",
+                        "primary": "#adc6ff",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#c3d000",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "surface-slate": "#111214",
+                        "on-tertiary-fixed-variant": "#454a00",
+                        "secondary-container": "#6f00be",
+                        "error-container": "#93000a",
+                        "on-primary": "#002e6a",
+                        "on-tertiary-container": "#292c00",
+                        "surface-container-low": "#1b1c1d",
+                        "surface-container-highest": "#343536",
+                        "on-secondary": "#490080",
+                        "surface-container-lowest": "#0d0e0f",
+                        "surface-variant": "#343536",
+                        "on-secondary-fixed": "#2c0051",
+                        "tertiary-container": "#8e9800"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "stack-xl": "64px",
+                        "stack-xs": "4px",
+                        "stack-md": "16px",
+                        "margin-mobile": "20px",
+                        "margin-page": "40px",
+                        "unit": "4px",
+                        "stack-sm": "8px",
+                        "stack-lg": "32px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "display-lg": ["Geist", "sans-serif"],
+                        "headline-lg": ["Geist", "sans-serif"],
+                        "display-lg-mobile": ["Geist", "sans-serif"],
+                        "label-md": ["JetBrains Mono"],
+                        "headline-xl": ["Geist", "sans-serif"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                        "headline-lg": ["24px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg-mobile": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-xl": ["32px", {"lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        @font-face {
+            font-family: 'Geist';
+            src: url('https://cdn.jsdelivr.net/font-geist/1.0.0/geist-sans-regular.woff2') format('woff2');
+            font-weight: 400;
+        }
+        @font-face {
+            font-family: 'Geist';
+            src: url('https://cdn.jsdelivr.net/font-geist/1.0.0/geist-sans-bold.woff2') format('woff2');
+            font-weight: 700;
+        }
+        
+        body {
+            background-color: #08090A;
+            color: #e3e2e3;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .glass-card {
+            background: rgba(17, 18, 20, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .neon-glow {
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+        .spotlight {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 200px;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-x-hidden">
+<!-- Navigation Shell -->
+<header class="w-full sticky top-0 z-50 bg-surface-obsidian/60 backdrop-blur-md border-b border-border-muted">
+<div class="flex justify-between items-center h-16 px-margin-page w-full">
+<div class="flex items-center gap-stack-md">
+<span class="font-display-lg text-headline-lg font-bold text-on-surface tracking-tighter uppercase">NEXUS AI</span>
+<nav class="hidden md:flex items-center gap-stack-lg ml-stack-xl">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" href="#features">Features</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" href="#roadmap">Roadmap</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" href="#pricing">Pricing</a>
+</nav>
+</div>
+<div class="flex items-center gap-stack-md">
+<div class="flex items-center gap-stack-sm mr-stack-md border-r border-border-muted pr-stack-md">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-neon-blue cursor-pointer transition-colors" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-neon-blue cursor-pointer transition-colors" data-icon="terminal">terminal</span>
+</div>
+<button class="bg-neon-blue text-white font-label-md text-label-md px-stack-md py-stack-sm rounded-full hover:brightness-110 active:scale-[0.98] transition-all shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                    Connect Wallet
+                </button>
+</div>
+</div>
+</header>
+<main class="relative">
+<div class="spotlight top-[-100px] left-[-100px]"></div>
+<div class="spotlight bottom-[20%] right-[-100px]"></div>
+<!-- Hero Section -->
+<section class="relative min-h-[921px] flex flex-col items-center justify-center px-margin-page py-stack-xl text-center overflow-hidden">
+
+<div class="relative z-10 max-w-5xl">
+<div class="inline-flex items-center gap-stack-sm px-stack-md py-stack-xs rounded-full border border-neon-blue/30 bg-neon-blue/5 text-neon-blue font-label-sm text-label-sm mb-stack-lg animate-pulse">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-blue opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-neon-blue"></span>
+</span>
+                    V1.0 MAINNET IS LIVE
+                </div>
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-stack-md tracking-tighter">
+                    The <span class="text-neon-blue">Web3 Operating System</span> for the AI Era.
+                </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-stack-xl">
+                    Deploy AI-powered protocols, manage DAO centers, and secure your digital identity on the world's most advanced computational kernel. Built for the architects of the next web.
+                </p>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-stack-md">
+<button class="w-full sm:w-auto bg-neon-blue text-white font-label-md text-label-md px-stack-xl py-4 rounded-full shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:brightness-110 transition-all">
+                        Launch Nexus Dashboard
+                    </button>
+<button class="w-full sm:w-auto glass-card text-on-surface font-label-md text-label-md px-stack-xl py-4 rounded-full flex items-center justify-center gap-2">
+                        Read Documentation <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Hero Abstract Visual -->
+<div class="relative mt-stack-xl w-full max-w-6xl aspect-video rounded-xl border border-border-muted glass-card p-stack-sm overflow-hidden group">
+<img alt="Abstract Web3 Data Visualization" class="w-full h-full object-cover rounded-lg opacity-80 group-hover:opacity-100 transition-opacity" data-alt="A cinematic, high-contrast 3D abstract visual representation of a digital brain constructed from interconnected glowing blue circuits and floating crystalline nodes. The background is a deep obsidian black with subtle atmospheric haze and blue particle light rays. The aesthetic is ultra-modern and technical, reflecting high-performance computing and secure blockchain architecture in a dark-mode luxury style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDh1bcQ8NfpItrsBZn_-r_3pu1mYizep3UHIwLejDJXxwIcXKxW0caJiXXbgF5x18JQEKP8X-3jaW60LlFJOqZ5MXhflL4g53PK3xxBaP5QgRyvchiRvMddBYaPU6wkufeJdFbdNQDUG9HD9i5ieL0jdiQF50zQuzd35YpcEZ4Zhhw2CCuZGSOjn5q0ikSejyb6wypfTcmpwa-zZwvcGGBo1kp17PTAQmTHPqRlvG2U2PypDs5MEaqys5E7kAh3Xxvs7nUqozQP1iA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-obsidian via-transparent to-transparent"></div>
+</div>
+</section>
+<!-- Features Bento Grid -->
+<section class="py-stack-xl px-margin-page" id="features">
+<div class="text-center mb-stack-xl">
+<span class="font-label-sm text-label-sm text-neon-blue uppercase tracking-widest">Core Infrastructure</span>
+<h2 class="font-headline-xl text-headline-xl mt-stack-sm">Engineered for Complexity</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-stack-md max-w-7xl mx-auto">
+<!-- AI Agent -->
+<div class="glass-card p-stack-lg rounded-xl flex flex-col gap-stack-md group">
+<div class="w-12 h-12 rounded-lg bg-neon-blue/10 flex items-center justify-center border border-neon-blue/20">
+<span class="material-symbols-outlined text-neon-blue" data-icon="smart_toy">smart_toy</span>
+</div>
+<div>
+<h3 class="font-headline-lg text-headline-lg mb-stack-sm">AI Agent</h3>
+<p class="text-on-surface-variant font-body-sm">Autonomous LLM-driven agents capable of executing smart contracts and managing treasury operations without human intervention.</p>
+</div>
+</div>
+<!-- Startup Builder -->
+<div class="glass-card p-stack-lg rounded-xl flex flex-col gap-stack-md group">
+<div class="w-12 h-12 rounded-lg bg-neon-purple/10 flex items-center justify-center border border-neon-purple/20">
+<span class="material-symbols-outlined text-neon-purple" data-icon="rocket_launch">rocket_launch</span>
+</div>
+<div>
+<h3 class="font-headline-lg text-headline-lg mb-stack-sm">Startup Builder</h3>
+<p class="text-on-surface-variant font-body-sm">Zero-code interface for deploying production-grade dApps, tokenomics models, and liquidity pools in minutes.</p>
+</div>
+</div>
+<!-- Auditor -->
+<div class="glass-card p-stack-lg rounded-xl flex flex-col gap-stack-md group">
+<div class="w-12 h-12 rounded-lg bg-warning-yellow/10 flex items-center justify-center border border-warning-yellow/20">
+<span class="material-symbols-outlined text-warning-yellow" data-icon="verified_user">verified_user</span>
+</div>
+<div>
+<h3 class="font-headline-lg text-headline-lg mb-stack-sm">Smart Auditor</h3>
+<p class="text-on-surface-variant font-body-sm">Real-time formal verification and security auditing for every line of code deployed through the Nexus kernel.</p>
+</div>
+</div>
+<!-- Skill Passport -->
+<div class="glass-card p-stack-lg rounded-xl flex flex-col gap-stack-md group md:col-span-2">
+<div class="flex justify-between items-start">
+<div class="w-12 h-12 rounded-lg bg-neon-blue/10 flex items-center justify-center border border-neon-blue/20">
+<span class="material-symbols-outlined text-neon-blue" data-icon="badge">badge</span>
+</div>
+<span class="font-label-sm text-label-sm bg-neon-blue text-white px-2 py-1 rounded">IDENTITY V2</span>
+</div>
+<div class="flex flex-col md:flex-row gap-stack-lg">
+<div class="flex-1">
+<h3 class="font-headline-lg text-headline-lg mb-stack-sm">Skill Passport</h3>
+<p class="text-on-surface-variant font-body-sm">Decentralized proof-of-work identity. Port your reputation and verified skills across the entire Web3 ecosystem seamlessly.</p>
+</div>
+<div class="flex-1 bg-surface-obsidian/50 rounded-lg p-stack-md border border-border-muted">
+<div class="flex items-center gap-stack-sm mb-stack-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container"></div>
+<div class="flex-1 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="w-3/4 h-full bg-neon-blue"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="h-2 w-full bg-surface-container rounded-full"></div>
+<div class="h-2 w-5/6 bg-surface-container rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- DAO Center -->
+<div class="glass-card p-stack-lg rounded-xl flex flex-col gap-stack-md group">
+<div class="w-12 h-12 rounded-lg bg-on-surface/10 flex items-center justify-center border border-on-surface/20">
+<span class="material-symbols-outlined text-on-surface" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<h3 class="font-headline-lg text-headline-lg mb-stack-sm">DAO Center</h3>
+<p class="text-on-surface-variant font-body-sm">Institutional-grade governance suite with cross-chain voting and automated treasury distribution.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Roadmap Section -->
+<section class="py-stack-xl px-margin-page bg-surface-obsidian/40 relative" id="roadmap">
+<div class="max-w-4xl mx-auto">
+<div class="text-center mb-stack-xl">
+<h2 class="font-headline-xl text-headline-xl">Project Trajectory</h2>
+<p class="text-on-surface-variant mt-2">Our path to universal decentralized intelligence.</p>
+</div>
+<div class="relative border-l border-border-muted ml-6 md:ml-0 md:flex md:border-l-0 md:border-t md:gap-stack-lg md:pt-stack-lg">
+<!-- Step 1 -->
+<div class="relative mb-stack-xl md:mb-0 md:flex-1">
+<div class="absolute -left-[31px] md:-top-[31px] md:left-0 w-4 h-4 bg-neon-blue rounded-full ring-8 ring-neon-blue/10"></div>
+<span class="font-label-sm text-label-sm text-neon-blue mb-2 block uppercase">Completed</span>
+<h4 class="font-headline-lg text-headline-lg mb-stack-sm">Genesis Node</h4>
+<p class="text-on-surface-variant font-body-sm">Kernel architecture design, initial L2 integration, and closed beta for AI agents.</p>
+</div>
+<!-- Step 2 -->
+<div class="relative mb-stack-xl md:mb-0 md:flex-1">
+<div class="absolute -left-[31px] md:-top-[31px] md:left-0 w-4 h-4 bg-neon-blue animate-pulse rounded-full ring-8 ring-neon-blue/20"></div>
+<span class="font-label-sm text-label-sm text-neon-blue mb-2 block uppercase">Active</span>
+<h4 class="font-headline-lg text-headline-lg mb-stack-sm">Expansion Phase</h4>
+<p class="text-on-surface-variant font-body-sm">Public mainnet launch, Skill Passport V1, and cross-chain bridging for DAO governance.</p>
+</div>
+<!-- Step 3 -->
+<div class="relative md:flex-1">
+<div class="absolute -left-[31px] md:-top-[31px] md:left-0 w-4 h-4 bg-on-surface-variant rounded-full border-2 border-surface-obsidian"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-2 block uppercase">Q4 2024</span>
+<h4 class="font-headline-lg text-headline-lg mb-stack-sm">Neural Mesh</h4>
+<p class="text-on-surface-variant font-body-sm">Decentralized AI inference network and institutional-grade fraud detection layer.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Pricing Section -->
+<section class="py-stack-xl px-margin-page" id="pricing">
+<div class="text-center mb-stack-xl">
+<h2 class="font-headline-xl text-headline-xl">Flexible OS Licensing</h2>
+<p class="text-on-surface-variant mt-2">Scale your operations from sandbox to global enterprise.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-stack-lg max-w-6xl mx-auto">
+<!-- Tier 1 -->
+<div class="glass-card p-stack-lg rounded-xl flex flex-col h-full">
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-stack-sm">BUILDER</span>
+<div class="flex items-baseline gap-2 mb-stack-md">
+<span class="font-headline-xl text-headline-xl">$0</span>
+<span class="text-on-surface-variant">/mo</span>
+</div>
+<ul class="space-y-stack-sm mb-stack-xl flex-grow">
+<li class="flex items-center gap-2 text-on-surface-variant font-body-sm">
+<span class="material-symbols-outlined text-neon-blue text-sm" data-icon="check">check</span> 1 AI Agent Instance
+                        </li>
+<li class="flex items-center gap-2 text-on-surface-variant font-body-sm">
+<span class="material-symbols-outlined text-neon-blue text-sm" data-icon="check">check</span> Basic DAO Toolkit
+                        </li>
+<li class="flex items-center gap-2 text-on-surface-variant font-body-sm">
+<span class="material-symbols-outlined text-neon-blue text-sm" data-icon="check">check</span> Standard Skill Passport
+                        </li>
+</ul>
+<button class="w-full py-stack-sm border border-border-muted rounded hover:bg-white/5 transition-colors font-label-md text-label-md uppercase">Start Building</button>
+</div>
+<!-- Tier 2 -->
+<div class="glass-card p-stack-lg rounded-xl border-neon-blue/40 flex flex-col h-full relative overflow-hidden scale-105 shadow-2xl">
+<div class="absolute top-0 right-0 bg-neon-blue text-white px-4 py-1 font-label-sm text-label-sm uppercase tracking-tighter">Most Popular</div>
+<span class="font-label-sm text-label-sm text-neon-blue mb-stack-sm">STARTUP</span>
+<div class="flex items-baseline gap-2 mb-stack-md">
+<span class="font-headline-xl text-headline-xl">$99</span>
+<span class="text-on-surface-variant">/mo</span>
+</div>
+<ul class="space-y-stack-sm mb-stack-xl flex-grow">
+<li class="flex items-center gap-2 text-on-surface font-body-sm">
+<span class="material-symbols-outlined text-neon-blue text-sm" data-icon="check">check</span> 5 AI Agent Instances
+                        </li>
+<li class="flex items-center gap-2 text-on-surface font-body-sm">
+<span class="material-symbols-outlined text-neon-blue text-sm" data-icon="check">check</span> Full Startup Builder Suite
+                        </li>
+<li class="flex items-center gap-2 text-on-surface font-body-sm">
+<span class="material-symbols-outlined text-neon-blue text-sm" data-icon="check">check</span> Advanced Audit Reports
+                        </li>
+<li class="flex items-center gap-2 text-on-surface font-body-sm">
+<span class="material-symbols-outlined text-neon-blue text-sm" data-icon="check">check</span> Priority Support
+                        </li>
+</ul>
+<button class="w-full py-stack-sm bg-neon-blue text-white rounded hover:brightness-110 transition-all font-label-md text-label-md uppercase shadow-[0_0_15px_rgba(59,130,246,0.3)]">Deploy Professional</button>
+</div>
+<!-- Tier 3 -->
+<div class="glass-card p-stack-lg rounded-xl flex flex-col h-full">
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-stack-sm">ENTERPRISE</span>
+<div class="flex items-baseline gap-2 mb-stack-md">
+<span class="font-headline-xl text-headline-xl">Custom</span>
+</div>
+<ul class="space-y-stack-sm mb-stack-xl flex-grow">
+<li class="flex items-center gap-2 text-on-surface-variant font-body-sm">
+<span class="material-symbols-outlined text-neon-blue text-sm" data-icon="check">check</span> Unlimited AI Agents
+                        </li>
+<li class="flex items-center gap-2 text-on-surface-variant font-body-sm">
+<span class="material-symbols-outlined text-neon-blue text-sm" data-icon="check">check</span> Custom Kernel Hooks
+                        </li>
+<li class="flex items-center gap-2 text-on-surface-variant font-body-sm">
+<span class="material-symbols-outlined text-neon-blue text-sm" data-icon="check">check</span> Dedicated Node Hosting
+                        </li>
+<li class="flex items-center gap-2 text-on-surface-variant font-body-sm">
+<span class="material-symbols-outlined text-neon-blue text-sm" data-icon="check">check</span> SLA Guarantees
+                        </li>
+</ul>
+<button class="w-full py-stack-sm border border-border-muted rounded hover:bg-white/5 transition-colors font-label-md text-label-md uppercase">Contact Sales</button>
+</div>
+</div>
+</section>
+<!-- FAQ Section -->
+<section class="py-stack-xl px-margin-page bg-surface-obsidian/40">
+<div class="max-w-3xl mx-auto">
+<div class="text-center mb-stack-xl">
+<h2 class="font-headline-xl text-headline-xl">System Information</h2>
+</div>
+<div class="space-y-stack-md">
+<div class="accordion-item glass-card rounded-lg overflow-hidden cursor-pointer" onclick="this.classList.toggle('active')">
+<div class="px-stack-lg py-stack-md flex justify-between items-center">
+<h4 class="font-label-md text-label-md uppercase">Is NEXUS AI truly decentralized?</h4>
+<span class="material-symbols-outlined transition-transform duration-300">expand_more</span>
+</div>
+<div class="accordion-content px-stack-lg">
+<p class="pb-stack-md text-on-surface-variant font-body-sm">Yes. The Nexus kernel runs on a peer-to-peer network of validator nodes. Governance is controlled by the NEXUS DAO, ensuring that no single entity has control over the operating system's evolution.</p>
+</div>
+</div>
+<div class="accordion-item glass-card rounded-lg overflow-hidden cursor-pointer" onclick="this.classList.toggle('active')">
+<div class="px-stack-lg py-stack-md flex justify-between items-center">
+<h4 class="font-label-md text-label-md uppercase">Can I migrate my existing smart contracts?</h4>
+<span class="material-symbols-outlined transition-transform duration-300">expand_more</span>
+</div>
+<div class="accordion-content px-stack-lg">
+<p class="pb-stack-md text-on-surface-variant font-body-sm">Nexus is EVM-compatible and supports easy migration via our Auditor tool, which helps you wrap existing contracts in the Nexus security layer.</p>
+</div>
+</div>
+<div class="accordion-item glass-card rounded-lg overflow-hidden cursor-pointer" onclick="this.classList.toggle('active')">
+<div class="px-stack-lg py-stack-md flex justify-between items-center">
+<h4 class="font-label-md text-label-md uppercase">What chains does Nexus support?</h4>
+<span class="material-symbols-outlined transition-transform duration-300">expand_more</span>
+</div>
+<div class="accordion-content px-stack-lg">
+<p class="pb-stack-md text-on-surface-variant font-body-sm">We currently support Ethereum, Polygon, Arbitrum, and Solana natively, with more integrations planned for our Q4 Neural Mesh phase.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Footer -->
+<footer class="relative py-stack-xl px-margin-page border-t border-border-muted mt-stack-xl overflow-hidden">
+<div class="max-w-7xl mx-auto flex flex-col items-center text-center">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-px h-20 bg-gradient-to-b from-neon-blue to-transparent"></div>
+<h2 class="font-display-lg text-display-lg-mobile md:text-headline-xl text-on-surface mb-stack-md tracking-tighter mt-stack-lg">Ready to build the future?</h2>
+<p class="text-on-surface-variant max-w-xl mb-stack-lg">Join 10,000+ architects building autonomous systems on NEXUS AI.</p>
+<button class="bg-white text-surface-obsidian font-label-md text-label-md px-stack-xl py-4 rounded-full font-bold hover:bg-neon-blue hover:text-white transition-all shadow-xl">
+                    Launch Your Startup
+                </button>
+<div class="mt-stack-xl pt-stack-xl border-t border-border-muted w-full flex flex-col md:flex-row justify-between items-center gap-stack-lg">
+<div class="flex items-center gap-2">
+<span class="font-display-lg text-headline-lg font-bold text-on-surface tracking-tighter">NEXUS AI</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant ml-2">© 2024 WEB3 OS</span>
+</div>
+<div class="flex gap-stack-lg font-label-sm text-label-sm text-on-surface-variant uppercase">
+<a class="hover:text-neon-blue transition-colors" href="#">Documentation</a>
+<a class="hover:text-neon-blue transition-colors" href="#">Security</a>
+<a class="hover:text-neon-blue transition-colors" href="#">Whitepaper</a>
+<a class="hover:text-neon-blue transition-colors" href="#">Github</a>
+</div>
+</div>
+</div>
+</footer>
+</main>
+<script>
+        // Spotlight interaction
+        document.addEventListener('mousemove', (e) => {
+            const spotlights = document.querySelectorAll('.spotlight');
+            spotlights.forEach(spotlight => {
+                const rect = spotlight.getBoundingClientRect();
+                const x = e.clientX - rect.width / 2;
+                const y = e.clientY - rect.height / 2;
+                // Move subtly
+                spotlight.style.transform = `translate(${e.clientX / 30}px, ${e.clientY / 30}px)`;
+            });
+        });
+
+        // Simple Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body></html>

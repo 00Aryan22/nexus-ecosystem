@@ -1,0 +1,506 @@
+<!-- Smart Contract Auditor - NEXUS AI -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEXUS AI | DAO Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Geist:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-container": "#4d8eff",
+                    "on-primary-container": "#00285d",
+                    "outline": "#8c909f",
+                    "surface-bright": "#38393a",
+                    "tertiary": "#c3d000",
+                    "inverse-on-surface": "#303032",
+                    "surface-tint": "#adc6ff",
+                    "secondary": "#ddb7ff",
+                    "surface-container": "#1f2021",
+                    "on-primary-fixed-variant": "#004395",
+                    "error": "#ffb4ab",
+                    "on-secondary-container": "#d6a9ff",
+                    "secondary-fixed-dim": "#ddb7ff",
+                    "inverse-surface": "#e3e2e3",
+                    "on-primary-fixed": "#001a42",
+                    "on-surface-variant": "#c2c6d6",
+                    "inverse-primary": "#005ac2",
+                    "background": "#121315",
+                    "neon-blue": "#3b82f6",
+                    "surface": "#121315",
+                    "secondary-fixed": "#f0dbff",
+                    "primary-fixed": "#d8e2ff",
+                    "surface-obsidian": "#08090A",
+                    "surface-dim": "#121315",
+                    "primary-fixed-dim": "#adc6ff",
+                    "on-surface": "#e3e2e3",
+                    "border-muted": "rgba(255, 255, 255, 0.08)",
+                    "warning-yellow": "#E4F222",
+                    "neon-purple": "#a855f7",
+                    "on-tertiary-fixed": "#1b1d00",
+                    "on-tertiary": "#2f3300",
+                    "outline-variant": "#424754",
+                    "surface-container-high": "#292a2b",
+                    "on-background": "#e3e2e3",
+                    "on-error": "#690005",
+                    "tertiary-fixed": "#dfed1a",
+                    "primary": "#adc6ff",
+                    "on-error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#c3d000",
+                    "on-secondary-fixed-variant": "#6900b3",
+                    "surface-slate": "#111214",
+                    "on-tertiary-fixed-variant": "#454a00",
+                    "secondary-container": "#6f00be",
+                    "error-container": "#93000a",
+                    "on-primary": "#002e6a",
+                    "on-tertiary-container": "#292c00",
+                    "surface-container-low": "#1b1c1d",
+                    "surface-container-highest": "#343536",
+                    "on-secondary": "#490080",
+                    "surface-container-lowest": "#0d0e0f",
+                    "surface-variant": "#343536",
+                    "on-secondary-fixed": "#2c0051",
+                    "tertiary-container": "#8e9800"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "stack-xl": "64px",
+                    "stack-xs": "4px",
+                    "stack-md": "16px",
+                    "margin-mobile": "20px",
+                    "margin-page": "40px",
+                    "unit": "4px",
+                    "stack-sm": "8px",
+                    "stack-lg": "32px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["JetBrains Mono"],
+                    "display-lg": ["Geist"],
+                    "headline-lg": ["Geist"],
+                    "display-lg-mobile": ["Geist"],
+                    "label-md": ["JetBrains Mono"],
+                    "headline-xl": ["Geist"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                    "headline-lg": ["24px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg-mobile": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-xl": ["32px", {"lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(17, 18, 20, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .inner-glow {
+            box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+        }
+        .neon-glow:hover {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        
+        @keyframes spotlight {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+            50% { transform: translate(-45%, -55%) scale(1.1); opacity: 0.4; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+        }
+        .spotlight-bg {
+            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            animation: spotlight 8s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-surface-obsidian text-on-surface font-body-md overflow-hidden">
+<div class="flex h-screen w-full relative">
+<!-- Background Atmosphere -->
+<div class="fixed inset-0 pointer-events-none">
+
+<div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] spotlight-bg blur-3xl rounded-full"></div>
+</div>
+<!-- SideNavBar -->
+<aside class="h-screen w-64 flex flex-col sticky top-0 left-0 bg-surface-slate/80 backdrop-blur-xl border-r border-border-muted shadow-2xl shadow-surface-obsidian z-40 transition-all duration-300">
+<div class="flex flex-col h-full py-stack-md px-gutter">
+<div class="mb-stack-lg">
+<h1 class="font-display-lg text-headline-lg font-bold text-on-surface tracking-tighter">NEXUS AI</h1>
+<p class="text-label-sm text-on-surface-variant uppercase tracking-widest mt-1">Web3 OS</p>
+</div>
+<nav class="flex-1 space-y-1 overflow-y-auto pr-2">
+<!-- Nav items dynamically mapped from JSON -->
+<a class="flex items-center gap-3 px-3 py-3 rounded text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="smart_toy">smart_toy</span>
+<span class="font-body-md">AI Agent</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="rocket_launch">rocket_launch</span>
+<span class="font-body-md">Startup Builder</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="verified_user">verified_user</span>
+<span class="font-body-md">Auditor</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="badge">badge</span>
+<span class="font-body-md">Skill Passport</span>
+</a>
+<!-- ACTIVE ITEM -->
+<a class="flex items-center gap-3 px-3 py-3 rounded text-neon-blue bg-primary-container/10 border-r-2 border-neon-blue font-bold transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="account_balance">account_balance</span>
+<span class="font-body-md">DAO Center</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="shield_alert">shield_lock</span>
+<span class="font-body-md">Fraud Detection</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="storefront">storefront</span>
+<span class="font-body-md">Marketplace</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-border-muted pt-stack-md space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="settings">settings</span>
+<span class="font-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="help">help</span>
+<span class="font-label-md">Support</span>
+</a>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col relative z-10 overflow-hidden">
+<!-- TopNavBar -->
+<header class="w-full sticky top-0 z-50 bg-surface-obsidian/60 backdrop-blur-md border-b border-border-muted h-16 flex justify-between items-center px-margin-page">
+<div class="flex items-center gap-stack-lg">
+<div class="relative w-64">
+<span class="absolute inset-y-0 left-3 flex items-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]" data-icon="search">search</span>
+</span>
+<input class="w-full bg-surface-obsidian border border-border-muted rounded-lg pl-10 pr-4 py-1.5 text-body-sm font-label-md focus:border-neon-blue focus:ring-1 focus:ring-neon-blue outline-none transition-all" placeholder="Search DAOs or proposals..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-stack-md">
+<div class="flex items-center gap-2 mr-4">
+<button class="p-2 hover:bg-white/5 rounded-full text-on-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 hover:bg-white/5 rounded-full text-on-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</button>
+</div>
+<button class="bg-neon-blue text-white font-display-lg font-semibold px-5 py-2 rounded hover:brightness-110 active:scale-95 transition-all neon-glow">
+                        Connect Wallet
+                    </button>
+</div>
+</header>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-margin-page">
+<div class="max-w-7xl mx-auto space-y-stack-xl">
+<!-- Header Section -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-xl text-on-surface mb-2">Governance Hub</h2>
+<p class="text-on-surface-variant max-w-xl">Transparent decision-making powered by Nexus AI. Manage your voting power and track real-time protocol upgrades.</p>
+</div>
+<button class="bg-on-surface text-surface-obsidian font-display-lg font-bold px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-neon-blue hover:text-white transition-all duration-300 shadow-xl group" onclick="document.getElementById('proposalModal').classList.remove('hidden')">
+<span class="material-symbols-outlined group-hover:rotate-90 transition-transform" data-icon="add">add</span>
+                            Create Proposal
+                        </button>
+</div>
+<!-- Stats Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-stack-md">
+<div class="glass-panel p-stack-lg rounded-xl inner-glow flex flex-col justify-between group">
+<div class="flex justify-between items-start mb-4">
+<span class="text-label-md text-on-surface-variant uppercase">Treasury TVL</span>
+<span class="material-symbols-outlined text-neon-blue" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<div>
+<div class="text-headline-xl font-bold font-display-lg">$4.2B</div>
+<div class="text-tertiary text-label-sm font-label-md flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+                                    +12.4% (30d)
+                                </div>
+</div>
+</div>
+<div class="glass-panel p-stack-lg rounded-xl inner-glow flex flex-col justify-between group">
+<div class="flex justify-between items-start mb-4">
+<span class="text-label-md text-on-surface-variant uppercase">Participation</span>
+<span class="material-symbols-outlined text-neon-purple" data-icon="group">group</span>
+</div>
+<div>
+<div class="text-headline-xl font-bold font-display-lg">68.4%</div>
+<div class="text-on-surface-variant text-label-sm font-label-md mt-1">
+                                    Quorum usually met within 12h
+                                </div>
+</div>
+</div>
+<div class="glass-panel p-stack-lg rounded-xl inner-glow flex flex-col justify-between col-span-1 md:col-span-2 relative overflow-hidden">
+<div class="absolute right-0 top-0 w-32 h-full opacity-10">
+
+</div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-label-md text-on-surface-variant uppercase">Active Proposals</span>
+<span class="material-symbols-outlined text-warning-yellow" data-icon="gavel">gavel</span>
+</div>
+<div class="flex items-center gap-8">
+<div>
+<div class="text-headline-xl font-bold font-display-lg">24</div>
+<div class="text-label-sm font-label-md text-on-surface-variant">In Voting</div>
+</div>
+<div class="h-12 w-px bg-border-muted"></div>
+<div>
+<div class="text-headline-xl font-bold font-display-lg">158</div>
+<div class="text-label-sm font-label-md text-on-surface-variant">Executed</div>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Active Proposals Feed -->
+<div class="lg:col-span-8 space-y-stack-md">
+<div class="flex items-center justify-between mb-2">
+<h3 class="font-headline-lg text-on-surface">Active Proposals</h3>
+<div class="flex gap-2">
+<button class="bg-surface-container-high px-3 py-1 text-label-sm font-label-md rounded border border-border-muted">All</button>
+<button class="hover:bg-surface-container-high px-3 py-1 text-label-sm font-label-md rounded border border-transparent transition-all">Core</button>
+<button class="hover:bg-surface-container-high px-3 py-1 text-label-sm font-label-md rounded border border-transparent transition-all">Treasury</button>
+</div>
+</div>
+<!-- Proposal Card 1 -->
+<div class="glass-panel p-stack-lg rounded-xl inner-glow hover:bg-white/5 transition-all group cursor-pointer">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-neon-blue/20 flex items-center justify-center text-neon-blue">
+<span class="material-symbols-outlined" data-icon="token">token</span>
+</div>
+<div>
+<span class="text-label-sm font-label-md text-neon-blue uppercase">Proposal #421</span>
+<h4 class="font-headline-lg text-on-surface">Upgrade V3 Smart Contracts: AMM Logic Patch</h4>
+</div>
+</div>
+<span class="px-2 py-1 bg-surface-container-highest text-on-surface-variant rounded text-[10px] font-label-md border border-border-muted">ENDS IN 14H</span>
+</div>
+<p class="text-body-sm text-on-surface-variant mb-6 line-clamp-2">This proposal aims to optimize the gas efficiency of the Automated Market Maker (AMM) logic, potentially reducing transaction costs by 15% across all liquidity pools.</p>
+<div class="space-y-stack-sm">
+<div class="flex justify-between text-label-sm font-label-md">
+<span class="text-on-surface">Support (82%)</span>
+<span class="text-on-surface-variant">Against (18%)</span>
+</div>
+<div class="h-2 w-full bg-surface-container-lowest rounded-full overflow-hidden flex">
+<div class="h-full bg-neon-blue" style="width: 82%"></div>
+<div class="h-full bg-surface-container-high" style="width: 18%"></div>
+</div>
+<div class="flex justify-between items-center pt-2">
+<div class="flex -space-x-2">
+<img class="w-6 h-6 rounded-full border border-surface-obsidian" data-alt="A professional studio portrait of a technology lead with soft, cinematic lighting against a dark minimalist background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFBOyZ9EMdFCkSX_ZhkuK979c_GwYpOJqZ4nEfuuYAMCO-K0cQuoLr8lwOALDrWUk-XGgB8p_sxN1x4-vkcKxdFW-VYo075Elz4ku6zaiEXuRxFS2T16eT3HUfOgPsQyxqEgygBD2GF1v18Beq6PCTiEKgJz-TQJgoC0Kzuo0JplQt3uX1HOeknysq_8IFULVFnW6czJ67Chk8G3tTmMm262Y7e7tH9jOsX8IqrL5nxHzIYYIKnT-vtgWcOUgb-ZTlR54y6cbosy8"/>
+<img class="w-6 h-6 rounded-full border border-surface-obsidian" data-alt="Close-up portrait of a digital artist with cool blue ambient lighting, wearing modern glasses, and a sleek expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAL3vfqVXTuwWO78ZsLoRkIgapVllXcfZ8Ar_5llQQS2nuZ7ajGjqsYwdJh3DgYAx9qfrX9F_xv6gXD7Sp73bwfT21KtTqSyVAwsR8CaiCok7UExAO1wDCwpUUERky-W9U7eurp6E8drOFyeQux89okjgqXR4nQQo3hyRBcQV9SkP2bLi9aQUfOKW01SJG1_-jGo2yY56PMVeUhARioGL8YJpT2yvSTu-LKPwSUkvK-gCQrORq7HrqHP_tjIAIb-LNIBzEpSegsnSI"/>
+<div class="w-6 h-6 rounded-full border border-surface-obsidian bg-surface-container flex items-center justify-center text-[8px]">+42</div>
+</div>
+<div class="text-label-sm text-on-surface-variant">Quorum Reached: 4.2M / 3M NEXUS</div>
+</div>
+</div>
+</div>
+<!-- Proposal Card 2 -->
+<div class="glass-panel p-stack-lg rounded-xl inner-glow hover:bg-white/5 transition-all group cursor-pointer">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-neon-purple/20 flex items-center justify-center text-neon-purple">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<span class="text-label-sm font-label-md text-neon-purple uppercase">Proposal #420</span>
+<h4 class="font-headline-lg text-on-surface">Community Grant: Developer Education Program</h4>
+</div>
+</div>
+<span class="px-2 py-1 bg-surface-container-highest text-on-surface-variant rounded text-[10px] font-label-md border border-border-muted">ENDS IN 2D</span>
+</div>
+<p class="text-body-sm text-on-surface-variant mb-6 line-clamp-2">Allocation of 500,000 NEXUS tokens to fund technical documentation, tutorials, and a developer bounty program for the Q3 ecosystem growth.</p>
+<div class="space-y-stack-sm">
+<div class="flex justify-between text-label-sm font-label-md">
+<span class="text-on-surface">Support (94%)</span>
+<span class="text-on-surface-variant">Against (6%)</span>
+</div>
+<div class="h-2 w-full bg-surface-container-lowest rounded-full overflow-hidden flex">
+<div class="h-full bg-neon-purple" style="width: 94%"></div>
+<div class="h-full bg-surface-container-high" style="width: 6%"></div>
+</div>
+<div class="flex justify-between items-center pt-2">
+<div class="flex -space-x-2">
+<img class="w-6 h-6 rounded-full border border-surface-obsidian" data-alt="Portrait of a software architect with a clean-shaven look and focused gaze, lit by a subtle high-tech screen glow in a dark room." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmy6KyIJupd676nR3NZU9nU4PvK6JOfjdTLY3m8Qids-RHrbViioBYYHYiXRCJ6iKndDuXOSh3L6FZtF8CYXGb0b8jS73gxwSQQ3h8S94WR6Hw8PmJtefFFW-CwYNK4WZO0_GBiApOqqOSwXI0I3_kcpqUyiR7eKDrbeR9IfDtgI05YYkAZ8fBzZ4GNvqhESeTuui7AstOfT866IKDZJpjLkd3ETMLW23P8YfyuxvcS-ilGQvNhj6qwCUPuJ2GRpMhdDJOkD0SxxM"/>
+<div class="w-6 h-6 rounded-full border border-surface-obsidian bg-surface-container flex items-center justify-center text-[8px]">+118</div>
+</div>
+<div class="text-label-sm text-on-surface-variant">Current Votes: 2.8M / 3M NEXUS</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Side: Active DAOs / Community -->
+<div class="lg:col-span-4 space-y-stack-lg">
+<div class="glass-panel rounded-xl overflow-hidden">
+<div class="p-stack-md border-b border-border-muted bg-white/5">
+<h3 class="text-label-md font-bold text-on-surface uppercase tracking-wider">Top Communities</h3>
+</div>
+<div class="divide-y divide-border-muted">
+<div class="p-stack-md flex items-center justify-between hover:bg-white/5 transition-all cursor-pointer">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg" data-alt="A stylized 3D rendered abstract token icon with neon blue geometric lines and a deep obsidian crystalline core, representing decentralized finance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtzGaHFgXjyg8F6pufH1k-n_xMHog6cAxHdMBzo_eyyuPQ7UjYrMXKhFYoMFCKF6j8LeryobH-xpukZYZLqN8g4hSGGZ2CSS9wYab-kPmbsbR9TJ0f9jOggb_D0KoHTvTjfefFNjj39S7wXxnWmG-uDnN-C8CqHasJqsI8yljcCKzbIww5ka7uC-340dp15Lg1OITEVpczO0uKuadWdwzbnau-OUxgbWbv9K27sygvpOA7vSV5C7cqprwrH8n-P0FF7DqEycM-ljM"/>
+<div>
+<div class="font-bold text-on-surface">Nexus Core</div>
+<div class="text-[10px] font-label-md text-on-surface-variant">12.5k Members</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="p-stack-md flex items-center justify-between hover:bg-white/5 transition-all cursor-pointer">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg" data-alt="A sharp, architectural logo for a builder's guild, featuring neon purple vectors intersecting a matte black metallic plate." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAI7-NlSAMk2O4rpNV5HYDPHTWYR3xxfKsifVxspAWEjwsTwqYpXPJfqWToRFA5UbO8xPOmy5AQ84j89W_4oB_1z_2djqo5BONC1M1VSNAC72VOrFhSCAHEKy-f47FwXdIOw_16x6dVc78jj4CRUvBnb40qU4olHYHIdig0hk5BJIid2QEKUvR4L62giTJP9p2D1CLt74iM8AlsWkwgI-bD0uk99iUS7GIbgNriKUmW6m6U8C1GpmsqEfyi_Xc6RxqHq_EoRW2Oz94"/>
+<div>
+<div class="font-bold text-on-surface">Builder's Guild</div>
+<div class="text-[10px] font-label-md text-on-surface-variant">8.2k Members</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="p-stack-md flex items-center justify-between hover:bg-white/5 transition-all cursor-pointer">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg" data-alt="High-contrast minimalist abstract art representing security, with interlocking glowing white circles on an obsidian background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC15L70z1pfKkn0RIFGFNWCqPbccxkSWVAA-Y1ZrpwNiT_McOmanfsIWas02n-vbUrIpLvR9zVW8sBw6mw8wRcKRGiB9iYaT2WQGRHF6Vvj3Rxs6JZ3NxP4jK5MANp3UkXtdJ_Zsvl5aoVP2_zZGX2SraYRt5dbiazw0aEkmkb51CjKLA1Ix1M8_kNTDoRD4cTZf60nY_DDP0QcVghJ8fb-QoaJngZG7NEHJqSjEBTVBgeq3D6ErXJyUo2xtj0zmR8MRFA--ZTow_E"/>
+<div>
+<div class="font-bold text-on-surface">Security Council</div>
+<div class="text-[10px] font-label-md text-on-surface-variant">42 Active Members</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- User Stats -->
+<div class="glass-panel p-stack-lg rounded-xl border border-neon-blue/20 bg-neon-blue/5">
+<h3 class="text-label-md font-bold text-neon-blue uppercase mb-4">My Voting Power</h3>
+<div class="flex justify-between items-baseline mb-6">
+<span class="text-display-lg font-bold">12,450</span>
+<span class="text-on-surface-variant text-label-sm font-label-md">NEXUS</span>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-center text-body-sm">
+<span class="text-on-surface-variant">Staked Amount</span>
+<span class="text-on-surface">10,000</span>
+</div>
+<div class="flex justify-between items-center text-body-sm">
+<span class="text-on-surface-variant">Delegated to me</span>
+<span class="text-on-surface">2,450</span>
+</div>
+<button class="w-full py-2 bg-surface-container-highest border border-border-muted rounded text-label-sm font-label-md hover:bg-white/5 transition-all">
+                                        MANAGE DELEGATION
+                                    </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Governance Specific Glassmorphic Modal -->
+<div class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-surface-obsidian/80 backdrop-blur-sm p-4" id="proposalModal">
+<div class="w-full max-w-2xl glass-panel rounded-2xl shadow-2xl relative overflow-hidden flex flex-col max-h-[921px]">
+<!-- Decorative Accent -->
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-blue via-neon-purple to-neon-blue"></div>
+<div class="p-stack-lg border-b border-border-muted flex justify-between items-center">
+<div>
+<h2 class="text-headline-xl font-bold font-display-lg">Create New Proposal</h2>
+<p class="text-on-surface-variant text-body-sm">Submit your vision for the Nexus ecosystem.</p>
+</div>
+<button class="p-2 hover:bg-white/5 rounded-full" onclick="document.getElementById('proposalModal').classList.add('hidden')">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<div class="p-stack-lg overflow-y-auto space-y-6">
+<div class="space-y-2">
+<label class="text-label-sm font-label-md text-on-surface-variant uppercase tracking-wider">Proposal Title</label>
+<input class="w-full bg-surface-obsidian border border-border-muted rounded-xl px-4 py-3 text-on-surface font-body-md focus:border-neon-blue outline-none transition-all" placeholder="e.g., Integrate Layer 2 Scaling Solution" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="text-label-sm font-label-md text-on-surface-variant uppercase tracking-wider">Category</label>
+<select class="w-full bg-surface-obsidian border border-border-muted rounded-xl px-4 py-3 text-on-surface font-body-md appearance-none focus:border-neon-blue outline-none transition-all">
+<option>Protocol Upgrade</option>
+<option>Treasury Allocation</option>
+<option>Community Grant</option>
+<option>Governance Change</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="text-label-sm font-label-md text-on-surface-variant uppercase tracking-wider">Duration (Days)</label>
+<input class="w-full bg-surface-obsidian border border-border-muted rounded-xl px-4 py-3 text-on-surface font-body-md focus:border-neon-blue outline-none" type="number" value="7"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-label-sm font-label-md text-on-surface-variant uppercase tracking-wider">Detailed Description (Markdown Supported)</label>
+<textarea class="w-full bg-surface-obsidian border border-border-muted rounded-xl px-4 py-3 text-on-surface font-body-md focus:border-neon-blue outline-none transition-all" placeholder="Provide a comprehensive breakdown of your proposal..." rows="6"></textarea>
+</div>
+<div class="bg-neon-blue/5 border border-neon-blue/20 p-4 rounded-xl flex items-start gap-3">
+<span class="material-symbols-outlined text-neon-blue" data-icon="info">info</span>
+<p class="text-body-sm text-on-surface-variant">A deposit of <span class="text-on-surface font-bold">500 NEXUS</span> is required to submit a proposal. This will be refunded if the proposal reaches the quorum threshold.</p>
+</div>
+</div>
+<div class="p-stack-lg border-t border-border-muted bg-surface-container-low/50 flex gap-4">
+<button class="flex-1 py-3 bg-surface-container border border-border-muted rounded-xl text-on-surface font-bold hover:bg-white/5 transition-all" onclick="document.getElementById('proposalModal').classList.add('hidden')">
+                    SAVE DRAFT
+                </button>
+<button class="flex-[2] py-3 bg-neon-blue text-white rounded-xl font-bold hover:brightness-110 active:scale-[0.98] transition-all neon-glow">
+                    SUBMIT TO VOTING
+                </button>
+</div>
+</div>
+</div>
+<script>
+        // Modal Backdrop Click
+        document.getElementById('proposalModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+            }
+        });
+
+        // Simple spotlight mouse follow logic (Optional interaction)
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            // Apply slight tilt to cards or adjust ambient light
+            // This adds a layer of tactile responsiveness
+        });
+    </script>
+</body></html>

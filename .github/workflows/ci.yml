@@ -44,54 +44,54 @@ jobs:
           python-version: '3.11'
       - name: Install Python dependencies
         run: |
-          python -m venv .venv
-          . .venv/bin/activate
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+        shell: bash
       - name: Wait for services and verify connections
         run: |
-          . .venv/bin/activate
           sleep 5
-          python -c "
-import asyncio
-from sqlalchemy.ext.asyncio import create_async_engine
-import redis
+          python <<'PY'
+          import asyncio
+          from sqlalchemy.ext.asyncio import create_async_engine
+          import redis
 
-async def test_db():
-    engine = create_async_engine('postgresql+asyncpg://nexus:nexus@localhost:5432/nexus')
-    try:
-        async with engine.begin() as conn:
-            await conn.execute(__import__('sqlalchemy').text('SELECT 1'))
-        print('✓ PostgreSQL OK')
-    except Exception as e:
-        print(f'✗ PostgreSQL FAILED: {e}')
-        raise
-    finally:
-        await engine.dispose()
+          async def test_db():
+              engine = create_async_engine('postgresql+asyncpg://nexus:nexus@localhost:5432/nexus')
+              try:
+                  async with engine.begin() as conn:
+                      await conn.execute(__import__('sqlalchemy').text('SELECT 1'))
+                  print('✓ PostgreSQL OK')
+              except Exception as e:
+                  print(f'✗ PostgreSQL FAILED: {e}')
+                  raise
+              finally:
+                  await engine.dispose()
 
-try:
-    r = redis.Redis(host='localhost', port=6379, decode_responses=True)
-    r.ping()
-    print('✓ Redis OK')
-except Exception as e:
-    print(f'✗ Redis FAILED: {e}')
-    raise
+          try:
+              r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+              r.ping()
+              print('✓ Redis OK')
+          except Exception as e:
+              print(f'✗ Redis FAILED: {e}')
+              raise
 
-asyncio.run(test_db())
-"
+          asyncio.run(test_db())
+          PY
+        shell: bash
       - name: Run diagnostic test
-        working-directory: .
+        working-directory: apps/api
         run: |
-          . apps/api/.venv/bin/activate
           python test_ci_setup.py
+        shell: bash
       - name: Run backend lint
         run: |
-          . .venv/bin/activate
-          pip install ruff
-          ruff check app tests
+          python -m pip install ruff
+          python -m ruff check app tests
+        shell: bash
       - name: Run backend tests
         run: |
-          . .venv/bin/activate
           pytest -vv --tb=short 2>&1
+        shell: bash
         env:
           DATABASE_URL: postgresql+asyncpg://nexus:nexus@localhost:5432/nexus
           REDIS_URL: redis://localhost:6379/0
@@ -109,7 +109,7 @@ asyncio.run(test_db())
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: apps/web/package-lock.json
       - name: Install frontend dependencies
         run: npm ci
       - name: Lint frontend
@@ -138,7 +138,7 @@ asyncio.run(test_db())
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: packages/contracts/package-lock.json
       - name: Install contract dependencies
         run: npm ci
       - name: Compile contracts

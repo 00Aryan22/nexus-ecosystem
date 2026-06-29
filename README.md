@@ -51,6 +51,13 @@ cp apps/web/.env.example apps/web/.env.local
 # Set NEXT_PUBLIC_* values
 ```
 
+### 2.1 Local Host Rules
+
+- Keep private values in the root `.env.local` only.
+- Keep browser-safe values (NEXT_PUBLIC_*) in `apps/web/.env.local` only.
+- Never commit `.env.local` or `apps/web/.env.local`.
+- Update markdown docs only when the code or setup changes, not for temporary notes.
+
 ### 3. Start infrastructure
 
 ```bash
@@ -105,6 +112,9 @@ To enable Alchemy and Pinata integrations for richer demo behavior, add the foll
 - `ALCHEMY_POLYGON_AMOY_RPC_URL` — Alchemy Polygon Amoy RPC endpoint (or use `POLYGON_AMOY_RPC_URL`)
 - `PINATA_API_KEY`, `PINATA_API_SECRET` — Pinata keypair (server use)
 - `PINATA_JWT` — Pinata JWT (server-only; used for pinning metadata)
+- `STITCH_URL` — Stitch API endpoint (server-side only)
+- `STITCH_API_KEY` — Google API key for Stitch requests (server-side only)
+- `STITCH_HEADER_NAME` — request header name for Stitch API key (default: `X-Goog-Api-Key`)
 
 For frontend-only read access (safe public values), copy these into `apps/web/.env.local` if desired:
 

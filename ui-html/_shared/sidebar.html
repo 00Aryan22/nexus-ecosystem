@@ -1,0 +1,37 @@
+<!-- ── SHARED SIDEBAR — include via JS or copy into each page ── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar__brand">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
+      <div style="width:40px;height:40px;border-radius:var(--radius-lg);background:rgba(59,130,246,0.2);border:1px solid var(--neon-blue);display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(59,130,246,0.4);">
+        <span class="material-symbols-outlined" style="color:var(--neon-blue);font-variation-settings:'FILL' 1;">dataset</span>
+      </div>
+      <div>
+        <a href="index.html" class="sidebar__brand-name">NEXUS AI</a>
+        <div class="sidebar__brand-tag">Web3 OS</div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sidebar__nav">
+    <a href="dashboard.html"        class="nav-item" data-page="dashboard.html">      <span class="material-symbols-outlined">dashboard</span>      <span>Dashboard</span></a>
+    <a href="founder-agent.html"    class="nav-item" data-page="founder-agent.html">  <span class="material-symbols-outlined">smart_toy</span>       <span>AI Agent</span></a>
+    <a href="startup-builder.html"  class="nav-item" data-page="startup-builder.html"><span class="material-symbols-outlined">rocket_launch</span>   <span>Startup Builder</span></a>
+    <a href="contract-auditor.html" class="nav-item" data-page="contract-auditor.html"><span class="material-symbols-outlined">verified_user</span>  <span>Auditor</span></a>
+    <a href="skill-passport.html"   class="nav-item" data-page="skill-passport.html"> <span class="material-symbols-outlined">badge</span>           <span>Skill Passport</span></a>
+    <a href="dao.html"              class="nav-item" data-page="dao.html">             <span class="material-symbols-outlined">account_balance</span><span>DAO Center</span></a>
+    <a href="wallet.html"           class="nav-item" data-page="wallet.html">         <span class="material-symbols-outlined">account_balance_wallet</span><span>Wallet</span></a>
+    <a href="analytics.html"        class="nav-item" data-page="analytics.html">      <span class="material-symbols-outlined">analytics</span>      <span>Analytics</span></a>
+    <a href="notifications.html"    class="nav-item" data-page="notifications.html">  <span class="material-symbols-outlined">notifications</span>  <span>Activity</span></a>
+  </nav>
+
+  <div class="sidebar__footer">
+    <button class="btn btn--primary btn--full" style="margin-bottom:var(--stack-md);border-radius:var(--radius-md);">Deploy Contract</button>
+    <a href="settings.html" class="nav-item" data-page="settings.html"><span class="material-symbols-outlined">settings</span><span>Settings</span></a>
+    <a href="#" class="nav-item"><span class="material-symbols-outlined">help</span><span>Support</span></a>
+  </div>
+</aside>
+<!-- Sidebar overlay for mobile -->
+<div class="sidebar-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:39;backdrop-filter:blur(4px);" id="sidebarOverlay"></div>
+<style>
+.sidebar-overlay.is-visible { display:block !important; }
+</style>

@@ -1,0 +1,370 @@
+<!-- Main Dashboard - NEXUS AI -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEXUS AI | Founder Agent</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Geist:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #08090A;
+            color: #e3e2e3;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(17, 18, 20, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glow-blue {
+            box-shadow: 0 0 40px -10px rgba(59, 130, 246, 0.2);
+        }
+        .glow-purple {
+            box-shadow: 0 0 40px -10px rgba(168, 85, 247, 0.2);
+        }
+        .mesh-gradient {
+            background: radial-gradient(circle at 50% -20%, rgba(59, 130, 246, 0.15), transparent 70%),
+                        radial-gradient(circle at 0% 100%, rgba(168, 85, 247, 0.1), transparent 50%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-container": "#4d8eff",
+                      "on-primary-container": "#00285d",
+                      "outline": "#8c909f",
+                      "surface-bright": "#38393a",
+                      "tertiary": "#c3d000",
+                      "inverse-on-surface": "#303032",
+                      "surface-tint": "#adc6ff",
+                      "secondary": "#ddb7ff",
+                      "surface-container": "#1f2021",
+                      "on-primary-fixed-variant": "#004395",
+                      "error": "#ffb4ab",
+                      "on-secondary-container": "#d6a9ff",
+                      "secondary-fixed-dim": "#ddb7ff",
+                      "inverse-surface": "#e3e2e3",
+                      "on-primary-fixed": "#001a42",
+                      "on-surface-variant": "#c2c6d6",
+                      "inverse-primary": "#005ac2",
+                      "background": "#121315",
+                      "neon-blue": "#3b82f6",
+                      "surface": "#121315",
+                      "secondary-fixed": "#f0dbff",
+                      "primary-fixed": "#d8e2ff",
+                      "surface-obsidian": "#08090A",
+                      "surface-dim": "#121315",
+                      "primary-fixed-dim": "#adc6ff",
+                      "on-surface": "#e3e2e3",
+                      "border-muted": "rgba(255, 255, 255, 0.08)",
+                      "warning-yellow": "#E4F222",
+                      "neon-purple": "#a855f7",
+                      "on-tertiary-fixed": "#1b1d00",
+                      "on-tertiary": "#2f3300",
+                      "outline-variant": "#424754",
+                      "surface-container-high": "#292a2b",
+                      "on-background": "#e3e2e3",
+                      "on-error": "#690005",
+                      "tertiary-fixed": "#dfed1a",
+                      "primary": "#adc6ff",
+                      "on-error-container": "#ffdad6",
+                      "tertiary-fixed-dim": "#c3d000",
+                      "on-secondary-fixed-variant": "#6900b3",
+                      "surface-slate": "#111214",
+                      "on-tertiary-fixed-variant": "#454a00",
+                      "secondary-container": "#6f00be",
+                      "error-container": "#93000a",
+                      "on-primary": "#002e6a",
+                      "on-tertiary-container": "#292c00",
+                      "surface-container-low": "#1b1c1d",
+                      "surface-container-highest": "#343536",
+                      "on-secondary": "#490080",
+                      "surface-container-lowest": "#0d0e0f",
+                      "surface-variant": "#343536",
+                      "on-secondary-fixed": "#2c0051",
+                      "tertiary-container": "#8e9800"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "stack-xl": "64px",
+                      "stack-xs": "4px",
+                      "stack-md": "16px",
+                      "margin-mobile": "20px",
+                      "margin-page": "40px",
+                      "unit": "4px",
+                      "stack-sm": "8px",
+                      "stack-lg": "32px"
+              },
+              "fontFamily": {
+                      "body-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["JetBrains Mono"],
+                      "display-lg": ["Geist"],
+                      "headline-lg": ["Geist"],
+                      "display-lg-mobile": ["Geist"],
+                      "label-md": ["JetBrains Mono"],
+                      "headline-xl": ["Geist"],
+                      "body-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                      "headline-lg": ["24px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "display-lg-mobile": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-xl": ["32px", {"lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="mesh-gradient h-screen overflow-hidden flex flex-col">
+<!-- TopNavBar Mapping -->
+<header class="w-full sticky top-0 z-50 bg-surface-obsidian/60 backdrop-blur-md border-b border-border-muted flex justify-between items-center h-16 px-margin-page">
+<div class="flex items-center gap-stack-lg">
+<h1 class="font-display-lg text-headline-lg font-bold text-on-surface tracking-tighter">NEXUS AI</h1>
+<div class="flex items-center gap-stack-sm px-stack-md py-1 bg-white/5 rounded-full border border-border-muted">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<span class="font-label-md text-label-md text-on-surface-variant">Thinking...</span>
+</div>
+</div>
+<div class="flex items-center gap-stack-lg">
+<div class="flex items-center gap-stack-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface transition-colors">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface transition-colors">terminal</button>
+</div>
+<button class="px-stack-md py-2 bg-neon-blue text-white font-display-lg text-label-md rounded-lg hover:brightness-125 transition-all">
+                Connect Wallet
+            </button>
+</div>
+</header>
+<main class="flex flex-1 overflow-hidden">
+<!-- SideNavBar Mapping (Left) -->
+<aside class="h-full w-64 flex flex-col sticky top-0 left-0 border-r border-border-muted bg-surface-slate/80 backdrop-blur-xl py-stack-md px-gutter md:flex hidden">
+<nav class="flex-1 space-y-stack-sm">
+<div class="flex items-center gap-stack-md p-stack-sm text-neon-blue bg-primary-container/10 border-r-2 border-neon-blue font-bold rounded-sm">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</div>
+<div class="flex items-center gap-stack-md p-stack-sm text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-body-md text-body-md">AI Agent</span>
+</div>
+<div class="flex items-center gap-stack-md p-stack-sm text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined">rocket_launch</span>
+<span class="font-body-md text-body-md">Startup Builder</span>
+</div>
+<div class="flex items-center gap-stack-md p-stack-sm text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-body-md text-body-md">Auditor</span>
+</div>
+<div class="flex items-center gap-stack-md p-stack-sm text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined">badge</span>
+<span class="font-body-md text-body-md">Skill Passport</span>
+</div>
+<div class="flex items-center gap-stack-md p-stack-sm text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined">account_balance</span>
+<span class="font-body-md text-body-md">DAO Center</span>
+</div>
+</nav>
+<div class="mt-auto space-y-stack-sm">
+<button class="w-full py-stack-md bg-white/5 border border-border-muted rounded-xl font-label-md text-label-md text-on-surface hover:bg-white/10 transition-all mb-stack-lg">
+                    Deploy Contract
+                </button>
+<div class="flex items-center gap-stack-md p-stack-sm text-on-surface-variant hover:text-on-surface cursor-pointer">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</div>
+<div class="flex items-center gap-stack-md p-stack-sm text-on-surface-variant hover:text-on-surface cursor-pointer">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md text-body-md">Support</span>
+</div>
+</div>
+</aside>
+<!-- Main Workspace (Chat) -->
+<section class="flex-1 flex flex-col relative overflow-hidden">
+<div class="flex-1 overflow-y-auto px-margin-page py-stack-xl space-y-stack-lg flex flex-col items-center">
+<!-- AI Message: Startup Concept -->
+<div class="w-full max-w-3xl glass-panel p-stack-lg rounded-xl glow-blue space-y-stack-md self-start">
+<div class="flex items-center gap-stack-md border-b border-white/5 pb-stack-sm">
+<span class="material-symbols-outlined text-neon-blue">rocket_launch</span>
+<span class="font-label-md text-label-md uppercase tracking-widest text-on-surface">Startup Concept Generated</span>
+</div>
+<div class="font-body-lg text-body-lg text-on-surface">
+                        I've analyzed the current DeFi ecosystem and identified a gap in <span class="text-neon-blue font-bold">Cross-Chain Liquidity Risk Management</span>. 
+                        Proposed Name: <span class="font-bold">AETHER SHIELD</span>.
+                    </div>
+<div class="grid grid-cols-2 gap-stack-md">
+<div class="p-stack-md bg-white/5 border border-border-muted rounded-lg">
+<span class="block font-label-sm text-label-sm text-on-surface-variant mb-1">MARKET CAP GAP</span>
+<span class="text-headline-lg font-bold text-tertiary">$1.2B</span>
+</div>
+<div class="p-stack-md bg-white/5 border border-border-muted rounded-lg">
+<span class="block font-label-sm text-label-sm text-on-surface-variant mb-1">RISK SCORE</span>
+<span class="text-headline-lg font-bold text-neon-purple">Low-Medium</span>
+</div>
+</div>
+</div>
+<!-- AI Message: Code Snippet -->
+<div class="w-full max-w-3xl glass-panel p-stack-lg rounded-xl space-y-stack-md self-start">
+<div class="flex items-center gap-stack-md border-b border-white/5 pb-stack-sm">
+<span class="material-symbols-outlined text-neon-purple">code</span>
+<span class="font-label-md text-label-md uppercase tracking-widest text-on-surface">Smart Contract Blueprint</span>
+</div>
+<div class="bg-surface-obsidian p-stack-md rounded-lg border border-border-muted">
+<pre class="font-label-md text-label-md text-neon-blue overflow-x-auto"><code>// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract AetherShield {
+    mapping(address =&gt; uint256) public liquidityBuffers;
+    
+    function monitorExposure(address target) external view returns (uint256) {
+        // Logic for cross-chain liquidity monitoring
+        return liquidityBuffers[target];
+    }
+}</code></pre>
+</div>
+<div class="flex gap-stack-md">
+<button class="px-stack-md py-1 bg-neon-blue/20 text-neon-blue border border-neon-blue/30 rounded-full font-label-sm text-label-sm">DEPLOY TO TESTNET</button>
+<button class="px-stack-md py-1 bg-white/5 text-on-surface-variant border border-border-muted rounded-full font-label-sm text-label-sm">RUN AUDIT</button>
+</div>
+</div>
+<!-- User Message -->
+<div class="w-full max-w-3xl flex justify-end">
+<div class="bg-white/10 p-stack-md rounded-xl rounded-tr-none border border-white/10 max-w-[80%]">
+<p class="font-body-md text-body-md text-on-surface">Excellent. Can you generate a market penetration strategy for the Layer 2 ecosystem?</p>
+</div>
+</div>
+</div>
+<!-- Command Bar -->
+<div class="p-margin-page w-full flex justify-center sticky bottom-0">
+<div class="w-full max-w-4xl glass-panel rounded-full p-2 flex items-center gap-stack-md glow-purple focus-within:ring-2 focus-within:ring-neon-purple transition-all">
+<div class="p-2 bg-gradient-to-br from-neon-blue to-neon-purple rounded-full ml-1">
+<span class="material-symbols-outlined text-white text-body-lg">auto_awesome</span>
+</div>
+<input class="flex-1 bg-transparent border-none focus:ring-0 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant" placeholder="Nexus Intelligence: Ask anything about your startup..." type="text"/>
+<div class="flex items-center gap-stack-sm mr-2">
+<kbd class="px-2 py-1 bg-white/10 border border-white/10 rounded font-label-sm text-label-sm text-on-surface-variant">Ctrl</kbd>
+<kbd class="px-2 py-1 bg-white/10 border border-white/10 rounded font-label-sm text-label-sm text-on-surface-variant">K</kbd>
+<button class="material-symbols-outlined text-neon-blue p-2 hover:bg-white/5 rounded-full">send</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Sidebar (Context & Mental Model) -->
+<aside class="w-80 h-full border-l border-border-muted bg-surface-slate/40 backdrop-blur-md p-stack-lg flex flex-col gap-stack-lg hidden xl:flex">
+<!-- Agent Context -->
+<div class="space-y-stack-md">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Active Goals</h3>
+<div class="space-y-stack-sm">
+<div class="p-stack-md bg-white/5 rounded-lg border border-border-muted flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-tertiary text-body-md">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-surface">Identify market gap</span>
+</div>
+<div class="p-stack-md bg-white/5 rounded-lg border border-border-muted flex items-center gap-stack-md">
+<span class="w-4 h-4 border-2 border-neon-blue border-t-transparent rounded-full animate-spin"></span>
+<span class="font-body-sm text-body-sm text-on-surface">Generate L2 Strategy</span>
+</div>
+<div class="p-stack-md bg-white/5 rounded-lg border border-border-muted opacity-50 flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-on-surface-variant text-body-md">circle</span>
+<span class="font-body-sm text-body-sm text-on-surface">Initial Seed Deck</span>
+</div>
+</div>
+</div>
+<!-- Mental Model Visualization -->
+<div class="flex-1 flex flex-col">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-stack-md">Mental Model</h3>
+<div class="flex-1 rounded-xl glass-panel relative overflow-hidden">
+
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="text-center p-stack-md">
+<span class="block font-label-sm text-label-sm text-neon-blue mb-1">SYNAPTIC LOAD</span>
+<span class="text-headline-xl font-bold text-on-surface">82%</span>
+</div>
+</div>
+<!-- Overlay Stats -->
+<div class="absolute bottom-4 left-4 right-4 grid grid-cols-2 gap-2">
+<div class="bg-black/40 backdrop-blur-md p-2 rounded-lg border border-white/5">
+<span class="block font-label-sm text-[10px] text-on-surface-variant">LOGIC REASONING</span>
+<div class="w-full bg-white/10 h-1 mt-1 rounded-full overflow-hidden">
+<div class="bg-neon-blue h-full w-3/4"></div>
+</div>
+</div>
+<div class="bg-black/40 backdrop-blur-md p-2 rounded-lg border border-white/5">
+<span class="block font-label-sm text-[10px] text-on-surface-variant">CREATIVE SYNTHESIS</span>
+<div class="w-full bg-white/10 h-1 mt-1 rounded-full overflow-hidden">
+<div class="bg-neon-purple h-full w-1/2"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Profile Info -->
+<div class="glass-panel p-stack-md rounded-xl flex items-center gap-stack-md border-neon-blue/20">
+<img alt="User Profile" class="w-10 h-10 rounded-full border border-neon-blue" data-alt="A professional headshot of a futuristic tech entrepreneur with subtle cybernetic enhancements, wearing a sleek black minimalist blazer, set against a dark obsidian background with faint neon blue accents. The lighting is dramatic and high-contrast, emphasizing a vision of advanced human-AI integration. The overall style is premium, cinematic, and reflective of a high-performance Web3 operating system ecosystem." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFSTyasCcLJVn7bE_03Hgzp1Kk45z3OoPjzR-YcVkf_VlohzP6R0XXG7REabKs36orROJ0taMyc97eeaKMrXQJVNIqwwOw_sa1Xu_9YRWYKsNqhacBwwVkFRiFYsTTcc5-932KGoy6441MQChGzVfG82xyMrGWpTp6B3gtrBxmZQGEkrVWM9tRdP9JWw3GulaclxWo4fno0TNkyLAA0G_vioRvtiJStro0IA4TD_U_td8L527ScuMoogegyki8PKC2wD_6Hq3Azqc"/>
+<div>
+<span class="block font-body-sm font-bold text-on-surface">Elena Vance</span>
+<span class="block font-label-sm text-[10px] text-on-surface-variant">FOUNDER ID: 0X8B...2E4</span>
+</div>
+<button class="ml-auto material-symbols-outlined text-on-surface-variant hover:text-on-surface">logout</button>
+</div>
+</aside>
+</main>
+<script>
+        // Micro-interactions for the Command Bar
+        const input = document.querySelector('input');
+        const commandBar = input.closest('.glass-panel');
+
+        input.addEventListener('focus', () => {
+            commandBar.classList.add('scale-[1.02]');
+            commandBar.classList.remove('glow-purple');
+            commandBar.classList.add('glow-blue');
+        });
+
+        input.addEventListener('blur', () => {
+            commandBar.classList.remove('scale-[1.02]');
+            commandBar.classList.add('glow-purple');
+            commandBar.classList.remove('glow-blue');
+        });
+
+        // Keyboard Shortcut Focus
+        window.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                input.focus();
+            }
+        });
+
+        // Atmospheric cursor glow effect
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth * 100;
+            const y = e.clientY / window.innerHeight * 100;
+            document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(59, 130, 246, 0.05), transparent 25%), radial-gradient(circle at 50% -20%, rgba(59, 130, 246, 0.15), transparent 70%), radial-gradient(circle at 0% 100%, rgba(168, 85, 247, 0.1), transparent 50%), #08090A`;
+        });
+    </script>
+</body></html>

@@ -2,17 +2,19 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 import { ACCESS_COOKIE } from "@/lib/constants";
+import { handleSupabaseCookies } from "@/utils/supabase/middleware";
 
 const PROTECTED_PREFIXES = ["/dashboard", "/founder-agent", "/startup-builder", "/skill-passport", "/auditor", "/analytics", "/settings"];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const response = await handleSupabaseCookies(request);
   const isProtected = PROTECTED_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
 
   if (!isProtected) {
-    return NextResponse.next();
+    return response;
   }
 
   const token = request.cookies.get(ACCESS_COOKIE)?.value;
@@ -23,7 +25,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {

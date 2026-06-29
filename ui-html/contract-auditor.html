@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contract Auditor — NEXUS AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/variables.css"/>
+  <link rel="stylesheet" href="assets/css/animations.css"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="stylesheet" href="assets/css/responsive.css"/>
+  <style>
+    .dash-shell{display:flex;height:100vh;overflow:hidden;}
+    .dash-main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+    .auditor-shell{flex:1;display:grid;grid-template-columns:1fr 400px;overflow:hidden;}
+    .code-panel{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border-muted);}
+    .code-editor{flex:1;overflow:auto;background:rgba(8,9,10,0.9);font-family:var(--font-mono);font-size:13px;line-height:1.7;position:relative;}
+    .code-editor::-webkit-scrollbar{width:6px;height:6px;}
+    .code-editor::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px;}
+    .code-area{width:100%;height:100%;resize:none;background:transparent;color:var(--on-surface);font-family:var(--font-mono);font-size:13px;line-height:1.7;padding:var(--stack-lg);outline:none;border:none;}
+    .report-panel{overflow-y:auto;display:flex;flex-direction:column;}
+    .report-panel::-webkit-scrollbar{width:4px;}
+    .report-panel::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px;}
+    .finding-item{padding:var(--stack-md);border-bottom:1px solid var(--border-muted);cursor:pointer;transition:var(--transition-fast);}
+    .finding-item:hover{background:rgba(255,255,255,0.02);}
+    .finding-item--critical{border-left:3px solid var(--neon-red);}
+    .finding-item--high{border-left:3px solid var(--neon-amber);}
+    .finding-item--medium{border-left:3px solid var(--warning-yellow);}
+    .finding-item--low{border-left:3px solid #34d399;}
+    .finding-item--info{border-left:3px solid var(--neon-blue);}
+    .score-ring{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:22px;font-weight:700;}
+    .line-highlight{background:rgba(255,77,77,0.08);border-left:2px solid var(--neon-red);}
+    .tab{padding:8px 16px;font-family:var(--font-mono);font-size:var(--text-label-sm);text-transform:uppercase;cursor:pointer;transition:var(--transition-fast);border-bottom:2px solid transparent;color:var(--on-surface-variant);}
+    .tab--active{color:var(--neon-blue);border-bottom-color:var(--neon-blue);}
+    .tab:hover:not(.tab--active){color:var(--on-surface);}
+  </style>
+</head>
+<body>
+<div class="dash-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__brand">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;border-radius:var(--radius-lg);background:rgba(59,130,246,0.2);border:1px solid var(--neon-blue);display:flex;align-items:center;justify-content:center;">
+          <span class="material-symbols-outlined" style="color:var(--neon-blue);font-variation-settings:'FILL' 1;">dataset</span>
+        </div>
+        <div><a href="index.html" class="sidebar__brand-name">NEXUS AI</a><div class="sidebar__brand-tag">Web3 OS</div></div>
+      </div>
+    </div>
+    <nav class="sidebar__nav">
+      <a href="dashboard.html"        class="nav-item"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></a>
+      <a href="founder-agent.html"    class="nav-item"><span class="material-symbols-outlined">smart_toy</span><span>AI Agent</span></a>
+      <a href="startup-builder.html"  class="nav-item"><span class="material-symbols-outlined">rocket_launch</span><span>Startup Builder</span></a>
+      <a href="contract-auditor.html" class="nav-item nav-item--active"><span class="material-symbols-outlined">verified_user</span><span>Auditor</span></a>
+      <a href="skill-passport.html"   class="nav-item"><span class="material-symbols-outlined">badge</span><span>Skill Passport</span></a>
+      <a href="dao.html"              class="nav-item"><span class="material-symbols-outlined">account_balance</span><span>DAO Center</span></a>
+      <a href="wallet.html"           class="nav-item"><span class="material-symbols-outlined">account_balance_wallet</span><span>Wallet</span></a>
+      <a href="analytics.html"        class="nav-item"><span class="material-symbols-outlined">analytics</span><span>Analytics</span></a>
+      <a href="notifications.html"    class="nav-item"><span class="material-symbols-outlined">notifications</span><span>Activity</span></a>
+    </nav>
+    <div class="sidebar__footer">
+      <button class="btn btn--primary btn--full" style="margin-bottom:var(--stack-md);border-radius:var(--radius-md);">Deploy Contract</button>
+      <a href="settings.html" class="nav-item"><span class="material-symbols-outlined">settings</span><span>Settings</span></a>
+    </div>
+  </aside>
+
+  <div class="dash-main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:var(--stack-md);">
+        <button class="topbar__icon-btn" id="sidebarToggle"><span class="material-symbols-outlined">menu</span></button>
+        <div>
+          <div style="font-family:var(--font-display);font-size:var(--text-headline-lg);font-weight:700;">Smart Contract Auditor</div>
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">Powered by Gemini 1.5 Pro + Static Analysis</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--stack-md);">
+        <button class="btn btn--ghost btn--sm"><span class="material-symbols-outlined" style="font-size:14px;">history</span>History</button>
+        <button class="btn btn--primary btn--sm" onclick="runAudit()"><span class="material-symbols-outlined" style="font-size:14px;">play_arrow</span>Run Audit</button>
+        <button class="topbar__icon-btn" style="position:relative;"><span class="material-symbols-outlined">notifications</span><span class="notification-dot"></span></button>
+        <div class="avatar"><img src="https://placehold.co/32x32/3b82f6/fff?text=N" alt="avatar"/></div>
+      </div>
+    </header>
+
+    <div class="auditor-shell">
+      <!-- Code Panel -->
+      <div class="code-panel">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px;border-bottom:1px solid var(--border-muted);background:rgba(17,18,20,0.8);">
+          <div style="display:flex;align-items:center;gap:var(--stack-md);">
+            <span class="tab tab--active">StakingPool.sol</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:var(--stack-md);">
+            <span style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">Solidity 0.8.28</span>
+            <button class="btn btn--ghost btn--sm"><span class="material-symbols-outlined" style="font-size:14px;">upload_file</span>Upload</button>
+          </div>
+        </div>
+        <div class="code-editor">
+          <textarea class="code-area" id="codeEditor" spellcheck="false">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+/// @title StakingPool
+/// @notice Stake DVT tokens to earn rewards
+contract StakingPool is Ownable {
+    IERC20 public immutable stakingToken;
+    IERC20 public immutable rewardsToken;
+
+    uint256 public rewardRate = 100;
+    uint256 public lastUpdateTime;
+    uint256 public rewardPerTokenStored;
+
+    mapping(address => uint256) public userRewardPerTokenPaid;
+    mapping(address => uint256) public rewards;
+    mapping(address => uint256) private _balances;
+    uint256 private _totalSupply;
+
+    constructor(address _stakingToken, address _rewardsToken) Ownable(msg.sender) {
+        stakingToken = IERC20(_stakingToken);
+        rewardsToken = IERC20(_rewardsToken);
+    }
+
+    // ⚠ MEDIUM: No reentrancy guard on stake()
+    function stake(uint256 amount) external updateReward(msg.sender) {
+        require(amount > 0, "Cannot stake 0");
+        _totalSupply += amount;
+        _balances[msg.sender] += amount;
+        stakingToken.transferFrom(msg.sender, address(this), amount);
+    }
+
+    // ⚠ MEDIUM: No reentrancy guard on withdraw()
+    function withdraw(uint256 amount) external updateReward(msg.sender) {
+        require(amount > 0, "Cannot withdraw 0");
+        _totalSupply -= amount;
+        _balances[msg.sender] -= amount;
+        // ⚠ HIGH: State update AFTER external call (reentrancy risk)
+        stakingToken.transfer(msg.sender, amount);
+    }
+
+    function getReward() external updateReward(msg.sender) {
+        uint256 reward = rewards[msg.sender];
+        if (reward > 0) {
+            rewards[msg.sender] = 0;
+            rewardsToken.transfer(msg.sender, reward);
+        }
+    }
+
+    modifier updateReward(address account) {
+        rewardPerTokenStored = rewardPerToken();
+        lastUpdateTime = block.timestamp;
+        if (account != address(0)) {
+            rewards[account] = earned(account);
+            userRewardPerTokenPaid[account] = rewardPerTokenStored;
+        }
+        _;
+    }
+
+    function rewardPerToken() public view returns (uint256) {
+        if (_totalSupply == 0) return rewardPerTokenStored;
+        return rewardPerTokenStored + (rewardRate * (block.timestamp - lastUpdateTime) * 1e18) / _totalSupply;
+    }
+
+    function earned(address account) public view returns (uint256) {
+        return (_balances[account] * (rewardPerToken() - userRewardPerTokenPaid[account])) / 1e18 + rewards[account];
+    }
+}</textarea>
+        </div>
+        <div style="padding:8px 16px;border-top:1px solid var(--border-muted);background:rgba(17,18,20,0.8);display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">63 lines · Solidity</span>
+          <div style="display:flex;gap:8px;">
+            <span class="badge badge--red">1 HIGH</span>
+            <span class="badge badge--yellow">2 MEDIUM</span>
+            <span class="badge badge--blue">1 INFO</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Report Panel -->
+      <div class="report-panel">
+        <div style="padding:var(--stack-lg);border-bottom:1px solid var(--border-muted);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--stack-lg);">
+            <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);">Audit Report</h3>
+            <button class="btn btn--ghost btn--sm"><span class="material-symbols-outlined" style="font-size:14px;">download</span>Export PDF</button>
+          </div>
+          <!-- Score -->
+          <div style="display:flex;align-items:center;gap:var(--stack-lg);">
+            <div class="score-ring" style="background:conic-gradient(var(--neon-amber) 0% 62%,rgba(255,255,255,0.05) 62%);box-shadow:0 0 20px rgba(255,165,0,0.2);">62</div>
+            <div>
+              <div style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;color:var(--on-surface-variant);">Security Score</div>
+              <div style="font-family:var(--font-display);font-size:var(--text-headline-lg);color:var(--neon-amber);font-weight:700;">At Risk</div>
+              <div style="font-size:11px;color:var(--on-surface-variant);margin-top:2px;">Fix HIGH finding before deploy</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:var(--stack-md);">
+            <div style="text-align:center;padding:8px;background:rgba(255,77,77,0.05);border:1px solid rgba(255,77,77,0.2);border-radius:var(--radius-md);"><div style="font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--neon-red);">0</div><div style="font-size:9px;color:var(--on-surface-variant);text-transform:uppercase;">Critical</div></div>
+            <div style="text-align:center;padding:8px;background:rgba(255,165,0,0.05);border:1px solid rgba(255,165,0,0.2);border-radius:var(--radius-md);"><div style="font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--neon-amber);">1</div><div style="font-size:9px;color:var(--on-surface-variant);text-transform:uppercase;">High</div></div>
+            <div style="text-align:center;padding:8px;background:rgba(228,242,34,0.05);border:1px solid rgba(228,242,34,0.2);border-radius:var(--radius-md);"><div style="font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--warning-yellow);">2</div><div style="font-size:9px;color:var(--on-surface-variant);text-transform:uppercase;">Medium</div></div>
+            <div style="text-align:center;padding:8px;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.2);border-radius:var(--radius-md);"><div style="font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--neon-blue);">1</div><div style="font-size:9px;color:var(--on-surface-variant);text-transform:uppercase;">Info</div></div>
+          </div>
+        </div>
+
+        <!-- Findings -->
+        <div style="padding:0;">
+          <div style="padding:var(--stack-md) var(--stack-lg);font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--on-surface-variant);border-bottom:1px solid var(--border-muted);">Findings</div>
+
+          <div class="finding-item finding-item--high">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+              <div style="font-size:var(--text-body-sm);font-weight:600;">Reentrancy in withdraw()</div>
+              <span class="badge badge--red">HIGH · L41</span>
+            </div>
+            <p style="font-size:11px;color:var(--on-surface-variant);margin-bottom:6px;">State variables are updated after the external <code style="background:rgba(255,255,255,0.07);padding:1px 4px;border-radius:3px;">transfer()</code> call, violating the Checks-Effects-Interactions pattern.</p>
+            <div style="background:rgba(255,77,77,0.05);border:1px solid rgba(255,77,77,0.15);border-radius:var(--radius-md);padding:8px;font-family:var(--font-mono);font-size:11px;">
+              <div style="color:var(--neon-red);margin-bottom:4px;">// Fix: Move state update BEFORE external call</div>
+              <div style="color:var(--on-surface);">_balances[msg.sender] -= amount;<br>_totalSupply -= amount;<br>stakingToken.transfer(msg.sender, amount);</div>
+            </div>
+          </div>
+
+          <div class="finding-item finding-item--medium">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+              <div style="font-size:var(--text-body-sm);font-weight:600;">Missing ReentrancyGuard on stake()</div>
+              <span class="badge badge--yellow">MEDIUM · L28</span>
+            </div>
+            <p style="font-size:11px;color:var(--on-surface-variant);">No reentrancy guard applied. Import OpenZeppelin's <code style="background:rgba(255,255,255,0.07);padding:1px 4px;border-radius:3px;">ReentrancyGuard</code> and add the <code style="background:rgba(255,255,255,0.07);padding:1px 4px;border-radius:3px;">nonReentrant</code> modifier.</p>
+          </div>
+
+          <div class="finding-item finding-item--medium">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+              <div style="font-size:var(--text-body-sm);font-weight:600;">Missing ReentrancyGuard on withdraw()</div>
+              <span class="badge badge--yellow">MEDIUM · L35</span>
+            </div>
+            <p style="font-size:11px;color:var(--on-surface-variant);">Same as above — apply <code style="background:rgba(255,255,255,0.07);padding:1px 4px;border-radius:3px;">nonReentrant</code> to <code style="background:rgba(255,255,255,0.07);padding:1px 4px;border-radius:3px;">withdraw()</code>.</p>
+          </div>
+
+          <div class="finding-item finding-item--info">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+              <div style="font-size:var(--text-body-sm);font-weight:600;">rewardRate not bounded</div>
+              <span class="badge badge--blue">INFO · L12</span>
+            </div>
+            <p style="font-size:11px;color:var(--on-surface-variant);">Owner can set <code style="background:rgba(255,255,255,0.07);padding:1px 4px;border-radius:3px;">rewardRate</code> to any value including 0 or very high numbers. Consider adding min/max bounds.</p>
+          </div>
+        </div>
+
+        <!-- AI Explanation -->
+        <div style="padding:var(--stack-lg);border-top:1px solid var(--border-muted);margin-top:auto;">
+          <div style="padding:var(--stack-md);background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.2);border-radius:var(--radius-lg);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span class="material-symbols-outlined" style="font-size:16px;color:var(--neon-blue);">smart_toy</span><span style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;color:var(--neon-blue);">AI Summary</span></div>
+            <p style="font-size:11px;color:var(--on-surface-variant);">This contract has a reentrancy vulnerability in <code style="background:rgba(255,255,255,0.07);padding:1px 4px;border-radius:3px;">withdraw()</code> that could allow an attacker to drain funds. Priority fix: apply CEI pattern and add ReentrancyGuard. After fixes, estimated score: 91/100.</p>
+            <button class="btn btn--neon-outline btn--sm btn--full" style="margin-top:var(--stack-md);border-radius:var(--radius-md);" onclick="askAI()">Ask AI for Fix →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/js/navigation.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+function runAudit(){
+  const btn=document.querySelector('[onclick="runAudit()"]');
+  btn.innerHTML='<span class="material-symbols-outlined" style="font-size:14px;animation:spin 1s linear infinite;">refresh</span>Analyzing…';
+  btn.disabled=true;
+  setTimeout(()=>{btn.innerHTML='<span class="material-symbols-outlined" style="font-size:14px;">play_arrow</span>Run Audit';btn.disabled=false;},2500);
+}
+function askAI(){window.location.href='founder-agent.html';}
+</script>
+</body>
+</html>

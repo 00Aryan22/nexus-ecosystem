@@ -1,0 +1,588 @@
+<!-- Achievement Center - NEXUS AI -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEXUS AI | Web3 OS Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Geist:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --neon-blue: #3b82f6;
+            --surface-obsidian: #08090A;
+        }
+        body {
+            background-color: var(--surface-obsidian);
+            color: #e3e2e3;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(17, 18, 20, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+        }
+        .spotlight-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .spotlight-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(59, 130, 246, 0.06), transparent 40%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 18px;
+            background-color: var(--neon-blue);
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+        @keyframes blink {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container": "#1f2021",
+                      "on-primary-fixed-variant": "#004395",
+                      "tertiary-fixed": "#dfed1a",
+                      "secondary-container": "#6f00be",
+                      "primary-container": "#4d8eff",
+                      "neon-purple": "#a855f7",
+                      "surface-container-high": "#292a2b",
+                      "on-tertiary-fixed-variant": "#454a00",
+                      "warning-yellow": "#E4F222",
+                      "on-background": "#e3e2e3",
+                      "surface-obsidian": "#08090A",
+                      "secondary-fixed": "#f0dbff",
+                      "error-container": "#93000a",
+                      "surface-tint": "#adc6ff",
+                      "surface-slate": "#111214",
+                      "secondary-fixed-dim": "#ddb7ff",
+                      "outline-variant": "#424754",
+                      "on-error-container": "#ffdad6",
+                      "on-secondary-fixed-variant": "#6900b3",
+                      "primary": "#adc6ff",
+                      "on-secondary": "#490080",
+                      "surface-variant": "#343536",
+                      "on-surface-variant": "#c2c6d6",
+                      "surface": "#121315",
+                      "surface-container-low": "#1b1c1d",
+                      "error": "#ffb4ab",
+                      "tertiary": "#c3d000",
+                      "surface-dim": "#121315",
+                      "on-surface": "#e3e2e3",
+                      "primary-fixed": "#d8e2ff",
+                      "primary-fixed-dim": "#adc6ff",
+                      "outline": "#8c909f",
+                      "tertiary-fixed-dim": "#c3d000",
+                      "on-tertiary-fixed": "#1b1d00",
+                      "inverse-on-surface": "#303032",
+                      "on-secondary-fixed": "#2c0051",
+                      "neon-blue": "#3b82f6",
+                      "on-primary": "#002e6a",
+                      "surface-bright": "#38393a",
+                      "surface-container-lowest": "#0d0e0f",
+                      "on-secondary-container": "#d6a9ff",
+                      "on-tertiary-container": "#292c00",
+                      "inverse-primary": "#005ac2",
+                      "on-error": "#690005",
+                      "tertiary-container": "#8e9800",
+                      "inverse-surface": "#e3e2e3",
+                      "border-muted": "rgba(255, 255, 255, 0.08)",
+                      "background": "#121315",
+                      "secondary": "#ddb7ff",
+                      "surface-container-highest": "#343536",
+                      "on-tertiary": "#2f3300",
+                      "on-primary-container": "#00285d",
+                      "on-primary-fixed": "#001a42"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-page": "40px",
+                      "unit": "4px",
+                      "stack-lg": "32px",
+                      "stack-md": "16px",
+                      "stack-xs": "4px",
+                      "stack-xl": "64px",
+                      "stack-sm": "8px",
+                      "margin-mobile": "20px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "headline-xl": ["Geist"],
+                      "body-md": ["Inter"],
+                      "display-lg-mobile": ["Geist"],
+                      "body-lg": ["Inter"],
+                      "label-sm": ["JetBrains Mono"],
+                      "display-lg": ["Geist"],
+                      "headline-lg": ["Geist"],
+                      "body-sm": ["Inter"],
+                      "label-md": ["JetBrains Mono"]
+              },
+              "fontSize": {
+                      "headline-xl": ["32px", {"lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "display-lg-mobile": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                      "headline-lg": ["24px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface-obsidian font-body-md text-on-surface">
+<div class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 flex flex-col sticky top-0 left-0 bg-surface-slate/80 backdrop-blur-xl border-r border-border-muted shadow-2xl shadow-surface-obsidian py-stack-md px-gutter z-[60] hidden md:flex">
+<div class="mb-stack-xl">
+<h1 class="font-display-lg text-headline-lg font-bold text-on-surface tracking-tighter">NEXUS AI</h1>
+<p class="text-label-sm text-neon-blue uppercase tracking-widest mt-1">Web3 OS</p>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="text-neon-blue bg-primary-container/10 border-r-2 border-neon-blue font-bold flex items-center px-4 py-3 rounded-l-lg transition-all duration-200">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</div>
+<div class="text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200 flex items-center px-4 py-3 rounded-lg cursor-pointer">
+<span class="material-symbols-outlined mr-3" data-icon="smart_toy">smart_toy</span>
+<span class="font-body-md text-body-md">AI Agent</span>
+</div>
+<div class="text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200 flex items-center px-4 py-3 rounded-lg cursor-pointer">
+<span class="material-symbols-outlined mr-3" data-icon="rocket_launch">rocket_launch</span>
+<span class="font-body-md text-body-md">Startup Builder</span>
+</div>
+<div class="text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200 flex items-center px-4 py-3 rounded-lg cursor-pointer">
+<span class="material-symbols-outlined mr-3" data-icon="verified_user">verified_user</span>
+<span class="font-body-md text-body-md">Auditor</span>
+</div>
+<div class="text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200 flex items-center px-4 py-3 rounded-lg cursor-pointer">
+<span class="material-symbols-outlined mr-3" data-icon="badge">badge</span>
+<span class="font-body-md text-body-md">Skill Passport</span>
+</div>
+<div class="text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200 flex items-center px-4 py-3 rounded-lg cursor-pointer">
+<span class="material-symbols-outlined mr-3" data-icon="account_balance">account_balance</span>
+<span class="font-body-md text-body-md">DAO Center</span>
+</div>
+<div class="text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200 flex items-center px-4 py-3 rounded-lg cursor-pointer">
+<span class="material-symbols-outlined mr-3" data-icon="shield_alert">shield_lock</span>
+<span class="font-body-md text-body-md">Fraud Detection</span>
+</div>
+<div class="text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200 flex items-center px-4 py-3 rounded-lg cursor-pointer">
+<span class="material-symbols-outlined mr-3" data-icon="storefront">storefront</span>
+<span class="font-body-md text-body-md">Marketplace</span>
+</div>
+</nav>
+<div class="pt-stack-md mt-auto border-t border-border-muted space-y-1">
+<button class="w-full bg-neon-blue text-on-primary-container font-headline-lg text-label-md py-3 rounded-lg font-bold Active: scale-[0.98] transition-transform mb-4">
+                    Deploy Contract
+                </button>
+<div class="text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200 flex items-center px-4 py-2 rounded-lg cursor-pointer">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</div>
+<div class="text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200 flex items-center px-4 py-2 rounded-lg cursor-pointer">
+<span class="material-symbols-outlined mr-3" data-icon="help">help</span>
+<span class="font-body-md text-body-md">Support</span>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col min-w-0 bg-surface">
+<!-- TopNavBar -->
+<header class="w-full sticky top-0 z-50 bg-surface-obsidian/60 backdrop-blur-md border-b border-border-muted flex justify-between items-center h-16 px-margin-page">
+<div class="flex items-center space-x-gutter flex-1">
+<div class="relative w-full max-w-md hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-label-md" data-icon="search">search</span>
+<input class="w-full bg-surface-obsidian border border-border-muted rounded-lg py-2 pl-10 pr-4 text-label-md font-label-md focus:outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue transition-all" placeholder="Search system resources..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-stack-md">
+<div class="flex space-x-1">
+<div class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-lg transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</div>
+<div class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-lg transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</div>
+</div>
+<button class="bg-white/5 border border-border-muted text-on-surface px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-white/10 transition-all Active: brightness-125">
+                        Connect Wallet
+                    </button>
+<div class="h-8 w-8 rounded-full bg-surface-variant overflow-hidden border border-border-muted">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAMHA1EACtQfrQyBXmrY0bPtq_guEsO7aRCCng-tgwCxcbuIG1rBrER3GHDNAqqY6pukwoAAG9CuUbvy8ycchFFEWhYz1murS4WS4Xr9zq3nxQzW4pibF92mHQKbQ0FVUm8go_q3_74XDqPW2biAxE3IZW23vgmvKrhmVsrZICiDQTjDNndtcUkmRWYIzlvVnSUepJcikzP60dCWtdhsCVwkVWMglM37kuG41lQ-C7DC7-je4ubYg4pxTURqb4StqaPGXETutDswo"/>
+</div>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="flex-1 overflow-y-auto p-margin-page space-y-stack-lg">
+<!-- Infrastructure Stats Overview -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<!-- Node Status -->
+<div class="glass-panel spotlight-card p-stack-md rounded-xl space-y-stack-sm" onmousemove="handleSpotlight(event, this)">
+<div class="flex justify-between items-start">
+<span class="text-label-sm uppercase tracking-tighter text-on-surface-variant">Node Status</span>
+<span class="material-symbols-outlined text-neon-blue" data-icon="dns">dns</span>
+</div>
+<div class="flex items-end space-x-2">
+<h3 class="font-display-lg text-headline-xl font-bold">1,402</h3>
+<span class="text-tertiary font-label-sm mb-1">+4.2%</span>
+</div>
+<div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+<div class="bg-neon-blue h-full w-[88%]"></div>
+</div>
+<p class="text-label-sm text-on-surface-variant">88.4% Network Capacity</p>
+</div>
+<!-- Validator Rewards -->
+<div class="glass-panel spotlight-card p-stack-md rounded-xl space-y-stack-sm" onmousemove="handleSpotlight(event, this)">
+<div class="flex justify-between items-start">
+<span class="text-label-sm uppercase tracking-tighter text-on-surface-variant">Validator Rewards</span>
+<span class="material-symbols-outlined text-tertiary" data-icon="payments">payments</span>
+</div>
+<div class="flex items-end space-x-2">
+<h3 class="font-display-lg text-headline-xl font-bold">42.8 ETH</h3>
+<span class="text-on-surface-variant font-label-sm mb-1">Total Pool</span>
+</div>
+<div class="flex space-x-1 h-8 items-end">
+<div class="bg-tertiary/20 w-full h-1/2 rounded-t-sm"></div>
+<div class="bg-tertiary/40 w-full h-3/4 rounded-t-sm"></div>
+<div class="bg-tertiary/60 w-full h-2/3 rounded-t-sm"></div>
+<div class="bg-tertiary/80 w-full h-full rounded-t-sm"></div>
+<div class="bg-tertiary w-full h-5/6 rounded-t-sm"></div>
+</div>
+<p class="text-label-sm text-on-surface-variant">Next epoch in 14m 22s</p>
+</div>
+<!-- Security Alerts -->
+<div class="glass-panel spotlight-card p-stack-md rounded-xl space-y-stack-sm" onmousemove="handleSpotlight(event, this)">
+<div class="flex justify-between items-start">
+<span class="text-label-sm uppercase tracking-tighter text-on-surface-variant">Security Alerts</span>
+<span class="material-symbols-outlined text-error" data-icon="gpp_maybe">gpp_maybe</span>
+</div>
+<div class="flex items-end space-x-2">
+<h3 class="font-display-lg text-headline-xl font-bold">02</h3>
+<span class="text-error font-label-sm mb-1">Critical</span>
+</div>
+<div class="flex items-center space-x-2 py-1">
+<span class="flex h-2 w-2 rounded-full bg-error animate-pulse"></span>
+<p class="text-label-sm text-on-surface italic">DDOS attempt mitigated (4m ago)</p>
+</div>
+<p class="text-label-sm text-on-surface-variant">View incident reports</p>
+</div>
+<!-- Active Proposals -->
+<div class="glass-panel spotlight-card p-stack-md rounded-xl space-y-stack-sm" onmousemove="handleSpotlight(event, this)">
+<div class="flex justify-between items-start">
+<span class="text-label-sm uppercase tracking-tighter text-on-surface-variant">Governance</span>
+<span class="material-symbols-outlined text-neon-purple" data-icon="account_balance">account_balance</span>
+</div>
+<div class="flex items-end space-x-2">
+<h3 class="font-display-lg text-headline-xl font-bold">14</h3>
+<span class="text-on-surface-variant font-label-sm mb-1">Pending</span>
+</div>
+<div class="flex -space-x-2">
+<img alt="voter" class="w-6 h-6 rounded-full border border-surface-obsidian" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBStRpncQpINP5R3TOj95QZb9VRFB0v8ABeJpeE7d_QCuQWDG2xeDVnP1Lef4JRFmjdFi2Dw51KAGc40QFE84he_S9RdpO3iI8p6bPjSGMwLQREn2EcCilus5ZSX0h-RUjZrZqSRzecL2KL3jsLIKxUh8j5bVSEBBAmBEsW5lMUZKZQBFOsRi9wNf3-H_GkIZc_475__Nbi7YREXgWtaQ5QTil5wHD_KCCGET0gAanwmARBYt0XwMXw1rYg8xKrhF8DvVwep8jNOMs"/>
+<img alt="voter" class="w-6 h-6 rounded-full border border-surface-obsidian" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2Nqyvvr7CVGNt9d9gqaMMPwRnyIWgDg0ROpAIErpaYy1pjZFVP1l9G5StJAVAZgoJxa_-4lhGlIRWxCFbZlVB7wFyMiQIZ3KZsy-uB85hOg79le4DB9kNjup2BDGm-8Ph5h3rdV9lg6FNSQPDNhGfOOCO0psoeZUnDAKayylqQh5uWwmvpaWZGoQjXqpGkxih-9SS_HhFV2fai_vbg3ZNKfdMpdI4ApnC2qQoCsO8fpj-1npOzkwiFLi3zbxGjpUtbix_OqB-rO8"/>
+<img alt="voter" class="w-6 h-6 rounded-full border border-surface-obsidian" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoG7wC-TLLpQPiyvnLFEyktoZVdD_p-KymUPHwnWToa0GHxW0P15T-KSr_YdcaQOP4HQ15fwqOFYU1ifpdwZgb1KLF8kLGUb1I938a8lfeg2t0f7Hn4TXRa_GHmmj1nv6GXwLkT1XWc6NqBk_38b-TwmM0Lj_Z6Xho6sv_Hc0MqNM1w6Hhvj_8JPMBc0ly_oZZGrDJjKYgwBVelpW_Hrz_bYwRKFj7p8xTADl3A4iGD0BWv5sihYQm52o4nIn3JFd61AQPJqFogZY"/>
+<div class="w-6 h-6 rounded-full border border-surface-obsidian bg-surface-variant flex items-center justify-center text-[8px]">+82</div>
+</div>
+<p class="text-label-sm text-on-surface-variant">Quorum reached for #NIP-08</p>
+</div>
+</div>
+<!-- Main Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- User Management Table (Bento Grid Piece) -->
+<section class="lg:col-span-8 glass-panel rounded-xl overflow-hidden flex flex-col">
+<div class="p-stack-md border-b border-white/5 flex justify-between items-center">
+<h2 class="font-headline-lg text-headline-lg">User Directory</h2>
+<div class="flex space-x-2">
+<button class="p-2 hover:bg-white/5 rounded-lg text-on-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+<button class="p-2 hover:bg-white/5 rounded-lg text-on-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-body-sm text-body-sm">
+<thead>
+<tr class="text-on-surface-variant border-b border-white/5">
+<th class="px-gutter py-4 font-medium uppercase tracking-wider text-[10px]">Operator</th>
+<th class="px-gutter py-4 font-medium uppercase tracking-wider text-[10px]">Skill Passport</th>
+<th class="px-gutter py-4 font-medium uppercase tracking-wider text-[10px]">Staked Amount</th>
+<th class="px-gutter py-4 font-medium uppercase tracking-wider text-[10px]">Status</th>
+<th class="px-gutter py-4"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="hover:bg-white/[0.02] transition-all">
+<td class="px-gutter py-4">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-lg bg-neon-blue/20 flex items-center justify-center font-bold text-neon-blue">0x</div>
+<div>
+<div class="font-medium text-on-surface">Alex Rivero</div>
+<div class="text-[10px] text-on-surface-variant font-label-md">0x71...f92a</div>
+</div>
+</div>
+</td>
+<td class="px-gutter py-4">
+<div class="flex items-center space-x-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-tertiary/10 text-tertiary border border-tertiary/30">LEVEL 4</span>
+<span class="text-[10px] text-on-surface-variant">Full Audit Passed</span>
+</div>
+</td>
+<td class="px-gutter py-4 font-label-md">12,500 NEX</td>
+<td class="px-gutter py-4">
+<span class="flex items-center text-neon-blue">
+<span class="h-1.5 w-1.5 rounded-full bg-neon-blue mr-2"></span>
+                                                Active
+                                            </span>
+</td>
+<td class="px-gutter py-4 text-right">
+<button class="text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined" data-icon="open_in_new">open_in_new</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-white/[0.02] transition-all">
+<td class="px-gutter py-4">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-lg bg-neon-purple/20 flex items-center justify-center font-bold text-neon-purple">SC</div>
+<div>
+<div class="font-medium text-on-surface">Sarah Chen</div>
+<div class="text-[10px] text-on-surface-variant font-label-md">0x12...d83e</div>
+</div>
+</div>
+</td>
+<td class="px-gutter py-4">
+<div class="flex items-center space-x-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-warning-yellow/10 text-warning-yellow border border-warning-yellow/30">PENDING</span>
+<span class="text-[10px] text-on-surface-variant">Identity KYC</span>
+</div>
+</td>
+<td class="px-gutter py-4 font-label-md">4,200 NEX</td>
+<td class="px-gutter py-4">
+<span class="flex items-center text-on-surface-variant">
+<span class="h-1.5 w-1.5 rounded-full bg-on-surface-variant mr-2"></span>
+                                                Syncing
+                                            </span>
+</td>
+<td class="px-gutter py-4 text-right">
+<button class="text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined" data-icon="open_in_new">open_in_new</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-white/[0.02] transition-all">
+<td class="px-gutter py-4">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-lg bg-on-surface-variant/20 flex items-center justify-center font-bold text-on-surface-variant">MK</div>
+<div>
+<div class="font-medium text-on-surface">Marcus Kane</div>
+<div class="text-[10px] text-on-surface-variant font-label-md">0x88...a210</div>
+</div>
+</div>
+</td>
+<td class="px-gutter py-4">
+<div class="flex items-center space-x-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-tertiary/10 text-tertiary border border-tertiary/30">LEVEL 5</span>
+<span class="text-[10px] text-on-surface-variant">Top Contributor</span>
+</div>
+</td>
+<td class="px-gutter py-4 font-label-md">88,000 NEX</td>
+<td class="px-gutter py-4">
+<span class="flex items-center text-neon-blue">
+<span class="h-1.5 w-1.5 rounded-full bg-neon-blue mr-2"></span>
+                                                Active
+                                            </span>
+</td>
+<td class="px-gutter py-4 text-right">
+<button class="text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined" data-icon="open_in_new">open_in_new</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-stack-md mt-auto bg-white/[0.01] border-t border-white/5 flex justify-center">
+<button class="text-label-sm text-neon-blue font-bold tracking-widest uppercase hover:underline">View All 2,401 Users</button>
+</div>
+</section>
+<!-- Governance Proposal Queue -->
+<aside class="lg:col-span-4 space-y-gutter">
+<section class="glass-panel rounded-xl overflow-hidden flex flex-col h-full">
+<div class="p-stack-md border-b border-white/5 flex items-center space-x-2">
+<span class="material-symbols-outlined text-neon-purple" data-icon="ballot">ballot</span>
+<h2 class="font-headline-lg text-headline-lg">Active Proposals</h2>
+</div>
+<div class="p-stack-md space-y-4">
+<!-- Proposal Item -->
+<div class="p-4 rounded-lg bg-white/5 border border-white/10 hover:border-neon-purple/50 transition-all group cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-label-sm text-neon-purple uppercase">Upgrade</span>
+<span class="text-[10px] text-on-surface-variant">3d 12h remaining</span>
+</div>
+<h4 class="text-body-sm font-semibold group-hover:text-neon-purple transition-colors">NIP-08: Cross-Chain Settlement Protocol Expansion</h4>
+<div class="mt-4 flex items-center justify-between">
+<div class="flex-1 mr-4">
+<div class="flex justify-between text-[9px] mb-1 uppercase font-bold">
+<span>For</span>
+<span>78%</span>
+</div>
+<div class="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-[78%]"></div>
+</div>
+</div>
+<button class="bg-white/10 hover:bg-white/20 p-1.5 rounded">
+<span class="material-symbols-outlined text-[18px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Proposal Item -->
+<div class="p-4 rounded-lg bg-white/5 border border-white/10 hover:border-neon-purple/50 transition-all group cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-label-sm text-secondary-fixed uppercase">Config</span>
+<span class="text-[10px] text-on-surface-variant">Ended</span>
+</div>
+<h4 class="text-body-sm font-semibold">NIP-07: Adjust Base Gas Fees on Layer 2 Nexus Hub</h4>
+<div class="mt-4 flex items-center justify-between">
+<span class="text-[10px] text-on-surface-variant font-medium bg-tertiary/10 text-tertiary px-2 py-0.5 rounded border border-tertiary/20">EXECUTED</span>
+<button class="bg-white/10 hover:bg-white/20 p-1.5 rounded">
+<span class="material-symbols-outlined text-[18px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<div class="mt-auto p-stack-md border-t border-white/5">
+<button class="w-full text-center py-2 bg-neon-purple/10 border border-neon-purple/30 text-neon-purple rounded-lg text-label-md font-bold hover:bg-neon-purple/20 transition-all">
+                                    Launch Proposal
+                                </button>
+</div>
+</section>
+</aside>
+<!-- Terminal / System Logs (Bottom Bento) -->
+<section class="lg:col-span-12 glass-panel rounded-xl overflow-hidden bg-black/40">
+<div class="bg-surface-slate px-gutter py-2 border-b border-white/10 flex justify-between items-center">
+<div class="flex space-x-2">
+<div class="w-3 h-3 rounded-full bg-error/50"></div>
+<div class="w-3 h-3 rounded-full bg-warning-yellow/50"></div>
+<div class="w-3 h-3 rounded-full bg-tertiary/50"></div>
+</div>
+<div class="text-[10px] font-label-md text-on-surface-variant uppercase tracking-widest">nexus_os_core --v3.4.1</div>
+<div class="flex space-x-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] cursor-pointer" data-icon="add">add</span>
+<span class="material-symbols-outlined text-[16px] cursor-pointer" data-icon="history">history</span>
+</div>
+</div>
+<div class="p-gutter h-64 font-label-md text-[13px] overflow-y-auto space-y-1 terminal-window" id="terminal">
+<p class="text-tertiary">[SYSTEM] Nexus OS v3.4.1 Boot Sequence Complete.</p>
+<p class="text-on-surface-variant">[INFO] All 1,402 global nodes synchronized with mainnet.</p>
+<p class="text-on-surface-variant">[AUTH] Operator '0xAdmin' verified via Biometric Skill Passport.</p>
+<p class="text-error">[SECURITY] Mitigation of Layer 7 attack on Endpoint 4 successful.</p>
+<p class="text-neon-blue">[NETWORK] New validator joined: 0x82...22fa from Singapore Hub.</p>
+<p class="text-on-surface-variant">[GOV] Voting period for NIP-08 is now in 'Final Warning' phase.</p>
+<p class="text-on-surface">admin@nexus:~$ <span id="terminal-text"></span><span class="terminal-cursor"></span></p>
+</div>
+</section>
+</div>
+</div>
+</main>
+</div>
+<!-- Floating Action Button (Only on Dashboard/Home) -->
+<button class="fixed bottom-10 right-10 w-16 h-16 bg-neon-blue rounded-full shadow-2xl shadow-neon-blue/40 flex items-center justify-center text-on-primary-container z-[100] hover:scale-110 active:scale-95 transition-all duration-300">
+<span class="material-symbols-outlined text-[32px]" data-icon="bolt" data-weight="fill" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</button>
+<script>
+        // Spotlight Effect Logic
+        function handleSpotlight(e, card) {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        }
+
+        // Terminal Typing Animation Logic
+        const terminalText = document.getElementById('terminal-text');
+        const commands = ["tail -f /var/log/syslog", "nexus-status --all", "deploy-smart-contract --v7", "check-quorum NIP-08"];
+        let cmdIdx = 0;
+        let charIdx = 0;
+        let isDeleting = false;
+
+        function type() {
+            const currentCmd = commands[cmdIdx];
+            if (isDeleting) {
+                terminalText.textContent = currentCmd.substring(0, charIdx - 1);
+                charIdx--;
+            } else {
+                terminalText.textContent = currentCmd.substring(0, charIdx + 1);
+                charIdx++;
+            }
+
+            let typeSpeed = isDeleting ? 50 : 150;
+
+            if (!isDeleting && charIdx === currentCmd.length) {
+                typeSpeed = 2000; // Pause at end
+                isDeleting = true;
+            } else if (isDeleting && charIdx === 0) {
+                isDeleting = false;
+                cmdIdx = (cmdIdx + 1) % commands.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(type, typeSpeed);
+        }
+
+        document.addEventListener('DOMContentLoaded', type);
+
+        // Sidebar Active State Toggle (Mock)
+        const navItems = document.querySelectorAll('aside nav > div');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navItems.forEach(ni => {
+                    ni.classList.remove('text-neon-blue', 'bg-primary-container/10', 'border-r-2', 'border-neon-blue', 'font-bold');
+                    ni.classList.add('text-on-surface-variant', 'hover:text-on-surface');
+                });
+                item.classList.add('text-neon-blue', 'bg-primary-container/10', 'border-r-2', 'border-neon-blue', 'font-bold');
+                item.classList.remove('text-on-surface-variant', 'hover:text-on-surface');
+            });
+        });
+    </script>
+</body></html>

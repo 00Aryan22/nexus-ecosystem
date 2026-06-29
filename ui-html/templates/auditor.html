@@ -1,0 +1,371 @@
+<!-- Startup Builder - NEXUS AI -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Geist:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --bg-obsidian: #08090A;
+            --neon-blue: #3b82f6;
+            --neon-red: #ff4d4d;
+            --neon-green: #00ff9d;
+        }
+        body {
+            background-color: var(--bg-obsidian);
+            color: #e3e2e3;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(17, 18, 20, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .code-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .code-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+        .vulnerability-line-critical {
+            background: rgba(255, 77, 77, 0.15);
+            border-left: 2px solid var(--neon-red);
+        }
+        .vulnerability-line-high {
+            background: rgba(255, 165, 0, 0.1);
+            border-left: 2px solid #ffa500;
+        }
+        .spotlight {
+            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-container": "#4d8eff",
+                    "on-primary-container": "#00285d",
+                    "outline": "#8c909f",
+                    "surface-bright": "#38393a",
+                    "tertiary": "#c3d000",
+                    "inverse-on-surface": "#303032",
+                    "surface-tint": "#adc6ff",
+                    "secondary": "#ddb7ff",
+                    "surface-container": "#1f2021",
+                    "on-primary-fixed-variant": "#004395",
+                    "error": "#ffb4ab",
+                    "on-secondary-container": "#d6a9ff",
+                    "secondary-fixed-dim": "#ddb7ff",
+                    "inverse-surface": "#e3e2e3",
+                    "on-primary-fixed": "#001a42",
+                    "on-surface-variant": "#c2c6d6",
+                    "inverse-primary": "#005ac2",
+                    "background": "#121315",
+                    "neon-blue": "#3b82f6",
+                    "surface": "#121315",
+                    "secondary-fixed": "#f0dbff",
+                    "primary-fixed": "#d8e2ff",
+                    "surface-obsidian": "#08090A",
+                    "surface-dim": "#121315",
+                    "primary-fixed-dim": "#adc6ff",
+                    "on-surface": "#e3e2e3",
+                    "border-muted": "rgba(255, 255, 255, 0.08)",
+                    "warning-yellow": "#E4F222",
+                    "neon-purple": "#a855f7",
+                    "on-tertiary-fixed": "#1b1d00",
+                    "on-tertiary": "#2f3300",
+                    "outline-variant": "#424754",
+                    "surface-container-high": "#292a2b",
+                    "on-background": "#e3e2e3",
+                    "on-error": "#690005",
+                    "tertiary-fixed": "#dfed1a",
+                    "primary": "#adc6ff",
+                    "on-error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#c3d000",
+                    "on-secondary-fixed-variant": "#6900b3",
+                    "surface-slate": "#111214",
+                    "on-tertiary-fixed-variant": "#454a00",
+                    "secondary-container": "#6f00be",
+                    "error-container": "#93000a",
+                    "on-primary": "#002e6a",
+                    "on-tertiary-container": "#292c00",
+                    "surface-container-low": "#1b1c1d",
+                    "surface-container-highest": "#343536",
+                    "on-secondary": "#490080",
+                    "surface-container-lowest": "#0d0e0f",
+                    "surface-variant": "#343536",
+                    "on-secondary-fixed": "#2c0051",
+                    "tertiary-container": "#8e9800"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "stack-xl": "64px",
+                    "stack-xs": "4px",
+                    "stack-md": "16px",
+                    "margin-mobile": "20px",
+                    "margin-page": "40px",
+                    "unit": "4px",
+                    "stack-sm": "8px",
+                    "stack-lg": "32px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["JetBrains Mono"],
+                    "display-lg": ["Geist"],
+                    "headline-lg": ["Geist"],
+                    "display-lg-mobile": ["Geist"],
+                    "label-md": ["JetBrains Mono"],
+                    "headline-xl": ["Geist"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                    "headline-lg": ["24px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg-mobile": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-xl": ["32px", {"lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="flex overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 flex flex-col sticky top-0 left-0 bg-surface-slate/80 backdrop-blur-xl border-r border-border-muted shadow-2xl shadow-surface-obsidian py-stack-md px-gutter z-50">
+<div class="mb-stack-xl">
+<h1 class="font-display-lg text-headline-lg font-bold text-on-surface tracking-tighter">NEXUS AI</h1>
+<p class="font-label-sm text-neon-blue uppercase tracking-widest mt-1">Web3 OS</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-xl">smart_toy</span>
+<span class="font-body-md">AI Agent</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-xl">rocket_launch</span>
+<span class="font-body-md">Startup Builder</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-neon-blue bg-primary-container/10 border-r-2 border-neon-blue font-bold" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="font-body-md">Auditor</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-xl">badge</span>
+<span class="font-body-md">Skill Passport</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-xl">account_balance</span>
+<span class="font-body-md">DAO Center</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-xl">shield_lock</span>
+<span class="font-body-md">Fraud Detection</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-xl">storefront</span>
+<span class="font-body-md">Marketplace</span>
+</a>
+</nav>
+<div class="mt-auto pt-stack-md border-t border-border-muted">
+<button class="w-full py-3 bg-neon-blue text-white font-display-lg font-bold rounded-lg mb-4 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all">
+                Deploy Contract
+            </button>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">settings</span>
+<span class="font-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">help</span>
+<span class="font-label-md">Support</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Workspace -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden bg-surface-obsidian relative">
+<div class="absolute inset-0 spotlight"></div>
+<!-- Top Navigation -->
+<header class="w-full h-16 flex justify-between items-center px-margin-page bg-surface-obsidian/60 backdrop-blur-md border-b border-border-muted z-40">
+<div class="flex items-center gap-stack-lg">
+<div class="flex items-center gap-2 bg-surface-container/50 px-4 py-1.5 rounded-full border border-border-muted">
+<span class="material-symbols-outlined text-on-surface-variant text-lg">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-label-md text-on-surface w-64" placeholder="Search audits, hashes, contracts..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="text-on-surface-variant hover:text-on-surface p-2 transition-all">
+<span class="material-symbols-outlined">terminal</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface p-2 transition-all relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-neon-blue rounded-full"></span>
+</button>
+<button class="bg-neon-blue/10 border border-neon-blue text-neon-blue px-4 py-1.5 rounded-full font-label-md hover:bg-neon-blue hover:text-white transition-all">
+                    Connect Wallet
+                </button>
+<div class="w-8 h-8 rounded-full bg-surface-container border border-border-muted flex items-center justify-center overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEW259RzZKEStI6nGB0BRJEr8YmKtMuUEsbC_NoN_Slv3lGhvu_Si6_DVIS5rHxq6ZtOrnHpsaOONw_Pw5BvkXrd5IK-Huo34LNnQZmlmZWtJN-jJKNjTLoUzJuLRdTucaDCjrDusevKx4T9Ek3ytwFZks2C0tTF3ckd8K_er6TQyEtTYtv3J7os5xyYz1QmgfRg3EzXtr--6iffFxwsTtjeWpO5JjS56YROGg8LMWJJzZCn4FXjNj6v5d19SrUro72RVsGltYBA4"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col p-6 gap-6 overflow-hidden">
+<!-- File Input Area -->
+<section class="glass-panel rounded-xl p-8 border-dashed border-2 border-border-muted flex flex-col items-center justify-center text-center transition-all hover:border-neon-blue/40 group">
+<div class="mb-4 w-16 h-16 rounded-full bg-surface-container flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-neon-blue">upload_file</span>
+</div>
+<h3 class="font-headline-lg text-on-surface mb-2">Drop your Smart Contracts</h3>
+<p class="text-on-surface-variant font-body-md mb-6 max-w-md">Drag and drop .sol files or paste a GitHub repository URL to initiate a deep security audit.</p>
+<div class="flex gap-4 w-full max-w-xl">
+<input class="flex-1 bg-surface-obsidian border border-border-muted rounded-lg px-4 py-3 font-label-md text-on-surface focus:border-neon-blue focus:ring-1 focus:ring-neon-blue outline-none" placeholder="https://github.com/project/contract.sol" type="text"/>
+<button class="bg-on-surface text-surface-obsidian font-bold px-8 py-3 rounded-lg hover:bg-white transition-all">Start Audit</button>
+</div>
+</section>
+<!-- Audit Results Grid -->
+<div class="flex-1 grid grid-cols-12 gap-6 overflow-hidden">
+<!-- Left: Code View -->
+<div class="col-span-7 glass-panel rounded-xl flex flex-col overflow-hidden">
+<div class="px-4 py-3 border-b border-border-muted flex items-center justify-between bg-white/5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">description</span>
+<span class="font-label-md text-on-surface-variant">LendingPool.sol</span>
+</div>
+<div class="flex gap-4">
+<span class="text-label-sm text-neon-red flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-neon-red"></span> 3 Critical
+                            </span>
+<span class="text-label-sm text-orange-400 flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-orange-400"></span> 1 High
+                            </span>
+</div>
+</div>
+<div class="flex-1 overflow-auto code-scroll font-label-md p-4 text-on-surface-variant leading-relaxed">
+<pre class="w-full"><span class="text-blue-400">pragma</span> <span class="text-green-400">solidity</span> ^0.8.0;
+
+<span class="text-blue-400">contract</span> LendingPool {
+    <span class="text-blue-400">mapping</span>(<span class="text-blue-400">address</span> =&gt; <span class="text-blue-400">uint256</span>) <span class="text-blue-400">public</span> balances;
+
+    <span class="text-gray-500">// Vulnerable: Reentrancy opportunity</span>
+    <span class="text-blue-400">function</span> <span class="text-yellow-400">withdraw</span>(<span class="text-blue-400">uint256</span> _amount) <span class="text-blue-400">public</span> {
+<div class="vulnerability-line-critical">        <span class="text-white">require</span>(balances[msg.sender] &gt;= _amount);</div>
+<div class="vulnerability-line-critical">        (bool success, ) = msg.sender.<span class="text-white">call</span>{value: _amount}(<span class="text-green-400">""</span>);</div>
+        <span class="text-white">require</span>(success, <span class="text-green-400">"Transfer failed"</span>);
+<div class="vulnerability-line-critical">        balances[msg.sender] -= _amount;</div>    }
+
+    <span class="text-gray-500">// Vulnerable: Unchecked math in older versions or loops</span>
+<div class="vulnerability-line-high">    <span class="text-blue-400">function</span> <span class="text-yellow-400">batchTransfer</span>(<span class="text-blue-400">address</span>[] <span class="text-blue-400">calldata</span> recipients) <span class="text-blue-400">external</span> {</div>        <span class="text-blue-400">for</span> (<span class="text-blue-400">uint</span> i = <span class="text-green-400">0</span>; i &lt; recipients.length; i++) {
+            <span class="text-gray-500">// Logic here</span>
+        }
+    }
+}</pre>
+</div>
+</div>
+<!-- Right: AI Analysis -->
+<div class="col-span-5 flex flex-col gap-6 overflow-hidden">
+<!-- Vulnerability List -->
+<div class="flex-1 glass-panel rounded-xl flex flex-col overflow-hidden">
+<div class="px-6 py-4 border-b border-border-muted flex items-center gap-2">
+<span class="material-symbols-outlined text-neon-blue">analytics</span>
+<h4 class="font-headline-lg text-on-surface">AI Risk Report</h4>
+</div>
+<div class="flex-1 overflow-auto p-6 space-y-4 code-scroll">
+<!-- Critical -->
+<div class="p-4 bg-red-500/5 border border-red-500/20 rounded-lg">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded uppercase font-bold tracking-tighter">Critical Risk</span>
+<span class="text-label-sm text-red-400">Line 10-12</span>
+</div>
+<h5 class="text-on-surface font-semibold mb-1">Reentrancy Attack Vector</h5>
+<p class="text-on-surface-variant text-body-sm">External call made before state update. An attacker could recursively call withdraw() to drain the contract.</p>
+</div>
+<!-- High -->
+<div class="p-4 bg-orange-500/5 border border-orange-500/20 rounded-lg">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded uppercase font-bold tracking-tighter">High Risk</span>
+<span class="text-label-sm text-orange-400">Line 16</span>
+</div>
+<h5 class="text-on-surface font-semibold mb-1">Potential Denial of Service (DoS)</h5>
+<p class="text-on-surface-variant text-body-sm">Unbounded loop over external address array. Transaction may exceed gas limits if list is too large.</p>
+</div>
+<!-- Medium -->
+<div class="p-4 bg-yellow-500/5 border border-yellow-500/20 rounded-lg">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-yellow-500 text-on-surface-variant text-[10px] px-2 py-0.5 rounded uppercase font-bold tracking-tighter">Medium Risk</span>
+<span class="text-label-sm text-yellow-400">Global</span>
+</div>
+<h5 class="text-on-surface font-semibold mb-1">Missing Zero Address Checks</h5>
+<p class="text-on-surface-variant text-body-sm">Contract does not validate that recipient addresses are non-zero. Funds could be lost to 0x0.</p>
+</div>
+</div>
+<!-- AI Fix Action -->
+<div class="p-6 bg-surface-container-high/50 border-t border-border-muted">
+<button class="w-full bg-neon-blue flex items-center justify-center gap-3 py-4 rounded-xl font-display-lg font-bold text-white shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:brightness-110 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_fix_high</span>
+                                Generate Optimized Fixes
+                            </button>
+</div>
+</div>
+<!-- Statistics Bento -->
+<div class="grid grid-cols-2 gap-4 h-32">
+<div class="glass-panel rounded-xl p-4 flex flex-col justify-between">
+<span class="text-label-sm text-on-surface-variant uppercase">Security Score</span>
+<div class="flex items-end justify-between">
+<span class="text-headline-xl font-bold text-neon-red">34/100</span>
+<span class="material-symbols-outlined text-neon-red">trending_down</span>
+</div>
+</div>
+<div class="glass-panel rounded-xl p-4 flex flex-col justify-between">
+<span class="text-label-sm text-on-surface-variant uppercase">Optimized Gas</span>
+<div class="flex items-end justify-between">
+<span class="text-headline-xl font-bold text-neon-green">-12%</span>
+<span class="material-symbols-outlined text-neon-green">bolt</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Interactive spotlight effect
+        document.addEventListener('mousemove', (e) => {
+            const spotlight = document.querySelector('.spotlight');
+            const x = e.clientX;
+            const y = e.clientY;
+            spotlight.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(59, 130, 246, 0.08) 0%, transparent 60%)`;
+        });
+
+        // Simple tab/hover interactions
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(btn => {
+            btn.addEventListener('mousedown', () => btn.style.transform = 'scale(0.98)');
+            btn.addEventListener('mouseup', () => btn.style.transform = 'scale(1)');
+        });
+    </script>
+</body></html>

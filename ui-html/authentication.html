@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NEXUS AI | Authentication</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Geist:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/variables.css"/>
+  <link rel="stylesheet" href="assets/css/animations.css"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="stylesheet" href="assets/css/responsive.css"/>
+  <style>
+    .auth-layout { display:flex; min-height:100vh; }
+    .auth-left {
+      display:none; width:60%; background:var(--surface-obsidian);
+      align-items:center; justify-content:center; position:relative;
+    }
+    @media(min-width:768px){ .auth-left { display:flex; } }
+    .auth-right {
+      flex:1; display:flex; align-items:center; justify-content:center;
+      background:var(--background); padding:var(--stack-xl) var(--margin-mobile);
+    }
+    .auth-form-wrap { width:100%; max-width:420px; }
+    .wallet-btn {
+      width:100%; display:flex; align-items:center; justify-content:space-between;
+      padding:var(--stack-md); margin-bottom:var(--stack-sm);
+      background:var(--glass-bg); border:1px solid var(--glass-border);
+      border-radius:var(--radius-lg); transition:var(--transition-base); cursor:pointer;
+    }
+    .wallet-btn:hover { background:rgba(255,255,255,0.1); }
+    .wallet-btn-inner { display:flex; align-items:center; gap:var(--stack-md); }
+    .divider-or { display:flex; align-items:center; gap:var(--stack-md); margin:var(--stack-lg) 0; }
+    .divider-or::before, .divider-or::after { content:''; flex:1; height:1px; background:var(--border-muted); }
+    .divider-or span { font-family:var(--font-mono); font-size:var(--text-label-sm); color:var(--on-surface-variant); }
+    .grid-dot-bg {
+      position:absolute; inset:0; opacity:0.03; pointer-events:none;
+      background-image:radial-gradient(#fff 1px, transparent 1px);
+      background-size:32px 32px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Background atmosphere -->
+<div style="position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;">
+  <div style="position:absolute;top:-10%;left:-10%;width:40%;height:40%;border-radius:50%;background:rgba(59,130,246,0.05);filter:blur(120px);"></div>
+  <div style="position:absolute;bottom:10%;right:-10%;width:30%;height:30%;border-radius:50%;background:rgba(168,85,247,0.05);filter:blur(120px);"></div>
+</div>
+
+<div class="auth-layout">
+  <!-- ── LEFT BRAND PANEL ── -->
+  <div class="auth-left">
+    <div class="grid-dot-bg"></div>
+    <div style="position:relative;z-index:1;text-align:center;padding:var(--margin-page);">
+      <h1 style="font-family:var(--font-display);font-size:var(--text-display-lg);font-weight:700;letter-spacing:-0.04em;margin-bottom:var(--stack-sm);">NEXUS AI</h1>
+      <p style="font-family:var(--font-mono);font-size:var(--text-label-md);text-transform:uppercase;letter-spacing:0.2em;color:var(--neon-blue);margin-bottom:var(--stack-xl);">The Web3 OS Architecture</p>
+      <p style="max-width:420px;color:var(--on-surface-variant);font-size:var(--text-body-lg);line-height:1.6;margin:0 auto var(--stack-xl);">Experience the next generation of decentralized intelligence. Secure, fast, and architected for the future of computational sovereignty.</p>
+      <div style="display:flex;justify-content:center;gap:var(--stack-md);">
+        <div class="glass-panel" style="display:flex;align-items:center;gap:8px;padding:4px 14px;border-radius:var(--radius-full);">
+          <span class="material-symbols-outlined" style="font-size:18px;color:var(--neon-blue);">security</span>
+          <span style="font-family:var(--font-mono);font-size:var(--text-label-sm);">ENCRYPTED</span>
+        </div>
+        <div class="glass-panel" style="display:flex;align-items:center;gap:8px;padding:4px 14px;border-radius:var(--radius-full);">
+          <span class="material-symbols-outlined" style="font-size:18px;color:var(--neon-purple);">speed</span>
+          <span style="font-family:var(--font-mono);font-size:var(--text-label-sm);">ULTRA-FAST</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT FORM PANEL ── -->
+  <div class="auth-right">
+    <div class="auth-form-wrap">
+      <div class="show-mobile" style="margin-bottom:var(--stack-lg);">
+        <h1 style="font-family:var(--font-display);font-size:var(--text-headline-xl);font-weight:700;">NEXUS AI</h1>
+      </div>
+
+      <h2 style="font-family:var(--font-display);font-size:var(--text-headline-xl);font-weight:700;margin-bottom:4px;">Welcome Architect</h2>
+      <p style="color:var(--on-surface-variant);margin-bottom:var(--stack-lg);">Connect your identity to enter the ecosystem.</p>
+
+      <!-- Wallet buttons -->
+      <button class="wallet-btn" onclick="window.location.href='dashboard.html'">
+        <div class="wallet-btn-inner">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" style="width:24px;height:24px;" onerror="this.style.display='none'"/>
+          <span style="font-size:var(--text-body-md);font-weight:500;">Connect MetaMask</span>
+        </div>
+        <span class="material-symbols-outlined" style="color:var(--on-surface-variant);transition:transform 0.2s;">chevron_right</span>
+      </button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--stack-sm);margin-bottom:var(--stack-sm);">
+        <button class="wallet-btn" style="margin-bottom:0;" onclick="window.location.href='dashboard.html'">
+          <div class="wallet-btn-inner">
+            <span class="material-symbols-outlined" style="color:#1652f0;">account_balance_wallet</span>
+            <span style="font-family:var(--font-mono);font-size:var(--text-label-sm);">Coinbase</span>
+          </div>
+        </button>
+        <button class="wallet-btn" style="margin-bottom:0;" onclick="window.location.href='dashboard.html'">
+          <div class="wallet-btn-inner">
+            <span class="material-symbols-outlined" style="color:#AB9FF2;">diamond</span>
+            <span style="font-family:var(--font-mono);font-size:var(--text-label-sm);">Phantom</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="divider-or"><span>OR EMAIL</span></div>
+
+      <!-- Email form -->
+      <form onsubmit="window.location.href='dashboard.html';return false;">
+        <div class="form-group">
+          <label class="form-label">Operator Email</label>
+          <input class="input" type="email" placeholder="name@domain.com"/>
+        </div>
+        <div class="form-group">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <label class="form-label" style="margin-bottom:0;">Access Key</label>
+            <button type="button" onclick="document.getElementById('forgotModal').classList.add('is-open')" style="font-family:var(--font-mono);font-size:var(--text-label-sm);color:var(--neon-blue);background:none;border:none;cursor:pointer;">RECOVER</button>
+          </div>
+          <input class="input" type="password" placeholder="••••••••"/>
+        </div>
+        <button type="submit" class="btn btn--primary btn--full" style="padding:14px;font-size:var(--text-headline-lg);border-radius:var(--radius-lg);">Initialize Session</button>
+      </form>
+      <p style="text-align:center;margin-top:var(--stack-lg);font-size:var(--text-body-sm);color:var(--on-surface-variant);">New architect? <button style="color:var(--neon-blue);background:none;border:none;cursor:pointer;font-weight:500;">Create an identity</button></p>
+    </div>
+  </div>
+</div>
+
+<!-- ── FORGOT PASSWORD MODAL ── -->
+<div class="modal-backdrop" id="forgotModal">
+  <div class="modal" style="max-width:440px;">
+    <div style="text-align:center;padding:var(--stack-xl);">
+      <button data-modal-close style="position:absolute;top:16px;left:16px;display:flex;align-items:center;gap:4px;color:var(--on-surface-variant);background:none;border:none;cursor:pointer;font-family:var(--font-mono);font-size:var(--text-label-sm);">
+        <span class="material-symbols-outlined">arrow_back</span> BACK
+      </button>
+      <div style="width:64px;height:64px;border-radius:50%;background:rgba(59,130,246,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto var(--stack-md);">
+        <span class="material-symbols-outlined" style="font-size:32px;color:var(--neon-blue);">key</span>
+      </div>
+      <h2 style="font-family:var(--font-display);font-size:var(--text-headline-xl);margin-bottom:var(--stack-xs);">Recover Access</h2>
+      <p style="color:var(--on-surface-variant);margin-bottom:var(--stack-lg);">Enter your email and we'll send recovery instructions.</p>
+      <div class="form-group"><label class="form-label">Registered Email</label><input class="input" type="email" placeholder="name@domain.com"/></div>
+      <button class="btn btn--full" style="background:white;color:var(--surface-obsidian);font-weight:700;border-radius:var(--radius-lg);padding:14px;">Send Recovery Link</button>
+      <p style="margin-top:var(--stack-xl);padding-top:var(--stack-lg);border-top:1px solid var(--border-muted);font-size:var(--text-body-sm);color:var(--on-surface-variant);">Still having trouble? <a href="#" style="color:var(--neon-blue);">Contact Support</a></p>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/navigation.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

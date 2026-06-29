@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NEXUS AI | Stitch Template Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/variables.css"/>
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <style>
+    @font-face { font-family:'Geist'; src:url('https://cdn.jsdelivr.net/font-geist/1.0.0/geist-sans-regular.woff2') format('woff2'); font-weight:400; }
+    @font-face { font-family:'Geist'; src:url('https://cdn.jsdelivr.net/font-geist/1.0.0/geist-sans-bold.woff2') format('woff2'); font-weight:700; }
+    .gallery { max-width:960px; margin:0 auto; padding:var(--stack-xl) var(--margin-page); }
+    .gallery-header { margin-bottom:var(--stack-xl); }
+    .gallery-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:var(--stack-md); }
+    .template-card { padding:var(--stack-md); border-radius:var(--radius-xl); display:flex; flex-direction:column; gap:var(--stack-sm); }
+    .template-card h2 { font-family:var(--font-display); font-size:var(--text-body-lg); font-weight:600; }
+    .template-card p { font-size:var(--text-body-sm); color:var(--on-surface-variant); flex:1; }
+    .template-card .badge { align-self:flex-start; }
+    .back-link { display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:var(--text-label-sm); color:var(--neon-blue); margin-bottom:var(--stack-lg); }
+  </style>
+</head>
+<body>
+  <div class="gallery">
+    <a href="../index.html" class="back-link">
+      <span class="material-symbols-outlined" style="font-size:16px;">arrow_back</span>
+      Back to Landing
+    </a>
+    <header class="gallery-header">
+      <span class="badge badge--solid-blue">STITCH EXPORT</span>
+      <h1 class="font-display text-headline-xl" style="margin-top:var(--stack-sm);">Template Gallery</h1>
+      <p class="text-muted" style="margin-top:var(--stack-sm);">
+        Raw Stitch UI mockups split into individual pages. Each file is a standalone HTML document with Tailwind CDN.
+      </p>
+    </header>
+    <div class="gallery-grid">
+      <a href="landing.html" class="glass-card template-card card-hover">
+        <span class="badge badge--outline">Public</span>
+        <h2>Landing Page</h2>
+        <p>Marketing homepage with hero, features, roadmap, pricing, and FAQ.</p>
+      </a>
+      <a href="authentication.html" class="glass-card template-card card-hover">
+        <span class="badge badge--outline">Auth</span>
+        <h2>Authentication</h2>
+        <p>Wallet connect, sign-in, and onboarding flow.</p>
+      </a>
+      <a href="dashboard.html" class="glass-card template-card card-hover">
+        <span class="badge badge--outline">Dashboard</span>
+        <h2>Main Dashboard</h2>
+        <p>Web3 OS overview with metrics, activity feed, and quick actions.</p>
+      </a>
+      <a href="founder-agent.html" class="glass-card template-card card-hover">
+        <span class="badge badge--outline">AI</span>
+        <h2>Founder Agent</h2>
+        <p>AI chat interface for startup ideation and business planning.</p>
+      </a>
+      <a href="startup-builder.html" class="glass-card template-card card-hover">
+        <span class="badge badge--outline">Builder</span>
+        <h2>Startup Builder</h2>
+        <p>Zero-code dApp deployment wizard and tokenomics configurator.</p>
+      </a>
+      <a href="auditor.html" class="glass-card template-card card-hover">
+        <span class="badge badge--outline">Security</span>
+        <h2>Smart Contract Auditor</h2>
+        <p>Formal verification and vulnerability scanning dashboard.</p>
+      </a>
+      <a href="dao-center.html" class="glass-card template-card card-hover">
+        <span class="badge badge--outline">Governance</span>
+        <h2>DAO Center</h2>
+        <p>Proposals, voting, treasury, and delegate management.</p>
+      </a>
+      <a href="marketplace.html" class="glass-card template-card card-hover">
+        <span class="badge badge--outline">Market</span>
+        <h2>AI Marketplace</h2>
+        <p>Agent listings, subscriptions, and skill modules.</p>
+      </a>
+      <a href="achievement-center.html" class="glass-card template-card card-hover">
+        <span class="badge badge--outline">NFT</span>
+        <h2>Achievement Center</h2>
+        <p>Skill Passport NFTs, badges, and reputation scores.</p>
+      </a>
+      <a href="admin.html" class="glass-card template-card card-hover">
+        <span class="badge badge--outline">Admin</span>
+        <h2>Admin Control</h2>
+        <p>Platform administration, user management, and system config.</p>
+      </a>
+      <a href="analytics.html" class="glass-card template-card card-hover">
+        <span class="badge badge--outline">Analytics</span>
+        <h2>Ecosystem Analytics</h2>
+        <p>Network metrics, growth charts, and usage trends.</p>
+      </a>
+      <a href="agent-monitoring.html" class="glass-card template-card card-hover">
+        <span class="badge badge--outline">Ops</span>
+        <h2>Agent Monitoring</h2>
+        <p>Live agent status, logs, and performance metrics.</p>
+      </a>
+      <a href="settings.html" class="glass-card template-card card-hover">
+        <span class="badge badge--outline">Identity</span>
+        <h2>Settings</h2>
+        <p>Skill Passport profile, wallet, and notification preferences.</p>
+      </a>
+      <a href="fraud-detection.html" class="glass-card template-card card-hover">
+        <span class="badge badge--outline">Security</span>
+        <h2>Fraud Detection</h2>
+        <p>Threat alerts, risk scoring, and anomaly detection.</p>
+      </a>
+      <a href="activity-center.html" class="glass-card template-card card-hover">
+        <span class="badge badge--outline">Activity</span>
+        <h2>Activity Center</h2>
+        <p>Notifications feed with governance, market, and security alerts.</p>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

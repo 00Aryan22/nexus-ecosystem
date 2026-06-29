@@ -1,0 +1,555 @@
+<!-- Analytics - NEXUS AI -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nexus AI | Agent Monitoring Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Geist:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(17, 18, 20, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .terminal-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .terminal-scroll::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.3);
+            border-radius: 2px;
+        }
+        @keyframes pulse-neon {
+            0%, 100% { opacity: 1; text-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+            50% { opacity: 0.7; text-shadow: 0 0 20px rgba(59, 130, 246, 0.8); }
+        }
+        .animate-neon-pulse {
+            animation: pulse-neon 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(59, 130, 246, 0.1);
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            animation: scanline 8s linear infinite;
+        }
+        @keyframes scanline {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container": "#1f2021",
+                      "on-primary-fixed-variant": "#004395",
+                      "tertiary-fixed": "#dfed1a",
+                      "secondary-container": "#6f00be",
+                      "primary-container": "#4d8eff",
+                      "neon-purple": "#a855f7",
+                      "surface-container-high": "#292a2b",
+                      "on-tertiary-fixed-variant": "#454a00",
+                      "warning-yellow": "#E4F222",
+                      "on-background": "#e3e2e3",
+                      "surface-obsidian": "#08090A",
+                      "secondary-fixed": "#f0dbff",
+                      "error-container": "#93000a",
+                      "surface-tint": "#adc6ff",
+                      "surface-slate": "#111214",
+                      "secondary-fixed-dim": "#ddb7ff",
+                      "outline-variant": "#424754",
+                      "on-error-container": "#ffdad6",
+                      "on-secondary-fixed-variant": "#6900b3",
+                      "primary": "#adc6ff",
+                      "on-secondary": "#490080",
+                      "surface-variant": "#343536",
+                      "on-surface-variant": "#c2c6d6",
+                      "surface": "#121315",
+                      "surface-container-low": "#1b1c1d",
+                      "error": "#ffb4ab",
+                      "tertiary": "#c3d000",
+                      "surface-dim": "#121315",
+                      "on-surface": "#e3e2e3",
+                      "primary-fixed": "#d8e2ff",
+                      "primary-fixed-dim": "#adc6ff",
+                      "outline": "#8c909f",
+                      "tertiary-fixed-dim": "#c3d000",
+                      "on-tertiary-fixed": "#1b1d00",
+                      "inverse-on-surface": "#303032",
+                      "on-secondary-fixed": "#2c0051",
+                      "neon-blue": "#3b82f6",
+                      "on-primary": "#002e6a",
+                      "surface-bright": "#38393a",
+                      "surface-container-lowest": "#0d0e0f",
+                      "on-secondary-container": "#d6a9ff",
+                      "on-tertiary-container": "#292c00",
+                      "inverse-primary": "#005ac2",
+                      "on-error": "#690005",
+                      "tertiary-container": "#8e9800",
+                      "inverse-surface": "#e3e2e3",
+                      "border-muted": "rgba(255, 255, 255, 0.08)",
+                      "background": "#121315",
+                      "secondary": "#ddb7ff",
+                      "surface-container-highest": "#343536",
+                      "on-tertiary": "#2f3300",
+                      "on-primary-container": "#00285d",
+                      "on-primary-fixed": "#001a42"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-page": "40px",
+                      "unit": "4px",
+                      "stack-lg": "32px",
+                      "stack-md": "16px",
+                      "stack-xs": "4px",
+                      "stack-xl": "64px",
+                      "stack-sm": "8px",
+                      "margin-mobile": "20px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "headline-xl": ["Geist"],
+                      "body-md": ["Inter"],
+                      "display-lg-mobile": ["Geist"],
+                      "body-lg": ["Inter"],
+                      "label-sm": ["JetBrains Mono"],
+                      "display-lg": ["Geist"],
+                      "headline-lg": ["Geist"],
+                      "body-sm": ["Inter"],
+                      "label-md": ["JetBrains Mono"]
+              },
+              "fontSize": {
+                      "headline-xl": ["32px", {"lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "display-lg-mobile": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                      "headline-lg": ["24px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface-obsidian text-on-surface font-body-md selection:bg-neon-blue/30 overflow-hidden">
+<div class="flex h-screen w-full">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 flex flex-col sticky top-0 left-0 bg-surface-slate/80 backdrop-blur-xl border-r border-border-muted shadow-2xl shadow-surface-obsidian py-stack-md px-gutter z-50">
+<div class="mb-stack-xl">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-gradient-to-br from-neon-blue to-neon-purple flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[20px]" style="font-variation-settings: 'FILL' 1;">hub</span>
+</div>
+<div>
+<h1 class="font-display-lg text-headline-lg font-bold text-on-surface tracking-tighter leading-none">NEXUS AI</h1>
+<p class="text-label-sm text-neon-blue opacity-80 mt-1">Web3 OS</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-neon-blue bg-primary-container/10 border-r-2 border-neon-blue font-bold transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-body-md">AI Agent</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">rocket_launch</span>
+<span class="font-body-md">Startup Builder</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-body-md">Auditor</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">badge</span>
+<span class="font-body-md">Skill Passport</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">account_balance</span>
+<span class="font-body-md">DAO Center</span>
+</a>
+</nav>
+<div class="mt-auto space-y-1 border-t border-border-muted pt-stack-md">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md">Support</span>
+</a>
+<button class="w-full mt-4 bg-neon-blue text-on-primary py-3 px-4 rounded font-bold text-label-md active:scale-[0.98] transition-transform shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                    Deploy Contract
+                </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col overflow-hidden relative">
+<!-- Top Navigation -->
+<header class="w-full h-16 sticky top-0 z-40 bg-surface-obsidian/60 backdrop-blur-md border-b border-border-muted flex justify-between items-center px-margin-page">
+<div class="flex items-center gap-8">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="bg-surface-obsidian border border-border-muted rounded-full py-2 pl-10 pr-4 text-label-md font-label-md focus:outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue w-64 transition-all" placeholder="Search agents or logs..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-on-surface font-bold border-b-2 border-neon-blue pb-1 cursor-pointer">Live Monitoring</span>
+<span class="text-on-surface-variant hover:text-on-surface cursor-pointer transition-colors">Cluster Health</span>
+<span class="text-on-surface-variant hover:text-on-surface cursor-pointer transition-colors">Security Audit</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-3 bg-white/5 px-3 py-1.5 rounded border border-border-muted">
+<div class="w-2 h-2 rounded-full bg-neon-blue animate-pulse"></div>
+<span class="text-label-sm font-label-sm">NODE-TX-0482 ACTIVE</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:text-neon-blue transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-1.5 h-1.5 bg-neon-purple rounded-full"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-neon-blue transition-colors">
+<span class="material-symbols-outlined">terminal</span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-border-muted mx-2"></div>
+<button class="bg-transparent border border-neon-blue text-neon-blue px-4 py-2 rounded text-label-md font-bold hover:bg-neon-blue/10 transition-all">
+                        Connect Wallet
+                    </button>
+</div>
+</header>
+<!-- Dashboard Scrollable Area -->
+<div class="flex-1 overflow-y-auto p-margin-page space-y-stack-lg custom-scrollbar">
+<!-- Hero Header Stats -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div class="glass-panel p-stack-md rounded-xl relative overflow-hidden group">
+<div class="scanline"></div>
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-sm text-on-surface-variant uppercase tracking-widest">Active Agents</span>
+<span class="material-symbols-outlined text-neon-blue">bolt</span>
+</div>
+<div class="text-headline-xl font-display-lg text-on-surface">1,284</div>
+<div class="text-label-sm text-neon-blue mt-1">+12.4% vs last hr</div>
+</div>
+<div class="glass-panel p-stack-md rounded-xl group">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-sm text-on-surface-variant uppercase tracking-widest">TPS Aggregate</span>
+<span class="material-symbols-outlined text-neon-purple">speed</span>
+</div>
+<div class="text-headline-xl font-display-lg text-on-surface">42,801</div>
+<div class="text-label-sm text-neon-purple mt-1">Peak: 58k TPS</div>
+</div>
+<div class="glass-panel p-stack-md rounded-xl group">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-sm text-on-surface-variant uppercase tracking-widest">System Entropy</span>
+<span class="material-symbols-outlined text-warning-yellow">blur_on</span>
+</div>
+<div class="text-headline-xl font-display-lg text-on-surface">0.024%</div>
+<div class="text-label-sm text-warning-yellow mt-1">Stable Baseline</div>
+</div>
+<div class="glass-panel p-stack-md rounded-xl group">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-sm text-on-surface-variant uppercase tracking-widest">Uptime Cluster</span>
+<span class="material-symbols-outlined text-emerald-400">check_circle</span>
+</div>
+<div class="text-headline-xl font-display-lg text-on-surface">99.998%</div>
+<div class="text-label-sm text-emerald-400 mt-1">Tier-1 Guaranteed</div>
+</div>
+</div>
+<!-- Central Visualizer Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter items-start">
+<!-- Neural Load Gauges -->
+<div class="lg:col-span-2 glass-panel rounded-xl p-stack-lg flex flex-col items-center justify-center relative overflow-hidden min-h-[400px]">
+<div class="absolute inset-0 pointer-events-none opacity-10">
+
+</div>
+<div class="relative z-10 w-full flex flex-col md:flex-row items-center justify-around gap-stack-xl">
+<!-- Main Gauge Left -->
+<div class="text-center">
+<div class="relative w-48 h-48 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90">
+<circle cx="96" cy="96" fill="none" r="88" stroke="rgba(255,255,255,0.05)" stroke-width="12"></circle>
+<circle cx="96" cy="96" fill="none" r="88" stroke="url(#neonBlueGradient)" stroke-dasharray="552" stroke-dashoffset="138" stroke-linecap="round" stroke-width="12"></circle>
+<defs>
+<lineargradient id="neonBlueGradient" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#3b82f6"></stop>
+<stop offset="100%" stop-color="#a855f7"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-display-lg text-on-surface leading-none animate-neon-pulse">75%</span>
+<span class="text-label-sm text-on-surface-variant mt-2">NEURAL LOAD</span>
+</div>
+</div>
+<div class="mt-stack-md">
+<h3 class="font-headline-lg text-on-surface">Compute Cluster A</h3>
+<p class="text-label-sm text-on-surface-variant">Processing Sub-layer 09</p>
+</div>
+</div>
+<!-- Main Gauge Right -->
+<div class="text-center">
+<div class="relative w-48 h-48 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90">
+<circle cx="96" cy="96" fill="none" r="88" stroke="rgba(255,255,255,0.05)" stroke-width="12"></circle>
+<circle cx="96" cy="96" fill="none" r="88" stroke="#a855f7" stroke-dasharray="552" stroke-dashoffset="380" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-display-lg text-on-surface leading-none">32%</span>
+<span class="text-label-sm text-on-surface-variant mt-2">SYNAPTIC LAG</span>
+</div>
+</div>
+<div class="mt-stack-md">
+<h3 class="font-headline-lg text-on-surface">Compute Cluster B</h3>
+<p class="text-label-sm text-on-surface-variant">Global Sync Hub</p>
+</div>
+</div>
+</div>
+<!-- Gauge Bottom Controls -->
+<div class="mt-stack-xl flex gap-stack-lg z-10">
+<div class="flex items-center gap-3 bg-surface-obsidian px-4 py-2 rounded border border-border-muted">
+<span class="text-label-sm text-on-surface-variant">AUTONOMOUS MODE</span>
+<button class="w-10 h-5 bg-neon-blue rounded-full relative transition-all duration-300" id="autoToggle">
+<div class="absolute top-0.5 right-0.5 w-4 h-4 bg-white rounded-full"></div>
+</button>
+</div>
+<div class="flex items-center gap-3 bg-surface-obsidian px-4 py-2 rounded border border-border-muted">
+<span class="text-label-sm text-on-surface-variant">HUMAN-IN-LOOP</span>
+<button class="w-10 h-5 bg-white/10 rounded-full relative transition-all duration-300">
+<div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white/40 rounded-full"></div>
+</button>
+</div>
+</div>
+</div>
+<!-- Health Status Cluster -->
+<div class="glass-panel rounded-xl p-stack-md flex flex-col gap-stack-sm h-full max-h-[400px]">
+<div class="flex justify-between items-center mb-2 px-1">
+<h3 class="font-headline-lg text-on-surface">LLM Cluster Health</h3>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">settings_input_component</span>
+</div>
+<div class="space-y-stack-sm overflow-y-auto pr-1">
+<!-- Health Card 1 -->
+<div class="p-3 bg-white/5 border border-border-muted rounded group hover:border-neon-blue transition-colors">
+<div class="flex justify-between mb-2">
+<span class="text-label-md font-bold text-on-surface">NEXUS-V4-O1</span>
+<span class="text-label-sm text-emerald-400">OPTIMAL</span>
+</div>
+<div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+<div class="w-[98%] h-full bg-emerald-400"></div>
+</div>
+<div class="flex justify-between mt-2 text-[10px] text-on-surface-variant font-label-sm">
+<span>LATENCY: 12ms</span>
+<span>THROUGHPUT: 1.2M tok/s</span>
+</div>
+</div>
+<!-- Health Card 2 -->
+<div class="p-3 bg-white/5 border border-border-muted rounded group hover:border-neon-purple transition-colors">
+<div class="flex justify-between mb-2">
+<span class="text-label-md font-bold text-on-surface">LLAMA-3-SYNC</span>
+<span class="text-label-sm text-neon-purple">STABLE</span>
+</div>
+<div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+<div class="w-[82%] h-full bg-neon-purple"></div>
+</div>
+<div class="flex justify-between mt-2 text-[10px] text-on-surface-variant font-label-sm">
+<span>LATENCY: 45ms</span>
+<span>THROUGHPUT: 850K tok/s</span>
+</div>
+</div>
+<!-- Health Card 3 -->
+<div class="p-3 bg-white/5 border border-border-muted rounded group hover:border-warning-yellow transition-colors">
+<div class="flex justify-between mb-2">
+<span class="text-label-md font-bold text-on-surface">GPT-4-BRIDGE</span>
+<span class="text-label-sm text-warning-yellow">DEGRADED</span>
+</div>
+<div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+<div class="w-[44%] h-full bg-warning-yellow"></div>
+</div>
+<div class="flex justify-between mt-2 text-[10px] text-on-surface-variant font-label-sm">
+<span>LATENCY: 180ms</span>
+<span>THROUGHPUT: 120K tok/s</span>
+</div>
+</div>
+<!-- Health Card 4 -->
+<div class="p-3 bg-white/5 border border-border-muted rounded group hover:border-neon-blue transition-colors">
+<div class="flex justify-between mb-2">
+<span class="text-label-md font-bold text-on-surface">LOCAL-DEEP-SEEK</span>
+<span class="text-label-sm text-emerald-400">OPTIMAL</span>
+</div>
+<div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+<div class="w-[92%] h-full bg-emerald-400"></div>
+</div>
+<div class="flex justify-between mt-2 text-[10px] text-on-surface-variant font-label-sm">
+<span>LATENCY: 8ms</span>
+<span>THROUGHPUT: 4.5M tok/s</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Real-time Log Streams -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter h-96">
+<div class="glass-panel rounded-xl overflow-hidden flex flex-col border border-neon-blue/20">
+<div class="bg-white/5 px-4 py-2 border-b border-border-muted flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-neon-blue"></span>
+<span class="text-label-sm font-label-sm text-on-surface">AGENT_LIVE_FEED: ALPHA</span>
+</div>
+<span class="text-[10px] font-label-sm text-on-surface-variant">PID: 8829-X</span>
+</div>
+<div class="flex-1 p-4 font-label-sm text-xs space-y-1 terminal-scroll overflow-y-auto bg-black/40" id="log-container-alpha">
+<p class="text-emerald-400"><span class="text-on-surface-variant">[09:42:01]</span> INIT_AGENT_SEQUENCE::SUCCESS</p>
+<p class="text-on-surface"><span class="text-on-surface-variant">[09:42:02]</span> Fetching latest training weights from IPFS...</p>
+<p class="text-on-surface"><span class="text-on-surface-variant">[09:42:04]</span> Loading weights (4.2GB) into NV-H100 Memory...</p>
+<p class="text-emerald-400"><span class="text-on-surface-variant">[09:42:08]</span> Weights loaded. Checksum match: 0x82...f91</p>
+<p class="text-neon-blue"><span class="text-on-surface-variant">[09:42:10]</span> Listening for incoming DAO proposals...</p>
+<p class="text-on-surface"><span class="text-on-surface-variant">[09:42:15]</span> Analyzing Proposal #429: "Liquidity Migration"...</p>
+<p class="text-neon-purple"><span class="text-on-surface-variant">[09:42:18]</span> Reasoning: Multi-chain path detected via LayerZero.</p>
+<p class="text-emerald-400"><span class="text-on-surface-variant">[09:42:21]</span> Action: Executed Swap on Uniswap v3 (0.012 ETH slippage)</p>
+<p class="text-on-surface"><span class="text-on-surface-variant">[09:42:25]</span> Awaiting next task block...</p>
+</div>
+</div>
+<div class="glass-panel rounded-xl overflow-hidden flex flex-col border border-neon-purple/20">
+<div class="bg-white/5 px-4 py-2 border-b border-border-muted flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-neon-purple"></span>
+<span class="text-label-sm font-label-sm text-on-surface">SYSTEM_SECURITY_LOGS</span>
+</div>
+<span class="text-[10px] font-label-sm text-on-surface-variant">HOST: NEXUS-MAIN-01</span>
+</div>
+<div class="flex-1 p-4 font-label-sm text-xs space-y-1 terminal-scroll overflow-y-auto bg-black/40" id="log-container-security">
+<p class="text-on-surface-variant"><span class="text-on-surface-variant">[09:41:50]</span> Firewall check: All ports secure.</p>
+<p class="text-on-surface-variant"><span class="text-on-surface-variant">[09:41:55]</span> Monitoring RPC endpoints for DDoS patterns...</p>
+<p class="text-warning-yellow"><span class="text-on-surface-variant">[09:42:05]</span> Warning: High request volume from IP 182.xx.xx.xx</p>
+<p class="text-warning-yellow"><span class="text-on-surface-variant">[09:42:06]</span> Mitigating: Applying rate-limit 10req/sec.</p>
+<p class="text-emerald-400"><span class="text-on-surface-variant">[09:42:12]</span> IP 182.xx.xx.xx throttled. Entropy normal.</p>
+<p class="text-on-surface-variant"><span class="text-on-surface-variant">[09:42:20]</span> Scheduled integrity scan starting...</p>
+<p class="text-on-surface-variant"><span class="text-on-surface-variant">[09:42:21]</span> Verifying Zero-Knowledge proofs for cluster sync...</p>
+<p class="text-emerald-400"><span class="text-on-surface-variant">[09:42:28]</span> 14/14 Nodes verified. Zero discrepancies found.</p>
+</div>
+</div>
+</div>
+<!-- Bottom Grid: Map and Details -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div class="md:col-span-3 glass-panel rounded-xl p-0 overflow-hidden min-h-[300px] relative">
+<div class="absolute top-4 left-4 z-10">
+<h4 class="text-on-surface font-headline-lg">Global Node Distribution</h4>
+<p class="text-label-sm text-on-surface-variant">24 Core Hubs Active</p>
+</div>
+<img alt="Global map" class="w-full h-full object-cover opacity-50" data-alt="A dark, high-tech world map showing global network connections as glowing lines of data. The aesthetic is futuristic and data-driven, with bright neon cyan and magenta points of light representing active server nodes across continents. The oceans are deep obsidian black, and the overall mood is technical, expansive, and high-performance, fitting a Web3 AI monitoring system." data-location="Global" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBek36W5_bh07ViFoM7IBgpNOeCSrYr9MburRhUv3AsSBdeV-y05ggNd7y31AWkdR9i_HxZtM7Gyx_u0rFKheooFoUCUqspv8YvLV5GI6RbXY1gCQzY7gHygDSGIni0N8ORY23N6p9RwfMVk9nJIFtG6yj0AJnI3tqABDzIymCL4fBpPsZjk7zAFc85acqAWHOUuoqT6cd6sg0Kq8E-C3mm-rMnRymFmLrpO8M0q4FbzECdqCbnL5U6U72q-UWkBJs8vC7f1R5C-x4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-obsidian via-transparent to-transparent"></div>
+</div>
+<div class="glass-panel rounded-xl p-stack-md flex flex-col justify-between">
+<div>
+<h4 class="text-on-surface font-headline-lg mb-4">Node Metrics</h4>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<span class="text-label-sm text-on-surface-variant">CPU TEMP</span>
+<span class="text-label-sm text-emerald-400">42°C</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm text-on-surface-variant">MEM SWAP</span>
+<span class="text-label-sm text-on-surface">1.2 GB</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm text-on-surface-variant">DISK IO</span>
+<span class="text-label-sm text-on-surface">840 MB/s</span>
+</div>
+</div>
+</div>
+<button class="w-full bg-white/5 border border-border-muted py-3 rounded font-bold text-label-md hover:bg-white/10 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">analytics</span>
+                            Full Audit Report
+                        </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- UI Interactions Script -->
+<script>
+        // Smooth scroll to bottom for log terminals simulation
+        const alphaLogs = document.getElementById('log-container-alpha');
+        const securityLogs = document.getElementById('log-container-security');
+
+        function appendLog(container, type = 'info') {
+            const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const p = document.createElement('p');
+            p.className = 'opacity-0 translate-y-2 transition-all duration-300';
+            
+            const messages = [
+                "Shard verification complete.",
+                "Optimizing resource allocation...",
+                "Peer handshaking initiated.",
+                "Executing automated hedge strategy.",
+                "New neural path mapped for query #902."
+            ];
+            
+            const colors = {
+                info: 'text-on-surface',
+                success: 'text-emerald-400',
+                purple: 'text-neon-purple',
+                blue: 'text-neon-blue'
+            };
+            
+            const randomType = Object.keys(colors)[Math.floor(Math.random() * Object.keys(colors).length)];
+            const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+
+            p.innerHTML = `<span class="text-on-surface-variant">[${time}]</span> <span class="${colors[randomType]}">${randomMsg}</span>`;
+            container.appendChild(p);
+            
+            setTimeout(() => {
+                p.classList.remove('opacity-0', 'translate-y-2');
+                container.scrollTop = container.scrollHeight;
+            }, 50);
+
+            if (container.children.length > 20) {
+                container.removeChild(container.firstChild);
+            }
+        }
+
+        setInterval(() => appendLog(alphaLogs), 3000);
+        setInterval(() => appendLog(securityLogs), 5000);
+
+        // Toggle Simulation
+        const autoToggle = document.getElementById('autoToggle');
+        autoToggle.addEventListener('click', () => {
+            const circle = autoToggle.querySelector('div');
+            if (autoToggle.classList.contains('bg-neon-blue')) {
+                autoToggle.classList.remove('bg-neon-blue');
+                autoToggle.classList.add('bg-white/10');
+                circle.classList.remove('right-0.5');
+                circle.classList.add('left-0.5');
+            } else {
+                autoToggle.classList.add('bg-neon-blue');
+                autoToggle.classList.remove('bg-white/10');
+                circle.classList.add('right-0.5');
+                circle.classList.remove('left-0.5');
+            }
+        });
+    </script>
+</body></html>

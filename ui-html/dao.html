@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DAO Center — NEXUS AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/variables.css"/>
+  <link rel="stylesheet" href="assets/css/animations.css"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="stylesheet" href="assets/css/responsive.css"/>
+  <style>
+    .dash-shell{display:flex;height:100vh;overflow:hidden;}
+    .dash-main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+    .dash-canvas{flex:1;overflow-y:auto;padding:var(--margin-page);}
+    .dash-canvas::-webkit-scrollbar{width:4px;}
+    .dash-canvas::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px;}
+    .proposal-card{padding:var(--stack-lg);border-radius:var(--radius-xl);transition:var(--transition-fast);cursor:pointer;}
+    .proposal-card:hover{border-color:rgba(59,130,246,0.4);}
+    .vote-bar{height:8px;border-radius:4px;overflow:hidden;background:rgba(255,255,255,0.05);margin:8px 0;}
+    .vote-bar__yes{height:100%;background:linear-gradient(90deg,#34d399,rgba(52,211,153,0.6));border-radius:4px;}
+    .vote-bar__no{position:absolute;right:0;top:0;height:100%;background:rgba(255,77,77,0.5);border-radius:0 4px 4px 0;}
+    .tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border-muted);margin-bottom:var(--stack-xl);}
+    .tab-btn{padding:10px 20px;font-family:var(--font-mono);font-size:var(--text-label-sm);text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;color:var(--on-surface-variant);transition:var(--transition-fast);}
+    .tab-btn--active{color:var(--neon-blue);border-bottom-color:var(--neon-blue);}
+    .tab-btn:hover:not(.tab-btn--active){color:var(--on-surface);}
+  </style>
+</head>
+<body>
+<div class="dash-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__brand">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;border-radius:var(--radius-lg);background:rgba(59,130,246,0.2);border:1px solid var(--neon-blue);display:flex;align-items:center;justify-content:center;">
+          <span class="material-symbols-outlined" style="color:var(--neon-blue);font-variation-settings:'FILL' 1;">dataset</span>
+        </div>
+        <div><a href="index.html" class="sidebar__brand-name">NEXUS AI</a><div class="sidebar__brand-tag">Web3 OS</div></div>
+      </div>
+    </div>
+    <nav class="sidebar__nav">
+      <a href="dashboard.html"        class="nav-item"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></a>
+      <a href="founder-agent.html"    class="nav-item"><span class="material-symbols-outlined">smart_toy</span><span>AI Agent</span></a>
+      <a href="startup-builder.html"  class="nav-item"><span class="material-symbols-outlined">rocket_launch</span><span>Startup Builder</span></a>
+      <a href="contract-auditor.html" class="nav-item"><span class="material-symbols-outlined">verified_user</span><span>Auditor</span></a>
+      <a href="skill-passport.html"   class="nav-item"><span class="material-symbols-outlined">badge</span><span>Skill Passport</span></a>
+      <a href="dao.html"              class="nav-item nav-item--active"><span class="material-symbols-outlined">account_balance</span><span>DAO Center</span></a>
+      <a href="wallet.html"           class="nav-item"><span class="material-symbols-outlined">account_balance_wallet</span><span>Wallet</span></a>
+      <a href="analytics.html"        class="nav-item"><span class="material-symbols-outlined">analytics</span><span>Analytics</span></a>
+      <a href="notifications.html"    class="nav-item"><span class="material-symbols-outlined">notifications</span><span>Activity</span></a>
+    </nav>
+    <div class="sidebar__footer">
+      <button class="btn btn--primary btn--full" style="margin-bottom:var(--stack-md);border-radius:var(--radius-md);">Deploy Contract</button>
+      <a href="settings.html" class="nav-item"><span class="material-symbols-outlined">settings</span><span>Settings</span></a>
+    </div>
+  </aside>
+
+  <div class="dash-main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:var(--stack-md);">
+        <button class="topbar__icon-btn" id="sidebarToggle"><span class="material-symbols-outlined">menu</span></button>
+        <div>
+          <div style="font-family:var(--font-display);font-size:var(--text-headline-lg);font-weight:700;">DAO Center</div>
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">NexusDAO · Governance v2</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--stack-md);">
+        <button class="btn btn--primary btn--sm" onclick="document.getElementById('newProposalModal').classList.add('is-open')">
+          <span class="material-symbols-outlined" style="font-size:14px;">add</span>New Proposal
+        </button>
+        <button class="topbar__icon-btn" style="position:relative;"><span class="material-symbols-outlined">notifications</span><span class="notification-dot"></span></button>
+        <div class="avatar"><img src="https://placehold.co/32x32/3b82f6/fff?text=N" alt="avatar"/></div>
+      </div>
+    </header>
+
+    <div class="dash-canvas">
+      <!-- Treasury Stats -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--stack-md);margin-bottom:var(--stack-xl);">
+        <div class="glass-card stat-card">
+          <div class="stat-card__label">Treasury</div>
+          <div class="stat-card__value">$4.2M</div>
+          <div class="stat-card__sub" style="color:#34d399;">↑ 8.3% this month</div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-card__label">Active Proposals</div>
+          <div class="stat-card__value">3</div>
+          <div class="stat-card__sub" style="color:var(--neon-blue);">2 closing soon</div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-card__label">Token Holders</div>
+          <div class="stat-card__value">1,847</div>
+          <div class="stat-card__sub" style="color:var(--on-surface-variant);">Quorum: 500</div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-card__label">Your Voting Power</div>
+          <div class="stat-card__value">842</div>
+          <div class="stat-card__sub" style="color:var(--neon-purple);">0.05% of total</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn tab-btn--active" onclick="switchTab(event,'proposals')">Proposals</button>
+        <button class="tab-btn" onclick="switchTab(event,'treasury')">Treasury</button>
+        <button class="tab-btn" onclick="switchTab(event,'members')">Members</button>
+      </div>
+
+      <!-- Proposals Tab -->
+      <div id="tab-proposals">
+        <div style="display:flex;flex-direction:column;gap:var(--stack-md);">
+
+          <!-- Active Proposal 1 -->
+          <div class="glass-card proposal-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--stack-md);">
+              <div>
+                <div style="display:flex;align-items:center;gap:var(--stack-md);margin-bottom:6px;">
+                  <span class="badge badge--green">Active</span>
+                  <span style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">NXS-008 · Closes in 2 days</span>
+                </div>
+                <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);">Allocate 200K DVT for Ecosystem Grants Program</h3>
+              </div>
+              <div style="display:flex;gap:var(--stack-md);flex-shrink:0;">
+                <button class="btn btn--ghost btn--sm" style="border-color:rgba(52,211,153,0.4);color:#34d399;" onclick="castVote(this,'yes')">✓ For</button>
+                <button class="btn btn--ghost btn--sm" style="border-color:rgba(255,77,77,0.4);color:var(--neon-red);" onclick="castVote(this,'no')">✗ Against</button>
+              </div>
+            </div>
+            <p style="color:var(--on-surface-variant);font-size:var(--text-body-sm);margin-bottom:var(--stack-md);">Proposal to establish an ecosystem grants program funded by 200,000 DVT from treasury to support builders creating dApps on the Nexus Protocol.</p>
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;margin-bottom:4px;">
+              <span style="color:#34d399;">For: 78% (1,444 votes)</span>
+              <span style="color:var(--neon-red);">Against: 22% (407 votes)</span>
+            </div>
+            <div class="vote-bar" style="position:relative;height:8px;">
+              <div class="vote-bar__yes" style="width:78%;height:100%;"></div>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">1,851 votes cast · Quorum met ✓</div>
+          </div>
+
+          <!-- Active Proposal 2 -->
+          <div class="glass-card proposal-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--stack-md);">
+              <div>
+                <div style="display:flex;align-items:center;gap:var(--stack-md);margin-bottom:6px;">
+                  <span class="badge badge--green">Active</span>
+                  <span style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">NXS-009 · Closes in 4 days</span>
+                </div>
+                <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);">Upgrade Governance Contracts to v3</h3>
+              </div>
+              <div style="display:flex;gap:var(--stack-md);flex-shrink:0;">
+                <button class="btn btn--ghost btn--sm" style="border-color:rgba(52,211,153,0.4);color:#34d399;" onclick="castVote(this,'yes')">✓ For</button>
+                <button class="btn btn--ghost btn--sm" style="border-color:rgba(255,77,77,0.4);color:var(--neon-red);" onclick="castVote(this,'no')">✗ Against</button>
+              </div>
+            </div>
+            <p style="color:var(--on-surface-variant);font-size:var(--text-body-sm);margin-bottom:var(--stack-md);">Migrate governance logic to OpenZeppelin Governor v5 with timelock controller for enhanced security and cross-chain voting via LayerZero.</p>
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;margin-bottom:4px;">
+              <span style="color:#34d399;">For: 91% (620 votes)</span>
+              <span style="color:var(--neon-red);">Against: 9% (61 votes)</span>
+            </div>
+            <div class="vote-bar"><div class="vote-bar__yes" style="width:91%;height:100%;"></div></div>
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">681 votes cast · Quorum met ✓</div>
+          </div>
+
+          <!-- Passed Proposal -->
+          <div class="glass-card proposal-card" style="opacity:0.7;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--stack-md);">
+              <div>
+                <div style="display:flex;align-items:center;gap:var(--stack-md);margin-bottom:6px;">
+                  <span class="badge badge--blue">Passed</span>
+                  <span style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">NXS-007 · Closed 3h ago</span>
+                </div>
+                <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);">Add Arbitrum Bridge Support</h3>
+              </div>
+              <span class="badge badge--green" style="flex-shrink:0;">Executed</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;margin-bottom:4px;">
+              <span style="color:#34d399;">For: 78%</span><span style="color:var(--neon-red);">Against: 22%</span>
+            </div>
+            <div class="vote-bar"><div class="vote-bar__yes" style="width:78%;height:100%;"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Treasury Tab (hidden by default) -->
+      <div id="tab-treasury" style="display:none;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--stack-xl);">
+          <div class="glass-panel" style="border-radius:var(--radius-xl);padding:var(--stack-lg);">
+            <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);margin-bottom:var(--stack-lg);">Treasury Assets</h3>
+            <div style="display:flex;flex-direction:column;gap:var(--stack-md);">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--stack-md);background:rgba(255,255,255,0.02);border-radius:var(--radius-lg);border:1px solid var(--border-muted);">
+                <div style="display:flex;align-items:center;gap:var(--stack-md);"><span style="font-size:20px;">Ξ</span><div><div style="font-size:var(--text-body-sm);font-weight:500;">Ethereum</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">120.5 ETH</div></div></div>
+                <div style="text-align:right;"><div style="font-weight:600;">$420,000</div><div style="font-family:var(--font-mono);font-size:10px;color:#34d399;">10%</div></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--stack-md);background:rgba(255,255,255,0.02);border-radius:var(--radius-lg);border:1px solid var(--border-muted);">
+                <div style="display:flex;align-items:center;gap:var(--stack-md);"><span style="font-size:20px;">◈</span><div><div style="font-size:var(--text-body-sm);font-weight:500;">DVT Token</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">3.2M DVT</div></div></div>
+                <div style="text-align:right;"><div style="font-weight:600;">$3,200,000</div><div style="font-family:var(--font-mono);font-size:10px;color:#34d399;">76%</div></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--stack-md);background:rgba(255,255,255,0.02);border-radius:var(--radius-lg);border:1px solid var(--border-muted);">
+                <div style="display:flex;align-items:center;gap:var(--stack-md);"><span style="font-size:20px;">$</span><div><div style="font-size:var(--text-body-sm);font-weight:500;">USDC</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">580,000 USDC</div></div></div>
+                <div style="text-align:right;"><div style="font-weight:600;">$580,000</div><div style="font-family:var(--font-mono);font-size:10px;color:#34d399;">14%</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="glass-panel" style="border-radius:var(--radius-xl);padding:var(--stack-lg);">
+            <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);margin-bottom:var(--stack-lg);">Recent Transactions</h3>
+            <div style="display:flex;flex-direction:column;gap:var(--stack-md);">
+              <div style="display:flex;justify-content:space-between;padding-bottom:var(--stack-md);border-bottom:1px solid var(--border-muted);"><div><div style="font-size:var(--text-body-sm);">Grants Program Allocation</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">2 days ago</div></div><span style="color:var(--neon-red);font-family:var(--font-mono);">-50,000 DVT</span></div>
+              <div style="display:flex;justify-content:space-between;padding-bottom:var(--stack-md);border-bottom:1px solid var(--border-muted);"><div><div style="font-size:var(--text-body-sm);">Protocol Fee Revenue</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">5 days ago</div></div><span style="color:#34d399;font-family:var(--font-mono);">+12.4 ETH</span></div>
+              <div style="display:flex;justify-content:space-between;"><div><div style="font-size:var(--text-body-sm);">Security Audit Payment</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">1 week ago</div></div><span style="color:var(--neon-red);font-family:var(--font-mono);">-30,000 USDC</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Members Tab (hidden) -->
+      <div id="tab-members" style="display:none;">
+        <div class="glass-panel" style="border-radius:var(--radius-xl);overflow:hidden;">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Member</th><th>Voting Power</th><th>Proposals</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><div style="display:flex;align-items:center;gap:var(--stack-md);"><div class="avatar"><img src="https://placehold.co/32x32/3b82f6/fff?text=A" alt=""/></div><span>0x3f4a…d82b</span></div></td><td style="font-family:var(--font-mono);">842</td><td>12</td><td><span class="badge badge--green">Core</span></td></tr>
+                <tr><td><div style="display:flex;align-items:center;gap:var(--stack-md);"><div class="avatar"><img src="https://placehold.co/32x32/8b5cf6/fff?text=B" alt=""/></div><span>0x7c91…a4f2</span></div></td><td style="font-family:var(--font-mono);">15,200</td><td>28</td><td><span class="badge badge--blue">Delegate</span></td></tr>
+                <tr><td><div style="display:flex;align-items:center;gap:var(--stack-md);"><div class="avatar"><img src="https://placehold.co/32x32/34d399/fff?text=C" alt=""/></div><span>0x2a11…9e73</span></div></td><td style="font-family:var(--font-mono);">3,400</td><td>7</td><td><span class="badge badge--muted">Member</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Proposal Modal -->
+<div class="modal-backdrop" id="newProposalModal">
+  <div class="modal">
+    <div class="modal__accent"></div>
+    <div class="modal__header">
+      <div><div class="modal__title">New Governance Proposal</div><p style="color:var(--on-surface-variant);font-size:var(--text-body-sm);margin-top:4px;">Requires 100 DVT to submit</p></div>
+      <button class="modal__close" onclick="document.getElementById('newProposalModal').classList.remove('is-open')"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="modal__body">
+      <div class="form-group"><label class="form-label">Proposal Title</label><input class="input" type="text" placeholder="e.g. Allocate funds for marketing…"/></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="textarea" rows="4" placeholder="Detailed proposal description…"></textarea></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--stack-md);">
+        <div class="form-group"><label class="form-label">Voting Period</label><select class="input" style="cursor:pointer;"><option>3 days</option><option>5 days</option><option>7 days</option></select></div>
+        <div class="form-group"><label class="form-label">Quorum Required</label><input class="input" type="text" value="500 DVT"/></div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--outline" onclick="document.getElementById('newProposalModal').classList.remove('is-open')">Cancel</button>
+      <button class="btn btn--primary">Submit Proposal</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/navigation.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+function switchTab(e, tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-btn--active'));
+  e.target.classList.add('tab-btn--active');
+  ['proposals','treasury','members'].forEach(t => {
+    const el = document.getElementById('tab-'+t);
+    if(el) el.style.display = t === tab ? 'block' : 'none';
+  });
+}
+function castVote(btn, vote) {
+  const card = btn.closest('.proposal-card');
+  card.querySelectorAll('button').forEach(b => b.disabled = true);
+  const msg = document.createElement('div');
+  msg.className = 'badge badge--' + (vote === 'yes' ? 'green' : 'red');
+  msg.style = 'margin-top:8px;';
+  msg.textContent = vote === 'yes' ? '✓ You voted For' : '✗ You voted Against';
+  card.appendChild(msg);
+}
+</script>
+</body>
+</html>

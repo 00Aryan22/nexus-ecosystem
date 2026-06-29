@@ -1,0 +1,107 @@
+/* ============================================================
+   NEXUS AI — Responsive Styles
+   ============================================================ */
+
+/* ── Breakpoints
+   sm:  640px
+   md:  768px
+   lg:  1024px
+   xl:  1280px
+   2xl: 1536px
+   ============================================================ */
+
+/* ── Grid helpers ─────────────────────────────────────────── */
+.grid      { display: grid; }
+.grid-2    { grid-template-columns: repeat(2, 1fr); gap: var(--gutter); }
+.grid-3    { grid-template-columns: repeat(3, 1fr); gap: var(--gutter); }
+.grid-4    { grid-template-columns: repeat(4, 1fr); gap: var(--gutter); }
+.grid-12   { grid-template-columns: repeat(12, 1fr); gap: var(--gutter); }
+.col-span-2  { grid-column: span 2; }
+.col-span-3  { grid-column: span 3; }
+.col-span-4  { grid-column: span 4; }
+.col-span-5  { grid-column: span 5; }
+.col-span-6  { grid-column: span 6; }
+.col-span-7  { grid-column: span 7; }
+.col-span-8  { grid-column: span 8; }
+.col-span-9  { grid-column: span 9; }
+.col-span-12 { grid-column: span 12; }
+
+/* ── Flex helpers ─────────────────────────────────────────── */
+.flex         { display: flex; }
+.flex-col     { flex-direction: column; }
+.flex-1       { flex: 1; }
+.items-center { align-items: center; }
+.items-start  { align-items: flex-start; }
+.items-end    { align-items: flex-end; }
+.justify-between { justify-content: space-between; }
+.justify-center  { justify-content: center; }
+.justify-end     { justify-content: flex-end; }
+.gap-xs  { gap: var(--stack-xs); }
+.gap-sm  { gap: var(--stack-sm); }
+.gap-md  { gap: var(--stack-md); }
+.gap-lg  { gap: var(--stack-lg); }
+.gap-gutter { gap: var(--gutter); }
+.flex-wrap { flex-wrap: wrap; }
+
+/* ── Spacing ──────────────────────────────────────────────── */
+.p-md  { padding: var(--stack-md); }
+.p-lg  { padding: var(--stack-lg); }
+.px-md { padding-left: var(--stack-md); padding-right: var(--stack-md); }
+.py-md { padding-top: var(--stack-md); padding-bottom: var(--stack-md); }
+.mb-sm { margin-bottom: var(--stack-sm); }
+.mb-md { margin-bottom: var(--stack-md); }
+.mb-lg { margin-bottom: var(--stack-lg); }
+.mb-xl { margin-bottom: var(--stack-xl); }
+.mt-auto { margin-top: auto; }
+
+/* ── Width / Height ───────────────────────────────────────── */
+.w-full   { width: 100%; }
+.h-full   { height: 100%; }
+.max-w-sm { max-width: 384px; }
+.max-w-md { max-width: 512px; }
+.max-w-lg { max-width: 768px; }
+.max-w-xl { max-width: 1024px; }
+.max-w-2xl { max-width: 1280px; }
+.mx-auto  { margin-left: auto; margin-right: auto; }
+
+/* ── Display ──────────────────────────────────────────────── */
+.hidden   { display: none !important; }
+.relative { position: relative; }
+.absolute { position: absolute; }
+.overflow-hidden { overflow: hidden; }
+
+/* ── Tablet ────────────────────────────────────────────────── */
+@media (max-width: 1023px) {
+  .sidebar { display: none; }
+  .sidebar.is-open { display: flex; position: fixed; left: 0; z-index: var(--z-modal); }
+  .topbar { padding: 0 var(--margin-mobile); }
+  .page-canvas { padding: var(--margin-mobile); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-12 .col-span-8  { grid-column: span 12; }
+  .grid-12 .col-span-4  { grid-column: span 12; }
+  .grid-12 .col-span-7  { grid-column: span 12; }
+  .grid-12 .col-span-5  { grid-column: span 12; }
+  .hide-tablet { display: none !important; }
+}
+
+/* ── Mobile ─────────────────────────────────────────────────── */
+@media (max-width: 639px) {
+  :root { --margin-page: var(--margin-mobile); }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .text-display-lg { font-size: var(--text-display-lg-mobile); }
+  .hide-mobile { display: none !important; }
+  .topbar__search { display: none; }
+}
+
+/* ── Utility: show only on mobile ────────────────────────── */
+.show-mobile { display: none; }
+@media (max-width: 1023px) { .show-mobile { display: flex; } }
+
+/* ── Mobile hamburger button ─────────────────────────────── */
+.hamburger {
+  display: none; padding: 8px;
+  color: var(--on-surface-variant);
+  border-radius: var(--radius-md);
+}
+@media (max-width: 1023px) { .hamburger { display: flex; } }

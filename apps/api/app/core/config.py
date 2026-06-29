@@ -82,6 +82,18 @@ class Settings(BaseSettings):
             "ALCHEMY_POLYGON_AMOY_RPC_URL",
         ),
     )
+    stitch_url: str = Field(
+        default="https://stitch.googleapis.com/mcp",
+        validation_alias=AliasChoices("stitch_url", "STITCH_URL"),
+    )
+    stitch_api_key: str = Field(
+        default="",
+        validation_alias=AliasChoices("stitch_api_key", "STITCH_API_KEY"),
+    )
+    stitch_header_name: str = Field(
+        default="X-Goog-Api-Key",
+        validation_alias=AliasChoices("stitch_header_name", "STITCH_HEADER_NAME"),
+    )
 
     @property
     def ollama_chat_url(self) -> str:

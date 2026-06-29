@@ -1,0 +1,533 @@
+<!-- Admin Control - NEXUS AI -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEXUS AI | Ecosystem Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Geist:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #08090A;
+            color: #e3e2e3;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(17, 18, 20, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .spotlight-card:hover {
+            box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+            background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.05), transparent 70%);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#1f2021",
+                        "on-primary-fixed-variant": "#004395",
+                        "tertiary-fixed": "#dfed1a",
+                        "secondary-container": "#6f00be",
+                        "primary-container": "#4d8eff",
+                        "neon-purple": "#a855f7",
+                        "surface-container-high": "#292a2b",
+                        "on-tertiary-fixed-variant": "#454a00",
+                        "warning-yellow": "#E4F222",
+                        "on-background": "#e3e2e3",
+                        "surface-obsidian": "#08090A",
+                        "secondary-fixed": "#f0dbff",
+                        "error-container": "#93000a",
+                        "surface-tint": "#adc6ff",
+                        "surface-slate": "#111214",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "outline-variant": "#424754",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "primary": "#adc6ff",
+                        "on-secondary": "#490080",
+                        "surface-variant": "#343536",
+                        "on-surface-variant": "#c2c6d6",
+                        "surface": "#121315",
+                        "surface-container-low": "#1b1c1d",
+                        "error": "#ffb4ab",
+                        "tertiary": "#c3d000",
+                        "surface-dim": "#121315",
+                        "on-surface": "#e3e2e3",
+                        "primary-fixed": "#d8e2ff",
+                        "primary-fixed-dim": "#adc6ff",
+                        "outline": "#8c909f",
+                        "tertiary-fixed-dim": "#c3d000",
+                        "on-tertiary-fixed": "#1b1d00",
+                        "inverse-on-surface": "#303032",
+                        "on-secondary-fixed": "#2c0051",
+                        "neon-blue": "#3b82f6",
+                        "on-primary": "#002e6a",
+                        "surface-bright": "#38393a",
+                        "surface-container-lowest": "#0d0e0f",
+                        "on-secondary-container": "#d6a9ff",
+                        "on-tertiary-container": "#292c00",
+                        "inverse-primary": "#005ac2",
+                        "on-error": "#690005",
+                        "tertiary-container": "#8e9800",
+                        "inverse-surface": "#e3e2e3",
+                        "border-muted": "rgba(255, 255, 255, 0.08)",
+                        "background": "#121315",
+                        "secondary": "#ddb7ff",
+                        "surface-container-highest": "#343536",
+                        "on-tertiary": "#2f3300",
+                        "on-primary-container": "#00285d",
+                        "on-primary-fixed": "#001a42"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-page": "40px",
+                        "unit": "4px",
+                        "stack-lg": "32px",
+                        "stack-md": "16px",
+                        "stack-xs": "4px",
+                        "stack-xl": "64px",
+                        "stack-sm": "8px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Geist"],
+                        "body-md": ["Inter"],
+                        "display-lg-mobile": ["Geist"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "display-lg": ["Geist"],
+                        "headline-lg": ["Geist"],
+                        "body-sm": ["Inter"],
+                        "label-md": ["JetBrains Mono"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="flex overflow-hidden">
+<!-- Side Navigation -->
+<aside class="h-screen w-64 flex flex-col sticky top-0 left-0 bg-surface-slate/80 backdrop-blur-xl border-r border-border-muted shadow-2xl shadow-surface-obsidian shrink-0">
+<div class="flex flex-col h-full py-stack-md px-gutter">
+<!-- Brand -->
+<div class="mb-stack-xl flex items-center gap-3">
+<div class="w-8 h-8 bg-neon-blue flex items-center justify-center rounded-sm">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">dataset</span>
+</div>
+<div>
+<h1 class="font-display-lg text-headline-lg font-bold text-on-surface tracking-tighter">NEXUS AI</h1>
+<p class="text-[10px] font-label-sm text-on-surface-variant uppercase tracking-widest">Web3 OS</p>
+</div>
+</div>
+<!-- Nav Links -->
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-neon-blue bg-primary-container/10 border-r-2 border-neon-blue font-bold transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+<span class="font-body-md text-body-md">AI Agent</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="rocket_launch">rocket_launch</span>
+<span class="font-body-md text-body-md">Startup Builder</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+<span class="font-body-md text-body-md">Auditor</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="badge">badge</span>
+<span class="font-body-md text-body-md">Skill Passport</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+<span class="font-body-md text-body-md">DAO Center</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="shield_alert">shield_lock</span>
+<span class="font-body-md text-body-md">Fraud Detection</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="storefront">storefront</span>
+<span class="font-body-md text-body-md">Marketplace</span>
+</a>
+</nav>
+<!-- Footer Nav -->
+<div class="mt-auto space-y-1 pt-6 border-t border-border-muted">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-body-md text-body-md">Support</span>
+</a>
+<button class="mt-4 w-full bg-neon-blue text-on-primary py-3 rounded-lg font-bold Active: scale-[0.98] transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-base">add</span>
+                    Deploy Contract
+                </button>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden">
+<!-- Top Bar -->
+<header class="w-full sticky top-0 z-50 bg-surface-obsidian/60 backdrop-blur-md border-b border-border-muted">
+<div class="flex justify-between items-center h-16 px-margin-page w-full">
+<div class="flex items-center gap-8">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant">search</span>
+<input class="bg-surface-obsidian border border-border-muted rounded-full pl-10 pr-4 py-1.5 w-64 text-label-md font-label-md focus:outline-none focus:ring-1 focus:ring-neon-blue" placeholder="Search analytics..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 border-r border-border-muted pr-6">
+<button class="text-on-surface-variant hover:text-on-surface transition-all Active: brightness-125">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface transition-all Active: brightness-125">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</button>
+</div>
+<button class="bg-primary-container/20 text-neon-blue px-4 py-2 rounded-lg font-bold text-label-md border border-neon-blue/30 hover:bg-primary-container/30 transition-all">
+                        Connect Wallet
+                    </button>
+<img alt="User Profile" class="w-8 h-8 rounded-full border border-border-muted" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVTuQfv0XlFuPnxib5P6Gnbj4yYnaXT6COy8o-Yrn0Qg73YFa5bCpxSZwdFqHe4uYP1I_YQ_pfbpTgxtGXuaC1GBdi6rbJRQkwZMd8MTQN1FZLKIjcMBczfux_phmzLxPxLwDTgH2ymPXzRfs4YAFwBNznxOHRc56LRluvMmMv-QHgVjMo2xpK4kSDO5t5R2pWjmprDP_wJ4WRxm0UaKQy_W90WePWUIUOzujBb_JCbsjxYJNt38063F7wh2_Az9zbl-Y2suV8X1E"/>
+</div>
+</div>
+</header>
+<!-- Scrollable Canvas -->
+<div class="flex-1 overflow-y-auto custom-scrollbar p-margin-page space-y-stack-lg">
+<!-- Page Header -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface mb-2">Ecosystem Analytics</h2>
+<p class="text-on-surface-variant font-body-md">Real-time health and productivity metrics for the Nexus decentralized network.</p>
+</div>
+<div class="flex gap-2 p-1 bg-surface-container rounded-xl border border-border-muted">
+<button class="px-4 py-1.5 rounded-lg text-label-md font-label-md bg-neon-blue text-white shadow-lg shadow-neon-blue/20">Live View</button>
+<button class="px-4 py-1.5 rounded-lg text-label-md font-label-md text-on-surface-variant hover:text-on-surface transition-all">7 Days</button>
+<button class="px-4 py-1.5 rounded-lg text-label-md font-label-md text-on-surface-variant hover:text-on-surface transition-all">30 Days</button>
+</div>
+</div>
+<!-- Tab Navigation -->
+<div class="flex gap-8 border-b border-border-muted">
+<button class="pb-3 border-b-2 border-neon-blue text-on-surface font-bold text-label-md flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">account_balance_wallet</span>
+                    Ecosystem TVL
+                </button>
+<button class="pb-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-medium text-label-md flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">bolt</span>
+                    Agent Productivity
+                </button>
+<button class="pb-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-medium text-label-md flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">pause</span>
+                    Network Health
+                </button>
+</div>
+<!-- KPI Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div class="glass-panel spotlight-card p-6 rounded-xl flex flex-col justify-between">
+<div class="flex justify-between items-start mb-4">
+<span class="text-on-surface-variant font-label-md uppercase tracking-wider text-[10px]">Total Value Locked</span>
+<span class="text-neon-blue bg-neon-blue/10 px-2 py-0.5 rounded text-[10px] font-label-sm">+12.4%</span>
+</div>
+<div class="text-headline-xl font-headline-xl text-on-surface">$2.84B</div>
+<div class="mt-4 h-12 w-full flex items-end gap-0.5">
+<div class="bg-neon-blue/30 w-full h-[60%] rounded-t-sm"></div>
+<div class="bg-neon-blue/30 w-full h-[80%] rounded-t-sm"></div>
+<div class="bg-neon-blue/30 w-full h-[50%] rounded-t-sm"></div>
+<div class="bg-neon-blue/30 w-full h-[90%] rounded-t-sm"></div>
+<div class="bg-neon-blue w-full h-[100%] rounded-t-sm"></div>
+</div>
+</div>
+<div class="glass-panel spotlight-card p-6 rounded-xl flex flex-col justify-between">
+<div class="flex justify-between items-start mb-4">
+<span class="text-on-surface-variant font-label-md uppercase tracking-wider text-[10px]">Active Agents</span>
+<span class="text-warning-yellow bg-warning-yellow/10 px-2 py-0.5 rounded text-[10px] font-label-sm">Peak</span>
+</div>
+<div class="text-headline-xl font-headline-xl text-on-surface">42,809</div>
+<div class="mt-4 text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-neon-blue" style="font-variation-settings: 'FILL' 1;">group</span>
+                        Global Fleet Status: Online
+                    </div>
+</div>
+<div class="glass-panel spotlight-card p-6 rounded-xl flex flex-col justify-between">
+<div class="flex justify-between items-start mb-4">
+<span class="text-on-surface-variant font-label-md uppercase tracking-wider text-[10px]">Gas Consumption</span>
+<span class="text-error bg-error/10 px-2 py-0.5 rounded text-[10px] font-label-sm">High</span>
+</div>
+<div class="text-headline-xl font-headline-xl text-on-surface">1.2 Gwei</div>
+<div class="mt-4 flex items-center gap-2">
+<div class="flex-1 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-error w-[85%] h-full"></div>
+</div>
+</div>
+</div>
+<div class="glass-panel spotlight-card p-6 rounded-xl flex flex-col justify-between">
+<div class="flex justify-between items-start mb-4">
+<span class="text-on-surface-variant font-label-md uppercase tracking-wider text-[10px]">Uptime SLA</span>
+<span class="text-tertiary bg-tertiary/10 px-2 py-0.5 rounded text-[10px] font-label-sm">99.99%</span>
+</div>
+<div class="text-headline-xl font-headline-xl text-on-surface">Stable</div>
+<div class="mt-4 flex -space-x-2">
+<img alt="Node 1" class="w-6 h-6 rounded-full border border-surface-obsidian" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2yF1IotmE9j7KO01JtQBzM3789oWPaAnONo7g0zh1LMW3sDWg-M7HAEyjBgqQQLgGoDXHbQzr1AmFTIKhpQx0H5oL0dTpc_9dOvoUopccf8EEXNAByPBtURSeZxLmTbN4Wn5m5e-1BtLlF87NbiofZDQfiCkZlkICYaNoNwhumjhSrzEUdBwkZS37BvJyeBc9HVjEKiB_0gDglXtU-G1ncxvXq1Bs-6cVrEwfnfRSax0lJOJWPPMbTF0aAJVgqBzyqlk1tkATJ6Y"/>
+<img alt="Node 2" class="w-6 h-6 rounded-full border border-surface-obsidian" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTmZ48HO9ZqSaDgds2yAxTFqBDd7c-imJBfZgqz-CFuAZ-lDxhf6PThjPXJ-vfDyaL7NS5jpKWpqNglJp3XEH5LnQgRUyWNPW6hcF9D8smcb1XHIWMhfV-2_HQARiihPvSXI7fu6f-lW04aVg_Fm-IpEszRryLVcYswR9hAfFfdwV5lK83Jjfid4_DPmDeZNSyV28Wmx6xkzX1yJgGexZ4d1I-5NGa0qrmn9LqeMDgsZDJp0lNS4VZ90wWRDj0wimry7rAtZ-M49M"/>
+<img alt="Node 3" class="w-6 h-6 rounded-full border border-surface-obsidian" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsoyJ0shz0yx9t0d09CdZBg37j0DE1-ki_LVTsPJMRhRifXZqrDQ6ZdfDCPCf2Mqqd9lUmmOelkwDODenQPVjf8LlVz5t5vhoHjJs4ry7nUb4di9eavAJQwU_A8H764CWOkfSxE1gCNOsiqxLfwcfUHeK9f0ep6Y_GQkoW5gDqRDZoaSghW0JWe0kjuXu0yjIdrcOBR9lkb79dBMVmXaEHKb1WL8HFwwjHfwn-9AjdigmdS5mI1pDPJjZE19yvqGCIgv-7oaztwo8"/>
+<div class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-[8px] border border-surface-obsidian">+240</div>
+</div>
+</div>
+</div>
+<!-- Chart & Heatmap Row -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- TVL Growth Chart -->
+<div class="lg:col-span-2 glass-panel p-gutter rounded-xl relative overflow-hidden group">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface">Growth Velocity</h3>
+<p class="text-body-sm text-on-surface-variant">Protocol asset distribution across L2 clusters</p>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface">more_vert</button>
+</div>
+<div class="relative h-[300px] w-full flex items-end">
+
+<div class="absolute inset-0 flex items-end justify-between px-2">
+<!-- Visual placeholder for a sophisticated line chart -->
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 1000 300">
+<defs>
+<lineargradient id="gradient-blue" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#3b82f6" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,250 Q100,220 200,240 T400,180 T600,200 T800,100 T1000,50 L1000,300 L0,300 Z" fill="url(#gradient-blue)"></path>
+<path d="M0,250 Q100,220 200,240 T400,180 T600,200 T800,100 T1000,50" fill="none" stroke="#3b82f6" stroke-width="2.5"></path>
+<!-- Interactive dot -->
+<circle class="animate-pulse shadow-lg" cx="800" cy="100" fill="#3b82f6" r="5"></circle>
+</svg>
+</div>
+<div class="absolute bottom-4 right-6 bg-surface-container-high/80 p-3 rounded-lg border border-neon-blue/30 backdrop-blur-md">
+<p class="text-[10px] font-label-md text-on-surface-variant mb-1">CURRENT PEAK</p>
+<p class="text-body-md font-bold text-on-surface">$2.84B</p>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-border-muted flex justify-between">
+<div class="flex gap-6">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-neon-blue"></span>
+<span class="text-label-sm text-on-surface-variant">Nexus Mainnet</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-neon-purple"></span>
+<span class="text-label-sm text-on-surface-variant">Zk-Sync Cluster</span>
+</div>
+</div>
+<div class="flex gap-2">
+<span class="text-label-sm text-on-surface-variant font-label-sm">DATA SYNC: 12ms ago</span>
+</div>
+</div>
+</div>
+<!-- Network Activity Heatmap -->
+<div class="glass-panel p-gutter rounded-xl">
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-1">Global Load</h3>
+<p class="text-body-sm text-on-surface-variant mb-6">Cross-chain transaction intensity</p>
+<div class="grid grid-cols-7 gap-1">
+<!-- Heatmap generated via loop for visual effect -->
+<script>
+                            const colors = ['bg-surface-container', 'bg-neon-blue/10', 'bg-neon-blue/30', 'bg-neon-blue/60', 'bg-neon-blue', 'bg-warning-yellow/40'];
+                            for(let i=0; i<49; i++) {
+                                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                                document.write(`<div class="aspect-square ${randomColor} rounded-[2px] transition-all hover:scale-110 hover:z-10 cursor-help" title="Cluster Load: ${Math.floor(Math.random()*100)}%"></div>`);
+                            }
+                        </script>
+</div>
+<div class="mt-8 space-y-4">
+<div class="flex justify-between items-center text-label-sm">
+<span class="text-on-surface-variant">Latency</span>
+<span class="text-on-surface">14ms average</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full">
+<div class="bg-neon-blue w-[75%] h-full"></div>
+</div>
+<div class="flex justify-between items-center text-label-sm">
+<span class="text-on-surface-variant">Throughput</span>
+<span class="text-on-surface">8.4k TPS</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full">
+<div class="bg-neon-purple w-[92%] h-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Table & Report Builder -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-gutter items-start">
+<!-- Top Performing Startups Table -->
+<div class="xl:col-span-2 glass-panel rounded-xl overflow-hidden">
+<div class="px-gutter py-stack-md flex justify-between items-center border-b border-border-muted bg-white/5">
+<h3 class="font-headline-lg text-headline-lg text-on-surface">Top Emerging Protocols</h3>
+<div class="flex gap-2">
+<button class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-white/5 rounded-lg transition-all">filter_list</button>
+<button class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-white/5 rounded-lg transition-all">download</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-body-md">
+<thead>
+<tr class="text-label-sm text-on-surface-variant uppercase tracking-wider border-b border-border-muted">
+<th class="px-6 py-4 font-medium">Startup Entity</th>
+<th class="px-6 py-4 font-medium">Domain</th>
+<th class="px-6 py-4 font-medium text-right">Volume (24h)</th>
+<th class="px-6 py-4 font-medium text-right">Sentiment</th>
+<th class="px-6 py-4 font-medium text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-muted">
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-gradient-to-br from-neon-blue to-neon-purple flex items-center justify-center font-bold text-xs">V</div>
+<span class="font-medium text-on-surface">Vortex Dex</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">AMM/DeFi</td>
+<td class="px-6 py-4 text-right font-label-md">$14.2M</td>
+<td class="px-6 py-4 text-right">
+<div class="inline-flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+                                            High
+                                        </div>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="px-2 py-0.5 rounded-full text-[10px] font-label-sm bg-neon-blue/10 text-neon-blue border border-neon-blue/30">SCALABLE</span>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-gradient-to-br from-warning-yellow to-tertiary flex items-center justify-center font-bold text-xs text-black">P</div>
+<span class="font-medium text-on-surface">Pulse AI</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">ML Markets</td>
+<td class="px-6 py-4 text-right font-label-md">$8.9M</td>
+<td class="px-6 py-4 text-right">
+<div class="inline-flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+                                            High
+                                        </div>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="px-2 py-0.5 rounded-full text-[10px] font-label-sm bg-neon-purple/10 text-neon-purple border border-neon-purple/30">AUDITED</span>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center font-bold text-xs">C</div>
+<span class="font-medium text-on-surface">Cortex Node</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">Infrastructure</td>
+<td class="px-6 py-4 text-right font-label-md">$2.4M</td>
+<td class="px-6 py-4 text-right">
+<div class="inline-flex items-center gap-1 text-warning-yellow">
+<span class="material-symbols-outlined text-xs">horizontal_rule</span>
+                                            Neutral
+                                        </div>
+</td>
+<td class="px-6 py-4 text-right">
+<span class="px-2 py-0.5 rounded-full text-[10px] font-label-sm bg-surface-variant text-on-surface-variant border border-border-muted">BETA</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Exportable Report Builder -->
+<div class="glass-panel p-gutter rounded-xl">
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-4">Export Report</h3>
+<div class="space-y-4">
+<div>
+<label class="block text-[10px] font-label-sm text-on-surface-variant uppercase mb-2">Data Range</label>
+<select class="w-full bg-surface-obsidian border border-border-muted rounded-lg p-2.5 text-body-sm focus:border-neon-blue focus:ring-0">
+<option>Last 24 Hours</option>
+<option>Last 7 Days</option>
+<option>Last 30 Days</option>
+<option>Year to Date</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="block text-[10px] font-label-sm text-on-surface-variant uppercase">Included Metrics</label>
+<label class="flex items-center gap-3 p-2 bg-white/5 rounded-lg border border-border-muted cursor-pointer hover:border-neon-blue/40 transition-all">
+<input checked="" class="rounded border-border-muted bg-surface-obsidian text-neon-blue focus:ring-0" type="checkbox"/>
+<span class="text-body-sm">Transaction Logs</span>
+</label>
+<label class="flex items-center gap-3 p-2 bg-white/5 rounded-lg border border-border-muted cursor-pointer hover:border-neon-blue/40 transition-all">
+<input checked="" class="rounded border-border-muted bg-surface-obsidian text-neon-blue focus:ring-0" type="checkbox"/>
+<span class="text-body-sm">TVL Fluctuations</span>
+</label>
+<label class="flex items-center gap-3 p-2 bg-white/5 rounded-lg border border-border-muted cursor-pointer hover:border-neon-blue/40 transition-all">
+<input class="rounded border-border-muted bg-surface-obsidian text-neon-blue focus:ring-0" type="checkbox"/>
+<span class="text-body-sm">Agent Performance</span>
+</label>
+</div>
+<div class="pt-4 grid grid-cols-2 gap-3">
+<button class="bg-surface-container py-3 rounded-lg text-label-md font-bold flex items-center justify-center gap-2 border border-border-muted hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-base">picture_as_pdf</span>
+                                PDF
+                            </button>
+<button class="bg-neon-blue py-3 rounded-lg text-on-primary font-bold flex items-center justify-center gap-2 hover:brightness-110">
+<span class="material-symbols-outlined text-base">table_view</span>
+                                CSV
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Micro-interaction Tooltip System (JS) -->
+<script>
+        document.addEventListener('mousemove', (e) => {
+            const spotlights = document.querySelectorAll('.spotlight-card');
+            spotlights.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // Toggle mobile nav (if needed)
+        // This is a desktop-first design as per instructions, but adding shell logic
+    </script>
+</body></html>

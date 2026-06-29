@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Startup Builder — NEXUS AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/variables.css"/>
+  <link rel="stylesheet" href="assets/css/animations.css"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="stylesheet" href="assets/css/responsive.css"/>
+  <style>
+    .dash-shell{display:flex;height:100vh;overflow:hidden;}
+    .dash-main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+    .builder-shell{flex:1;display:grid;grid-template-columns:260px 1fr 320px;overflow:hidden;}
+    /* Step panel */
+    .steps-panel{border-right:1px solid var(--border-muted);padding:var(--stack-lg);overflow-y:auto;background:rgba(17,18,20,0.6);}
+    .step-item{display:flex;align-items:flex-start;gap:var(--stack-md);padding:var(--stack-md);border-radius:var(--radius-lg);cursor:pointer;transition:var(--transition-fast);margin-bottom:4px;}
+    .step-item:hover{background:rgba(255,255,255,0.03);}
+    .step-item--active{background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);}
+    .step-item--done .step-num{background:rgba(52,211,153,0.2);border-color:rgba(52,211,153,0.4);color:#34d399;}
+    .step-num{width:28px;height:28px;border-radius:50%;border:1px solid var(--border-muted);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11px;font-weight:700;flex-shrink:0;transition:var(--transition-fast);}
+    .step-item--active .step-num{background:rgba(59,130,246,0.2);border-color:var(--neon-blue);color:var(--neon-blue);}
+    /* Form panel */
+    .form-panel{overflow-y:auto;padding:var(--stack-xl);}
+    .form-panel::-webkit-scrollbar{width:4px;}
+    .form-panel::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);}
+    /* Preview panel */
+    .preview-panel{border-left:1px solid var(--border-muted);overflow-y:auto;background:rgba(17,18,20,0.6);}
+    .preview-panel::-webkit-scrollbar{width:3px;}
+    .preview-panel::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);}
+    .token-preview{border-radius:var(--radius-xl);overflow:hidden;border:1px solid rgba(59,130,246,0.3);background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(168,85,247,0.1));}
+    .select-field{width:100%;background:var(--surface-obsidian);border:1px solid var(--border-muted);border-radius:var(--radius-lg);padding:10px 14px;color:var(--on-surface);font-family:var(--font-body);font-size:var(--text-body-md);cursor:pointer;}
+    .select-field:focus{border-color:var(--neon-blue);box-shadow:0 0 0 2px rgba(59,130,246,0.2);outline:none;}
+  </style>
+</head>
+<body>
+<div class="dash-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__brand">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;border-radius:var(--radius-lg);background:rgba(59,130,246,0.2);border:1px solid var(--neon-blue);display:flex;align-items:center;justify-content:center;">
+          <span class="material-symbols-outlined" style="color:var(--neon-blue);font-variation-settings:'FILL' 1;">dataset</span>
+        </div>
+        <div><a href="index.html" class="sidebar__brand-name">NEXUS AI</a><div class="sidebar__brand-tag">Web3 OS</div></div>
+      </div>
+    </div>
+    <nav class="sidebar__nav">
+      <a href="dashboard.html"        class="nav-item"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></a>
+      <a href="founder-agent.html"    class="nav-item"><span class="material-symbols-outlined">smart_toy</span><span>AI Agent</span></a>
+      <a href="startup-builder.html"  class="nav-item nav-item--active"><span class="material-symbols-outlined">rocket_launch</span><span>Startup Builder</span></a>
+      <a href="contract-auditor.html" class="nav-item"><span class="material-symbols-outlined">verified_user</span><span>Auditor</span></a>
+      <a href="skill-passport.html"   class="nav-item"><span class="material-symbols-outlined">badge</span><span>Skill Passport</span></a>
+      <a href="dao.html"              class="nav-item"><span class="material-symbols-outlined">account_balance</span><span>DAO Center</span></a>
+      <a href="wallet.html"           class="nav-item"><span class="material-symbols-outlined">account_balance_wallet</span><span>Wallet</span></a>
+      <a href="analytics.html"        class="nav-item"><span class="material-symbols-outlined">analytics</span><span>Analytics</span></a>
+      <a href="notifications.html"    class="nav-item"><span class="material-symbols-outlined">notifications</span><span>Activity</span></a>
+    </nav>
+    <div class="sidebar__footer">
+      <button class="btn btn--primary btn--full" style="margin-bottom:var(--stack-md);border-radius:var(--radius-md);">Deploy Contract</button>
+      <a href="settings.html" class="nav-item"><span class="material-symbols-outlined">settings</span><span>Settings</span></a>
+    </div>
+  </aside>
+
+  <div class="dash-main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:var(--stack-md);">
+        <button class="topbar__icon-btn" id="sidebarToggle"><span class="material-symbols-outlined">menu</span></button>
+        <div>
+          <div style="font-family:var(--font-display);font-size:var(--text-headline-lg);font-weight:700;">Startup Builder</div>
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);margin-top:1px;">Token Wizard — Step 2 of 5</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--stack-md);">
+        <div style="display:flex;align-items:center;gap:4px;">
+          <div style="width:60px;height:4px;background:var(--neon-blue);border-radius:2px;"></div>
+          <div style="width:60px;height:4px;background:var(--neon-blue);border-radius:2px;"></div>
+          <div style="width:60px;height:4px;background:var(--border-muted);border-radius:2px;"></div>
+          <div style="width:60px;height:4px;background:var(--border-muted);border-radius:2px;"></div>
+          <div style="width:60px;height:4px;background:var(--border-muted);border-radius:2px;"></div>
+        </div>
+        <button class="topbar__icon-btn" style="position:relative;"><span class="material-symbols-outlined">notifications</span><span class="notification-dot"></span></button>
+        <div class="avatar"><img src="https://placehold.co/32x32/3b82f6/fff?text=N" alt="avatar"/></div>
+      </div>
+    </header>
+
+    <div class="builder-shell">
+      <!-- Steps Panel -->
+      <div class="steps-panel">
+        <h4 style="font-family:var(--font-mono);font-size:var(--text-label-sm);text-transform:uppercase;letter-spacing:0.1em;color:var(--on-surface-variant);margin-bottom:var(--stack-lg);">Build Steps</h4>
+        <div class="step-item step-item--done" onclick="showStep(1)">
+          <div class="step-num"><span class="material-symbols-outlined" style="font-size:14px;">check</span></div>
+          <div><div style="font-size:var(--text-body-sm);font-weight:500;">Project Basics</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">Name, description, category</div></div>
+        </div>
+        <div class="step-item step-item--active" onclick="showStep(2)">
+          <div class="step-num">2</div>
+          <div><div style="font-size:var(--text-body-sm);font-weight:500;">Token Design</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">Symbol, supply, tokenomics</div></div>
+        </div>
+        <div class="step-item" onclick="showStep(3)">
+          <div class="step-num">3</div>
+          <div><div style="font-size:var(--text-body-sm);font-weight:500;">Smart Contracts</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">ERC-20, staking, vesting</div></div>
+        </div>
+        <div class="step-item" onclick="showStep(4)">
+          <div class="step-num">4</div>
+          <div><div style="font-size:var(--text-body-sm);font-weight:500;">Governance</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">DAO structure, voting</div></div>
+        </div>
+        <div class="step-item" onclick="showStep(5)">
+          <div class="step-num">5</div>
+          <div><div style="font-size:var(--text-body-sm);font-weight:500;">Deploy</div><div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">Review & launch</div></div>
+        </div>
+
+        <div style="margin-top:var(--stack-xl);padding:var(--stack-md);background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.15);border-radius:var(--radius-lg);">
+          <div style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;color:var(--neon-blue);margin-bottom:8px;">AI Assistant</div>
+          <p style="font-size:12px;color:var(--on-surface-variant);">Ask me to suggest optimal token supply, vesting schedules, or governance models for your project.</p>
+          <button class="btn btn--neon-outline btn--sm btn--full" style="margin-top:var(--stack-md);border-radius:var(--radius-md);">Ask AI</button>
+        </div>
+      </div>
+
+      <!-- Form Panel -->
+      <div class="form-panel">
+        <div style="max-width:600px;">
+          <div style="margin-bottom:var(--stack-xl);">
+            <h2 style="font-family:var(--font-display);font-size:var(--text-headline-xl);font-weight:700;margin-bottom:4px;">Token Design</h2>
+            <p style="color:var(--on-surface-variant);">Configure your protocol token economics. All parameters can be adjusted before deployment.</p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Token Name</label>
+            <input class="input" type="text" value="DeFi Vault Token" placeholder="My Protocol Token"/>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--stack-md);">
+            <div class="form-group">
+              <label class="form-label">Token Symbol</label>
+              <input class="input" type="text" value="DVT" placeholder="TKN"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Decimals</label>
+              <input class="input" type="number" value="18" min="0" max="18"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Total Supply</label>
+            <input class="input" type="text" value="100,000,000" placeholder="1,000,000"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Token Standard</label>
+            <select class="select-field">
+              <option>ERC-20 (Fungible Token)</option>
+              <option>ERC-721 (NFT)</option>
+              <option>ERC-1155 (Multi-token)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Network</label>
+            <select class="select-field">
+              <option>Polygon Amoy (Testnet)</option>
+              <option>Ethereum Mainnet</option>
+              <option>Arbitrum One</option>
+              <option>Optimism</option>
+            </select>
+          </div>
+
+          <div style="margin-top:var(--stack-xl);margin-bottom:var(--stack-md);">
+            <h3 style="font-family:var(--font-mono);font-size:var(--text-label-sm);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:var(--stack-lg);">Token Distribution</h3>
+            <div style="display:flex;flex-direction:column;gap:var(--stack-md);">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:var(--text-body-sm);margin-bottom:6px;"><span>Community Rewards</span><span style="font-family:var(--font-mono);color:var(--neon-blue);">40%</span></div>
+                <input type="range" value="40" min="0" max="100" style="width:100%;accent-color:var(--neon-blue);"/>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:var(--text-body-sm);margin-bottom:6px;"><span>Team & Founders</span><span style="font-family:var(--font-mono);color:var(--neon-purple);">20%</span></div>
+                <input type="range" value="20" min="0" max="100" style="width:100%;accent-color:var(--neon-purple);"/>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:var(--text-body-sm);margin-bottom:6px;"><span>Treasury</span><span style="font-family:var(--font-mono);color:#34d399;">25%</span></div>
+                <input type="range" value="25" min="0" max="100" style="width:100%;accent-color:#34d399;"/>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:var(--text-body-sm);margin-bottom:6px;"><span>Public Sale</span><span style="font-family:var(--font-mono);color:var(--warning-yellow);">15%</span></div>
+                <input type="range" value="15" min="0" max="100" style="width:100%;accent-color:var(--warning-yellow);"/>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:var(--stack-md);margin-top:var(--stack-xl);">
+            <button class="btn btn--outline">← Previous</button>
+            <button class="btn btn--primary" style="flex:1;">Continue to Smart Contracts →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview Panel -->
+      <div class="preview-panel">
+        <div style="padding:var(--stack-lg);">
+          <h4 style="font-family:var(--font-mono);font-size:var(--text-label-sm);text-transform:uppercase;letter-spacing:0.1em;color:var(--on-surface-variant);margin-bottom:var(--stack-lg);">Live Preview</h4>
+          <div class="token-preview" style="padding:var(--stack-lg);margin-bottom:var(--stack-lg);">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--stack-md);">
+              <div>
+                <div style="font-family:var(--font-display);font-size:var(--text-headline-xl);font-weight:700;">DVT</div>
+                <div style="font-size:var(--text-body-sm);color:var(--on-surface-variant);">DeFi Vault Token</div>
+              </div>
+              <span class="badge badge--blue">ERC-20</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--stack-md);">
+              <div>
+                <div style="font-family:var(--font-mono);font-size:9px;text-transform:uppercase;color:var(--on-surface-variant);margin-bottom:2px;">Total Supply</div>
+                <div style="font-family:var(--font-mono);font-size:var(--text-label-md);">100M</div>
+              </div>
+              <div>
+                <div style="font-family:var(--font-mono);font-size:9px;text-transform:uppercase;color:var(--on-surface-variant);margin-bottom:2px;">Network</div>
+                <div style="font-family:var(--font-mono);font-size:var(--text-label-md);">Polygon</div>
+              </div>
+            </div>
+          </div>
+
+          <h4 style="font-family:var(--font-mono);font-size:var(--text-label-sm);text-transform:uppercase;letter-spacing:0.1em;color:var(--on-surface-variant);margin-bottom:var(--stack-md);">Distribution</h4>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:var(--stack-lg);">
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;"><span>Community</span><span style="color:var(--neon-blue);">40%</span></div><div class="progress"><div class="progress__fill progress__fill--blue" style="width:40%;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;"><span>Treasury</span><span style="color:#34d399;">25%</span></div><div class="progress"><div class="progress__fill progress__fill--green" style="width:25%;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;"><span>Team</span><span style="color:var(--neon-purple);">20%</span></div><div class="progress"><div class="progress__fill progress__fill--purple" style="width:20%;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;"><span>Public Sale</span><span style="color:var(--warning-yellow);">15%</span></div><div class="progress"><div class="progress__fill progress__fill--yellow" style="width:15%;"></div></div></div>
+          </div>
+
+          <div style="padding:var(--stack-md);background:rgba(52,211,153,0.05);border:1px solid rgba(52,211,153,0.2);border-radius:var(--radius-lg);">
+            <div style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;color:#34d399;margin-bottom:6px;">AI Recommendation</div>
+            <p style="font-size:11px;color:var(--on-surface-variant);">Consider a 4-year vesting schedule with a 1-year cliff for team tokens to align long-term incentives.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="assets/js/navigation.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+function showStep(n){
+  document.querySelectorAll('.step-item').forEach((el,i)=>{
+    el.classList.toggle('step-item--active',i===n-1);
+  });
+}
+</script>
+</body>
+</html>

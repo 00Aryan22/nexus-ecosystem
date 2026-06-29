@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — NEXUS AI</title>
+  <!-- #[[file:_shared/layout-head.html]] -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/variables.css"/>
+  <link rel="stylesheet" href="assets/css/animations.css"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="stylesheet" href="assets/css/responsive.css"/>
+  <style>
+    .dash-shell{display:flex;height:100vh;overflow:hidden;}
+    .dash-main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+    .dash-canvas{flex:1;overflow-y:auto;padding:var(--margin-page);}
+    .dash-canvas::-webkit-scrollbar{width:4px;}
+    .dash-canvas::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px;}
+    .activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .quick-action{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+      padding:var(--stack-md);border-radius:var(--radius-xl);cursor:pointer;transition:var(--transition-fast);
+      background:rgba(255,255,255,0.03);border:1px solid var(--border-muted);text-align:center;}
+    .quick-action:hover{background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.3);}
+    .quick-action .material-symbols-outlined{font-size:28px;color:var(--neon-blue);}
+    .quick-action span:last-child{font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);text-transform:uppercase;letter-spacing:0.05em;}
+    .mini-chart{display:flex;align-items:flex-end;gap:3px;height:40px;}
+    .mini-chart-bar{flex:1;border-radius:2px 2px 0 0;background:rgba(59,130,246,0.3);transition:background 0.2s;}
+    .mini-chart-bar:hover{background:var(--neon-blue);}
+  </style>
+</head>
+<body>
+<div class="dash-shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__brand">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
+        <div style="width:40px;height:40px;border-radius:var(--radius-lg);background:rgba(59,130,246,0.2);border:1px solid var(--neon-blue);display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(59,130,246,0.4);">
+          <span class="material-symbols-outlined" style="color:var(--neon-blue);font-variation-settings:'FILL' 1;">dataset</span>
+        </div>
+        <div>
+          <a href="index.html" class="sidebar__brand-name">NEXUS AI</a>
+          <div class="sidebar__brand-tag">Web3 OS</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar__nav">
+      <a href="dashboard.html"        class="nav-item nav-item--active"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></a>
+      <a href="founder-agent.html"    class="nav-item"><span class="material-symbols-outlined">smart_toy</span><span>AI Agent</span></a>
+      <a href="startup-builder.html"  class="nav-item"><span class="material-symbols-outlined">rocket_launch</span><span>Startup Builder</span></a>
+      <a href="contract-auditor.html" class="nav-item"><span class="material-symbols-outlined">verified_user</span><span>Auditor</span></a>
+      <a href="skill-passport.html"   class="nav-item"><span class="material-symbols-outlined">badge</span><span>Skill Passport</span></a>
+      <a href="dao.html"              class="nav-item"><span class="material-symbols-outlined">account_balance</span><span>DAO Center</span></a>
+      <a href="wallet.html"           class="nav-item"><span class="material-symbols-outlined">account_balance_wallet</span><span>Wallet</span></a>
+      <a href="analytics.html"        class="nav-item"><span class="material-symbols-outlined">analytics</span><span>Analytics</span></a>
+      <a href="notifications.html"    class="nav-item"><span class="material-symbols-outlined">notifications</span><span>Activity</span></a>
+    </nav>
+    <div class="sidebar__footer">
+      <button class="btn btn--primary btn--full" style="margin-bottom:var(--stack-md);border-radius:var(--radius-md);">Deploy Contract</button>
+      <a href="settings.html" class="nav-item"><span class="material-symbols-outlined">settings</span><span>Settings</span></a>
+      <a href="#" class="nav-item"><span class="material-symbols-outlined">help</span><span>Support</span></a>
+    </div>
+  </aside>
+  <!-- MAIN -->
+  <div class="dash-main">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:var(--stack-lg);flex:1;">
+        <button class="topbar__icon-btn" id="sidebarToggle"><span class="material-symbols-outlined">menu</span></button>
+        <div class="topbar__search">
+          <span class="material-symbols-outlined icon" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--on-surface-variant);font-size:18px;">search</span>
+          <input type="text" placeholder="Search protocols, agents, contracts…" style="width:100%;background:var(--surface-obsidian);border:1px solid var(--border-muted);border-radius:var(--radius-full);padding:8px 16px 8px 40px;font-family:var(--font-mono);font-size:var(--text-label-md);color:var(--on-surface);"/>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--stack-md);">
+        <div style="display:flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(255,255,255,0.05);border:1px solid var(--border-muted);border-radius:var(--radius-full);font-family:var(--font-mono);font-size:var(--text-label-sm);color:var(--on-surface-variant);">
+          <span style="width:6px;height:6px;border-radius:50%;background:#34d399;"></span>Polygon Amoy
+        </div>
+        <button class="topbar__icon-btn" style="position:relative;"><span class="material-symbols-outlined">notifications</span><span class="notification-dot"></span></button>
+        <button class="topbar__icon-btn"><span class="material-symbols-outlined">terminal</span></button>
+        <div class="avatar"><img src="https://placehold.co/32x32/3b82f6/fff?text=N" alt="avatar"/></div>
+      </div>
+    </header>
+    <!-- PAGE CANVAS -->
+    <div class="dash-canvas">
+      <!-- PAGE HEADER -->
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--stack-xl);">
+        <div>
+          <h1 style="font-family:var(--font-display);font-size:var(--text-headline-xl);font-weight:700;">Command Center</h1>
+          <p style="color:var(--on-surface-variant);font-family:var(--font-mono);font-size:var(--text-label-sm);margin-top:4px;">Monday, June 29, 2026 &nbsp;·&nbsp; Polygon Amoy Testnet</p>
+        </div>
+        <div style="display:flex;gap:var(--stack-md);">
+          <button class="btn btn--ghost btn--sm"><span class="material-symbols-outlined" style="font-size:14px;">refresh</span>Refresh</button>
+          <button class="btn btn--primary btn--sm"><span class="material-symbols-outlined" style="font-size:14px;">add</span>New Project</button>
+        </div>
+      </div>
+
+      <!-- STAT CARDS ROW -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--stack-md);margin-bottom:var(--stack-xl);">
+        <div class="glass-card stat-card">
+          <div class="stat-card__label">AI Conversations</div>
+          <div class="stat-card__value">1,284</div>
+          <div class="stat-card__sub" style="color:#34d399;">↑ 12% this week</div>
+          <div class="stat-card__bar"><div class="stat-card__bar-fill" style="width:72%;background:var(--neon-blue);"></div></div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-card__label">Audits Run</div>
+          <div class="stat-card__value">47</div>
+          <div class="stat-card__sub" style="color:var(--warning-yellow);">3 critical findings</div>
+          <div class="stat-card__bar"><div class="stat-card__bar-fill" style="width:40%;background:var(--neon-amber);"></div></div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-card__label">Skill XP</div>
+          <div class="stat-card__value">8,420</div>
+          <div class="stat-card__sub" style="color:var(--neon-purple);">Level 7 Builder</div>
+          <div class="stat-card__bar"><div class="stat-card__bar-fill" style="width:84%;background:var(--neon-purple);"></div></div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-card__label">NFT Passport</div>
+          <div class="stat-card__value" style="color:#34d399;">Minted</div>
+          <div class="stat-card__sub" style="color:var(--on-surface-variant);">Token #0042</div>
+          <div class="stat-card__bar"><div class="stat-card__bar-fill" style="width:100%;background:#34d399;"></div></div>
+        </div>
+      </div>
+      <!-- QUICK ACTIONS -->
+      <div style="margin-bottom:var(--stack-xl);">
+        <h3 style="font-family:var(--font-mono);font-size:var(--text-label-sm);text-transform:uppercase;letter-spacing:0.1em;color:var(--on-surface-variant);margin-bottom:var(--stack-md);">Quick Actions</h3>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:var(--stack-md);">
+          <a href="founder-agent.html" class="quick-action"><span class="material-symbols-outlined">smart_toy</span><span>New AI Chat</span></a>
+          <a href="contract-auditor.html" class="quick-action"><span class="material-symbols-outlined">verified_user</span><span>Audit Contract</span></a>
+          <a href="startup-builder.html" class="quick-action"><span class="material-symbols-outlined">rocket_launch</span><span>Build Startup</span></a>
+          <a href="skill-passport.html" class="quick-action"><span class="material-symbols-outlined">badge</span><span>View Passport</span></a>
+          <a href="dao.html" class="quick-action"><span class="material-symbols-outlined">account_balance</span><span>DAO Vote</span></a>
+        </div>
+      </div>
+
+      <!-- MAIN GRID: Activity + Chart -->
+      <div style="display:grid;grid-template-columns:1fr 380px;gap:var(--stack-xl);margin-bottom:var(--stack-xl);">
+        <!-- Activity Feed -->
+        <div class="glass-panel" style="border-radius:var(--radius-xl);padding:var(--stack-lg);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--stack-lg);">
+            <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);">Recent Activity</h3>
+            <a href="notifications.html" class="btn btn--ghost btn--sm">View All</a>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:var(--stack-md);">
+            <div style="display:flex;align-items:flex-start;gap:var(--stack-md);padding-bottom:var(--stack-md);border-bottom:1px solid var(--border-muted);">
+              <div class="activity-dot" style="background:var(--neon-blue);margin-top:5px;"></div>
+              <div style="flex:1;">
+                <div style="font-size:var(--text-body-sm);margin-bottom:2px;">AI Agent completed <strong>Lean Canvas</strong> for <em>DeFi Vault Protocol</em></div>
+                <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">2 minutes ago</div>
+              </div>
+              <span class="badge badge--blue">AI</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:var(--stack-md);padding-bottom:var(--stack-md);border-bottom:1px solid var(--border-muted);">
+              <div class="activity-dot" style="background:var(--warning-yellow);margin-top:5px;"></div>
+              <div style="flex:1;">
+                <div style="font-size:var(--text-body-sm);margin-bottom:2px;">Audit flagged <strong>2 medium vulnerabilities</strong> in <em>StakingPool.sol</em></div>
+                <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">18 minutes ago</div>
+              </div>
+              <span class="badge badge--yellow">AUDIT</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:var(--stack-md);padding-bottom:var(--stack-md);border-bottom:1px solid var(--border-muted);">
+              <div class="activity-dot" style="background:#34d399;margin-top:5px;"></div>
+              <div style="flex:1;">
+                <div style="font-size:var(--text-body-sm);margin-bottom:2px;">Skill Passport <strong>NFT #0042</strong> minted on Polygon Amoy</div>
+                <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">1 hour ago</div>
+              </div>
+              <span class="badge badge--green">NFT</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:var(--stack-md);padding-bottom:var(--stack-md);border-bottom:1px solid var(--border-muted);">
+              <div class="activity-dot" style="background:var(--neon-purple);margin-top:5px;"></div>
+              <div style="flex:1;">
+                <div style="font-size:var(--text-body-sm);margin-bottom:2px;">DAO Proposal <strong>#NXS-007</strong> passed with 78% approval</div>
+                <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">3 hours ago</div>
+              </div>
+              <span class="badge badge--purple">DAO</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:var(--stack-md);">
+              <div class="activity-dot" style="background:var(--on-surface-variant);margin-top:5px;"></div>
+              <div style="flex:1;">
+                <div style="font-size:var(--text-body-sm);margin-bottom:2px;">Wallet connected: <strong>0x3f4a…d82b</strong></div>
+                <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);">5 hours ago</div>
+              </div>
+              <span class="badge badge--muted">AUTH</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Usage Chart Panel -->
+        <div class="glass-panel" style="border-radius:var(--radius-xl);padding:var(--stack-lg);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--stack-lg);">
+            <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);">AI Usage</h3>
+            <span class="badge badge--blue">7 Days</span>
+          </div>
+          <div class="mini-chart" style="height:80px;align-items:flex-end;gap:4px;margin-bottom:var(--stack-md);">
+            <div class="mini-chart-bar" style="height:30%;background:rgba(59,130,246,0.3);flex:1;border-radius:3px 3px 0 0;"></div>
+            <div class="mini-chart-bar" style="height:55%;background:rgba(59,130,246,0.4);flex:1;border-radius:3px 3px 0 0;"></div>
+            <div class="mini-chart-bar" style="height:40%;background:rgba(59,130,246,0.3);flex:1;border-radius:3px 3px 0 0;"></div>
+            <div class="mini-chart-bar" style="height:70%;background:rgba(59,130,246,0.5);flex:1;border-radius:3px 3px 0 0;"></div>
+            <div class="mini-chart-bar" style="height:60%;background:rgba(59,130,246,0.4);flex:1;border-radius:3px 3px 0 0;"></div>
+            <div class="mini-chart-bar" style="height:90%;background:var(--neon-blue);flex:1;border-radius:3px 3px 0 0;"></div>
+            <div class="mini-chart-bar" style="height:75%;background:rgba(59,130,246,0.6);flex:1;border-radius:3px 3px 0 0;"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--stack-md);">
+            <div style="padding:var(--stack-md);background:rgba(255,255,255,0.03);border-radius:var(--radius-lg);border:1px solid var(--border-muted);">
+              <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);text-transform:uppercase;margin-bottom:4px;">Tokens Used</div>
+              <div style="font-family:var(--font-display);font-size:var(--text-headline-lg);font-weight:700;">284K</div>
+            </div>
+            <div style="padding:var(--stack-md);background:rgba(255,255,255,0.03);border-radius:var(--radius-lg);border:1px solid var(--border-muted);">
+              <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);text-transform:uppercase;margin-bottom:4px;">Avg Latency</div>
+              <div style="font-family:var(--font-display);font-size:var(--text-headline-lg);font-weight:700;">1.2s</div>
+            </div>
+          </div>
+          <div style="margin-top:var(--stack-md);">
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);text-transform:uppercase;margin-bottom:6px;"><span>Plan Usage</span><span>72%</span></div>
+            <div class="progress"><div class="progress__fill progress__fill--blue" style="width:72%;"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM GRID: Projects + Modules -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--stack-xl);">
+        <!-- Recent Projects -->
+        <div class="glass-panel" style="border-radius:var(--radius-xl);padding:var(--stack-lg);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--stack-lg);">
+            <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);">Projects</h3>
+            <button class="btn btn--ghost btn--sm">+ New</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:var(--stack-md);">
+            <div style="display:flex;align-items:center;gap:var(--stack-md);padding:var(--stack-md);background:rgba(255,255,255,0.02);border-radius:var(--radius-lg);border:1px solid var(--border-muted);">
+              <div style="width:36px;height:36px;border-radius:var(--radius-md);background:rgba(59,130,246,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span class="material-symbols-outlined" style="font-size:18px;color:var(--neon-blue);">currency_exchange</span></div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:var(--text-body-sm);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">DeFi Vault Protocol</div>
+                <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);margin-top:2px;">Updated 2m ago</div>
+              </div>
+              <span class="badge badge--blue">Active</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--stack-md);padding:var(--stack-md);background:rgba(255,255,255,0.02);border-radius:var(--radius-lg);border:1px solid var(--border-muted);">
+              <div style="width:36px;height:36px;border-radius:var(--radius-md);background:rgba(168,85,247,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span class="material-symbols-outlined" style="font-size:18px;color:var(--neon-purple);">account_balance</span></div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:var(--text-body-sm);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">NexusDAO Governance</div>
+                <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);margin-top:2px;">Updated 3h ago</div>
+              </div>
+              <span class="badge badge--purple">Draft</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--stack-md);padding:var(--stack-md);background:rgba(255,255,255,0.02);border-radius:var(--radius-lg);border:1px solid var(--border-muted);">
+              <div style="width:36px;height:36px;border-radius:var(--radius-md);background:rgba(52,211,153,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span class="material-symbols-outlined" style="font-size:18px;color:#34d399;">badge</span></div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:var(--text-body-sm);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Skill Passport V2</div>
+                <div style="font-family:var(--font-mono);font-size:10px;color:var(--on-surface-variant);margin-top:2px;">Updated 1d ago</div>
+              </div>
+              <span class="badge badge--green">Live</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Module Status -->
+        <div class="glass-panel" style="border-radius:var(--radius-xl);padding:var(--stack-lg);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--stack-lg);">
+            <h3 style="font-family:var(--font-display);font-size:var(--text-headline-lg);">Module Status</h3>
+            <span class="badge badge--green">All Systems</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:var(--stack-md);">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:var(--text-body-sm);display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:#34d399;display:inline-block;"></span>AI Founder Agent</span>
+              <span class="badge badge--green">Online</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:var(--text-body-sm);display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:#34d399;display:inline-block;"></span>Smart Auditor</span>
+              <span class="badge badge--green">Online</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:var(--text-body-sm);display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:#34d399;display:inline-block;"></span>Skill Passport NFT</span>
+              <span class="badge badge--green">Online</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:var(--text-body-sm);display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--neon-amber);display:inline-block;"></span>DAO Center</span>
+              <span class="badge badge--yellow">Beta</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:var(--text-body-sm);display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--on-surface-variant);display:inline-block;"></span>Startup Builder</span>
+              <span class="badge badge--muted">Soon</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /dash-canvas -->
+  </div><!-- /dash-main -->
+</div><!-- /dash-shell -->
+
+<script src="assets/js/navigation.js"></script>
+<script src="assets/js/animations.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

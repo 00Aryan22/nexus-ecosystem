@@ -45,10 +45,27 @@ function readEnvFlag(flag: FeatureFlag): boolean | undefined {
   return undefined;
 }
 
+function readAllOverride(): boolean {
+  // Check server-side
+  if (typeof window === "undefined" && typeof process !== "undefined") {
+    const val = process.env["NEXT_PUBLIC_FF_ALL"];
+    return val === "true" || val === "1";
+  }
+  // Client-side: Next.js inlines NEXT_PUBLIC_* at build time
+  const val = (globalThis as Record<string, unknown>)["NEXT_PUBLIC_FF_ALL"] as string | undefined;
+  return val === "true" || val === "1";
+}
+
 /**
  * Check whether a feature flag is enabled.
  */
 export function isFeatureEnabled(flag: FeatureFlag): boolean {
+  // Global override: enable all features if NEXT_PUBLIC_FF_ALL is set
+  try {
+    if (readAllOverride()) return true;
+  } catch (_e) {
+    // ignore and continue
+  }
   const envValue = readEnvFlag(flag);
   if (envValue !== undefined) return envValue;
   return FLAG_DEFAULTS[flag];

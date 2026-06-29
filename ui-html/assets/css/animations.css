@@ -1,0 +1,131 @@
+/* ============================================================
+   NEXUS AI — Animations
+   ============================================================ */
+
+/* ── Float ────────────────────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-20px); }
+}
+.animate-float { animation: float 6s ease-in-out infinite; }
+
+/* ── Pulse (generic) ─────────────────────────────────────── */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+.animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+/* ── Neon Pulse ──────────────────────────────────────────── */
+@keyframes pulse-neon {
+  0%, 100% { opacity: 1; text-shadow: 0 0 10px rgba(59,130,246,0.5); }
+  50%       { opacity: 0.7; text-shadow: 0 0 20px rgba(59,130,246,0.8); }
+}
+.animate-neon-pulse { animation: pulse-neon 2s cubic-bezier(0.4,0,0.6,1) infinite; }
+
+/* ── Ping (dot indicators) ───────────────────────────────── */
+@keyframes ping {
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+.animate-ping { animation: ping 1s cubic-bezier(0,0,0.2,1) infinite; }
+
+/* ── Spin ─────────────────────────────────────────────────── */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.animate-spin { animation: spin 1s linear infinite; }
+
+/* ── Scanline ─────────────────────────────────────────────── */
+@keyframes scan {
+  from { top: -100px; }
+  to   { top: 100%; }
+}
+.scanline {
+  position: absolute;
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(0deg, rgba(59,130,246,0) 0%, rgba(59,130,246,0.05) 50%, rgba(59,130,246,0) 100%);
+  opacity: 0.1;
+  pointer-events: none;
+  animation: scan 8s linear infinite;
+  z-index: 5;
+}
+
+/* ── Spotlight ────────────────────────────────────────────── */
+@keyframes spotlight {
+  0%   { transform: translate(-50%,-50%) scale(1); opacity: 0.3; }
+  50%  { transform: translate(-45%,-55%) scale(1.1); opacity: 0.4; }
+  100% { transform: translate(-50%,-50%) scale(1); opacity: 0.3; }
+}
+.spotlight-anim {
+  background: radial-gradient(circle at center, rgba(59,130,246,0.15) 0%, transparent 70%);
+  animation: spotlight 8s ease-in-out infinite;
+}
+
+/* ── Shimmer ──────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+}
+
+/* ── Typing cursor ────────────────────────────────────────── */
+@keyframes blink {
+  from, to { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.terminal-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 18px;
+  background-color: var(--neon-blue);
+  animation: blink 1s step-end infinite;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+/* ── Node pulse (map dots) ────────────────────────────────── */
+@keyframes node-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.5); opacity: 0.5; }
+}
+.node-pulse { animation: node-pulse 2s infinite ease-in-out; }
+
+/* ── Holographic card tilt on hover ───────────────────────── */
+.holographic-card {
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  transform-style: preserve-3d;
+}
+.holographic-card:hover {
+  transform: translateY(-15px) rotateY(10deg) rotateX(5deg);
+  box-shadow: 0 0 30px rgba(59,130,246,0.3), 0 0 60px rgba(168,85,247,0.2);
+}
+
+/* ── Card lift on hover ───────────────────────────────────── */
+.card-hover {
+  transition: var(--transition-base);
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  border-color: rgba(59,130,246,0.4);
+  box-shadow: 0 0 30px rgba(59,130,246,0.1);
+}
+
+/* ── Slide in from bottom ─────────────────────────────────── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.slide-up { animation: slideUp 0.4s ease-out forwards; }
+
+/* ── Fade in ──────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.fade-in { animation: fadeIn 0.3s ease-out forwards; }

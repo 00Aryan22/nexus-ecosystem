@@ -1,0 +1,540 @@
+<!-- DAO Governance Center - NEXUS AI -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEXUS AI | Marketplace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Geist:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --neon-blue: #3b82f6;
+            --surface-obsidian: #08090A;
+        }
+        body {
+            background-color: var(--surface-obsidian);
+            color: #e3e2e3;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(17, 18, 20, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+        .spotlight {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0) 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .mono-label {
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.05em;
+        }
+        .mesh-gradient {
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.1) 0px, transparent 50%);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#1f2021",
+                        "on-primary-fixed-variant": "#004395",
+                        "tertiary-fixed": "#dfed1a",
+                        "secondary-container": "#6f00be",
+                        "primary-container": "#4d8eff",
+                        "neon-purple": "#a855f7",
+                        "surface-container-high": "#292a2b",
+                        "on-tertiary-fixed-variant": "#454a00",
+                        "warning-yellow": "#E4F222",
+                        "on-background": "#e3e2e3",
+                        "surface-obsidian": "#08090A",
+                        "secondary-fixed": "#f0dbff",
+                        "error-container": "#93000a",
+                        "surface-tint": "#adc6ff",
+                        "surface-slate": "#111214",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "outline-variant": "#424754",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "primary": "#adc6ff",
+                        "on-secondary": "#490080",
+                        "surface-variant": "#343536",
+                        "on-surface-variant": "#c2c6d6",
+                        "surface": "#121315",
+                        "surface-container-low": "#1b1c1d",
+                        "error": "#ffb4ab",
+                        "tertiary": "#c3d000",
+                        "surface-dim": "#121315",
+                        "on-surface": "#e3e2e3",
+                        "primary-fixed": "#d8e2ff",
+                        "primary-fixed-dim": "#adc6ff",
+                        "outline": "#8c909f",
+                        "tertiary-fixed-dim": "#c3d000",
+                        "on-tertiary-fixed": "#1b1d00",
+                        "inverse-on-surface": "#303032",
+                        "on-secondary-fixed": "#2c0051",
+                        "neon-blue": "#3b82f6",
+                        "on-primary": "#002e6a",
+                        "surface-bright": "#38393a",
+                        "surface-container-lowest": "#0d0e0f",
+                        "on-secondary-container": "#d6a9ff",
+                        "on-tertiary-container": "#292c00",
+                        "inverse-primary": "#005ac2",
+                        "on-error": "#690005",
+                        "tertiary-container": "#8e9800",
+                        "inverse-surface": "#e3e2e3",
+                        "border-muted": "rgba(255, 255, 255, 0.08)",
+                        "background": "#121315",
+                        "secondary": "#ddb7ff",
+                        "surface-container-highest": "#343536",
+                        "on-tertiary": "#2f3300",
+                        "on-primary-container": "#00285d",
+                        "on-primary-fixed": "#001a42"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-page": "40px",
+                        "unit": "4px",
+                        "stack-lg": "32px",
+                        "stack-md": "16px",
+                        "stack-xs": "4px",
+                        "stack-xl": "64px",
+                        "stack-sm": "8px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Geist"],
+                        "body-md": ["Inter"],
+                        "display-lg-mobile": ["Geist"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "display-lg": ["Geist"],
+                        "headline-lg": ["Geist"],
+                        "body-sm": ["Inter"],
+                        "label-md": ["JetBrains Mono"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="flex min-h-screen">
+<!-- Sidebar Navigation -->
+<aside class="hidden md:flex h-screen w-64 flex-col sticky top-0 left-0 bg-surface-slate/80 backdrop-blur-xl border-r border-border-muted shadow-2xl shadow-surface-obsidian z-50">
+<div class="flex flex-col h-full py-stack-md px-gutter">
+<!-- Brand -->
+<div class="mb-stack-xl">
+<h1 class="font-display-lg text-headline-lg font-bold text-on-surface tracking-tighter">NEXUS AI</h1>
+<p class="font-label-sm text-label-sm text-neon-blue opacity-80 uppercase">Web3 OS</p>
+</div>
+<!-- Navigation Links -->
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-xl">smart_toy</span>
+<span>AI Agent</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-xl">rocket_launch</span>
+<span>Startup Builder</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-xl">verified_user</span>
+<span>Auditor</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-xl">badge</span>
+<span>Skill Passport</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-xl">account_balance</span>
+<span>DAO Center</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-xl">shield_lock</span>
+<span>Fraud Detection</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 font-body-md text-body-md text-neon-blue bg-primary-container/10 border-r-2 border-neon-blue font-bold transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-xl">storefront</span>
+<span>Marketplace</span>
+</a>
+</nav>
+<!-- Bottom Section -->
+<div class="mt-auto pt-stack-md border-t border-border-muted space-y-4">
+<button class="w-full bg-neon-blue text-on-surface py-2 font-label-md text-label-md font-bold rounded-lg shadow-[0_0_15px_rgba(59,130,246,0.4)] active:scale-[0.98] transition-transform">
+                    Deploy Contract
+                </button>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">help</span>
+<span>Support</span>
+</a>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col min-w-0 bg-surface-obsidian relative">
+<!-- Top Navigation -->
+<header class="w-full sticky top-0 z-40 bg-surface-obsidian/60 backdrop-blur-md border-b border-border-muted">
+<div class="flex justify-between items-center h-16 px-margin-page w-full">
+<div class="flex items-center gap-stack-lg flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+<input class="w-full bg-surface-obsidian border border-border-muted rounded-full py-2 pl-10 pr-4 font-label-md text-label-md text-on-surface focus:outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue transition-all" placeholder="Search agents, devs, or protocols..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="p-2 text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">terminal</span>
+</button>
+<button class="bg-white/5 border border-border-muted text-on-surface px-4 py-2 font-label-md text-label-md hover:bg-white/10 active:brightness-125 transition-all">
+                        Connect Wallet
+                    </button>
+</div>
+</div>
+</header>
+<div class="p-margin-page relative">
+<!-- Animated Background Element -->
+<div class="absolute top-0 right-0 w-[600px] h-[600px] pointer-events-none opacity-40">
+
+</div>
+<!-- Hero Section -->
+<section class="relative mb-stack-xl">
+<div class="max-w-2xl">
+<h2 class="font-display-lg text-display-lg font-bold text-on-surface leading-tight mb-4">
+                        Autonomous <br/>
+<span class="text-neon-blue">Neural Workers</span>
+</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-stack-lg max-w-lg">
+                        The world's first decentralized marketplace for high-performance AI agents. Secure, verified, and ready to deploy in any EVM environment.
+                    </p>
+<div class="flex gap-stack-md">
+<button class="bg-neon-blue text-on-surface px-8 py-3 font-label-md text-label-md font-bold rounded shadow-lg shadow-neon-blue/20">Explore All Agents</button>
+<button class="bg-white/5 border border-border-muted text-on-surface px-8 py-3 font-label-md text-label-md">Learn Documentation</button>
+</div>
+</div>
+</section>
+<!-- Featured: Top Performance -->
+<section class="mb-stack-xl">
+<div class="flex items-center justify-between mb-stack-lg">
+<h3 class="font-headline-lg text-headline-lg text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-neon-blue" style="font-variation-settings: 'FILL' 1;">star</span>
+                        Top Performance
+                    </h3>
+<div class="flex items-center gap-stack-sm">
+<button class="p-2 border border-border-muted text-on-surface-variant hover:text-on-surface transition-colors"><span class="material-symbols-outlined">chevron_left</span></button>
+<button class="p-2 border border-border-muted text-on-surface-variant hover:text-on-surface transition-colors"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Featured Agent 1: Trading -->
+<div class="glass-card p-6 flex flex-col group cursor-pointer relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4">
+<span class="mono-label text-[10px] bg-neon-blue/20 text-neon-blue border border-neon-blue/30 px-2 py-0.5 rounded-full">ACTIVE</span>
+</div>
+<div class="w-12 h-12 bg-neon-blue/10 flex items-center justify-center rounded-lg mb-6">
+<span class="material-symbols-outlined text-neon-blue text-2xl">trending_up</span>
+</div>
+<h4 class="font-headline-lg text-headline-lg text-on-surface mb-1">Aegis Trader Pro</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">By Nexus Labs</p>
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">WIN RATE</p>
+<p class="font-label-md text-label-md text-on-surface font-bold">84.2%</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">APY (EST)</p>
+<p class="font-label-md text-label-md text-tertiary font-bold">+126%</p>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-border-muted flex items-center justify-between">
+<p class="font-label-md text-label-md text-on-surface">2.4 ETH / month</p>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</div>
+<!-- Featured Agent 2: Governance -->
+<div class="glass-card p-6 flex flex-col group cursor-pointer relative overflow-hidden">
+<div class="w-12 h-12 bg-neon-purple/10 flex items-center justify-center rounded-lg mb-6">
+<span class="material-symbols-outlined text-neon-purple text-2xl">account_balance</span>
+</div>
+<h4 class="font-headline-lg text-headline-lg text-on-surface mb-1">DAO Oracle V4</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">By Paradigm Systems</p>
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">PROPOSALS</p>
+<p class="font-label-md text-label-md text-on-surface font-bold">1,240+</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">ACCURACY</p>
+<p class="font-label-md text-label-md text-neon-blue font-bold">99.8%</p>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-border-muted flex items-center justify-between">
+<p class="font-label-md text-label-md text-on-surface">1,200 NEXUS</p>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</div>
+<!-- Featured Agent 3: Security -->
+<div class="glass-card p-6 flex flex-col group cursor-pointer relative overflow-hidden">
+<div class="w-12 h-12 bg-warning-yellow/10 flex items-center justify-center rounded-lg mb-6">
+<span class="material-symbols-outlined text-warning-yellow text-2xl">shield</span>
+</div>
+<h4 class="font-headline-lg text-headline-lg text-on-surface mb-1">Sentinel Guard</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">By CyberMesh</p>
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">EXPLOITS STOPPED</p>
+<p class="font-label-md text-label-md text-on-surface font-bold">12.4k</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">LATENCY</p>
+<p class="font-label-md text-label-md text-error font-bold">4ms</p>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-border-muted flex items-center justify-between">
+<p class="font-label-md text-label-md text-on-surface">0.8 ETH / year</p>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Filters and Grid -->
+<section class="mb-stack-xl">
+<div class="flex flex-col md:flex-row gap-6 mb-stack-lg">
+<div class="flex-1 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+<button class="whitespace-nowrap px-4 py-2 bg-neon-blue text-on-surface font-label-md text-label-md rounded">All Agents</button>
+<button class="whitespace-nowrap px-4 py-2 border border-border-muted text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md rounded">DeFi</button>
+<button class="whitespace-nowrap px-4 py-2 border border-border-muted text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md rounded">Security</button>
+<button class="whitespace-nowrap px-4 py-2 border border-border-muted text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md rounded">Social</button>
+<button class="whitespace-nowrap px-4 py-2 border border-border-muted text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md rounded">Infrastructure</button>
+</div>
+<div class="flex items-center gap-4">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase">Sort By:</p>
+<select class="bg-surface-obsidian border border-border-muted text-on-surface font-label-md text-label-md py-2 px-4 focus:outline-none focus:border-neon-blue">
+<option>Performance</option>
+<option>Price: Low to High</option>
+<option>Newest First</option>
+</select>
+</div>
+</div>
+<!-- Bento Grid Layout for Market Items -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+<!-- Agent Card -->
+<div class="glass-card p-4 flex flex-col hover:border-neon-blue/50">
+<div class="aspect-video mb-4 overflow-hidden relative rounded">
+<img class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" data-alt="A highly detailed 3D abstract visualization of neural network pathways glowing in vibrant neon blue and purple against a deep black obsidian background. The composition is sleek and technical, resembling a high-performance computer chip or a digital nervous system. Soft cinematic lighting highlights the glass-like textures of the data nodes and connections." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnyDO3D4OjvER-xbWkHWU79xAxAVLp_KtmLyQZsA1HAORJRhSmUvO6NlqCM98UvFBP8S8W8BdIjMxt_6Y4R_4dXBqf3ePMM3Nhu0XlIt9iWsdKlZjdaWonb6ftUvhDndOYprtB0Y1mAFuw5_9R6Zr6DOjH_HqvudBwM6qvZb1dJ4DDBikjGqwwcndHIq4uMrQ0vyrRLb1k6STPli6DV0303Ax4MTHLmUS-IyUBuCi5nVRsxay4cRW2xFRR3NtxuMCjpsp8m-1214k"/>
+<div class="absolute bottom-2 left-2 px-2 py-1 bg-surface-obsidian/80 backdrop-blur-md rounded">
+<p class="font-label-sm text-[10px] text-neon-blue">DEF-01</p>
+</div>
+</div>
+<h5 class="font-body-md text-body-md font-bold text-on-surface mb-1">Liquid Arbitrageur</h5>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-4">By QuantVault</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-label-md text-label-md text-on-surface font-bold">0.45 ETH</span>
+<button class="p-2 bg-white/5 hover:bg-neon-blue hover:text-white transition-all">
+<span class="material-symbols-outlined text-sm">shopping_cart</span>
+</button>
+</div>
+</div>
+<!-- Agent Card -->
+<div class="glass-card p-4 flex flex-col">
+<div class="aspect-video mb-4 overflow-hidden relative rounded">
+<img class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" data-alt="A futuristic cybersecurity interface showing complex cryptographic strings and biometric security patterns in a dark-mode palette. Intense cyan and obsidian tones create a mood of high security and institutional power. The design is minimalist, with thin light rays cutting through a foggy digital atmosphere, emphasizing precision and protection." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7roKgwDHcq11kYZp2Nts-dyDx6N53qBREi2-U_DHnpDQymhOORe-r2tVIEwvmXf2qrGNrwnvvVpnFRE_dbZDcak4c9grwCi35J2BbQRRq4WXYAIhKam0wl3RUG_m8-VjNMsHUQuIL9E_fGv5M4CeybB82icSqAzmZtmg0dLSJdEl7hutYg-CERsFFgDzsjG-uatadUZ8h5darrcz6lzQR8ozanaMiFjsD2aUj8CoB03GdHi-uHsnBlIUu3_ETAXg3bJbcR3Lw9_0"/>
+<div class="absolute bottom-2 left-2 px-2 py-1 bg-surface-obsidian/80 backdrop-blur-md rounded">
+<p class="font-label-sm text-[10px] text-neon-purple">SEC-99</p>
+</div>
+</div>
+<h5 class="font-body-md text-body-md font-bold text-on-surface mb-1">PhishHunter AI</h5>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-4">By Aegis Protocol</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-label-md text-label-md text-on-surface font-bold">120 NEXUS</span>
+<button class="p-2 bg-white/5 hover:bg-neon-blue hover:text-white transition-all">
+<span class="material-symbols-outlined text-sm">shopping_cart</span>
+</button>
+</div>
+</div>
+<!-- Agent Card -->
+<div class="glass-card p-4 flex flex-col">
+<div class="aspect-video mb-4 overflow-hidden relative rounded">
+<img class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" data-alt="A macro close-up of a high-tech processor with glowing optical fibers transmitting data in bursts of white and blue light. The setting is a sterile, dark server environment with deep shadows and reflective metallic surfaces. The visual style is premium and technical, evoking a sense of limitless computational speed and advanced Web3 technology." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGD0_wSEc8Y6eELv1oxwjuJspmH-ZKUtAB4Gkm-ObnV-b7KzsiShDgNDRCrqeUQuXRSJDJWLKjMDb2O-n6DHP1VoywKdtj1rU7hhSQbR-TV4Q0vRcxLfCL60t5FAJt0GGfTtJWQidMX3JWuj9wSH8bZ753RnBlI2aJFZ-6XHcK56H1FoNlksPEisK3dxwKOrAhb79wEM6pdGHqfO3PJ--yUIHBh6_YzMXcvPBSNGmV1EtwSqtbgFsZqVL-7Qt7blqS59C2FjavCoo"/>
+<div class="absolute bottom-2 left-2 px-2 py-1 bg-surface-obsidian/80 backdrop-blur-md rounded">
+<p class="font-label-sm text-[10px] text-tertiary">INF-08</p>
+</div>
+</div>
+<h5 class="font-body-md text-body-md font-bold text-on-surface mb-1">Node Monitor X</h5>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-4">By InfraMax</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-label-md text-label-md text-on-surface font-bold">0.12 ETH</span>
+<button class="p-2 bg-white/5 hover:bg-neon-blue hover:text-white transition-all">
+<span class="material-symbols-outlined text-sm">shopping_cart</span>
+</button>
+</div>
+</div>
+<!-- Agent Card -->
+<div class="glass-card p-4 flex flex-col">
+<div class="aspect-video mb-4 overflow-hidden relative rounded">
+<img class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" data-alt="A minimalist digital artwork featuring clean, thin geometric lines forming a complex social graph or network in a dark void. The primary colors are obsidian and a soft, glowing lavender. The lighting is diffused and ethereal, creating a sense of a vast, interconnected digital social space that is both sophisticated and secure." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqJsuZSfpxUy9Rj17IV7weVhNyVnAD-ANAQPDbxprDT7xorAZyu4GJx7_OgKMHDcamfdNMo9NSAm0djNbRdeD_-RyhXrAZGyfp4aGW1qtUtxYA_HiunFxzr7OYN1TScwKvz6jBev9P7deeRm3tAWXLhAeMmBUBjH7PcIKfHxjc1U0jH8noxQbojSoiD2aK5h-aCn9OJSBRb3clhsRA3SAUWLgjjP1TGv6wB2NIJqlfbqccTP5E-v_ayp6ngFvdhLz_rY6aDCIBIK8"/>
+<div class="absolute bottom-2 left-2 px-2 py-1 bg-surface-obsidian/80 backdrop-blur-md rounded">
+<p class="font-label-sm text-[10px] text-neon-blue">SOC-24</p>
+</div>
+</div>
+<h5 class="font-body-md text-body-md font-bold text-on-surface mb-1">Sentiment Bot</h5>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-4">By SocialGraph</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-label-md text-label-md text-on-surface font-bold">FREE</span>
+<button class="p-2 bg-white/5 hover:bg-neon-blue hover:text-white transition-all">
+<span class="material-symbols-outlined text-sm">shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Agent Detail Overlay (Simulated) -->
+<section class="mt-stack-xl pt-stack-xl border-t border-border-muted">
+<div class="flex items-center justify-between mb-stack-lg">
+<h3 class="font-headline-lg text-headline-lg text-on-surface">Neural Insights (Live Preview)</h3>
+<div class="bg-surface-container-high px-3 py-1 rounded-full flex items-center gap-2">
+<span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">NODE CLUSTER 04 - ONLINE</span>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Stats Card -->
+<div class="lg:col-span-2 glass-card p-gutter">
+<div class="flex items-center gap-stack-md mb-stack-lg">
+<div class="w-16 h-16 bg-neon-blue/10 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-neon-blue text-4xl">analytics</span>
+</div>
+<div>
+<h4 class="font-headline-lg text-headline-lg text-on-surface">Neural Performance Metrics</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Real-time inference data from Nexus Testnet v2</p>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+<div class="p-4 bg-surface-obsidian border border-border-muted rounded">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-2">LATENCY</p>
+<p class="font-display-lg text-headline-xl font-bold text-on-surface">42<span class="text-body-sm font-normal">ms</span></p>
+</div>
+<div class="p-4 bg-surface-obsidian border border-border-muted rounded">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-2">ACCURACY</p>
+<p class="font-display-lg text-headline-xl font-bold text-tertiary">98.2<span class="text-body-sm font-normal">%</span></p>
+</div>
+<div class="p-4 bg-surface-obsidian border border-border-muted rounded">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-2">GAS EFF.</p>
+<p class="font-display-lg text-headline-xl font-bold text-neon-blue">A+</p>
+</div>
+<div class="p-4 bg-surface-obsidian border border-border-muted rounded">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-2">RELIABILITY</p>
+<p class="font-display-lg text-headline-xl font-bold text-on-surface">99.9<span class="text-body-sm font-normal">%</span></p>
+</div>
+</div>
+<!-- Mini Chart Simulation -->
+<div class="mt-8 h-32 flex items-end gap-1 px-2">
+<div class="flex-1 bg-neon-blue/20 h-[60%] hover:bg-neon-blue/40 transition-colors"></div>
+<div class="flex-1 bg-neon-blue/20 h-[45%] hover:bg-neon-blue/40 transition-colors"></div>
+<div class="flex-1 bg-neon-blue/20 h-[75%] hover:bg-neon-blue/40 transition-colors"></div>
+<div class="flex-1 bg-neon-blue/20 h-[90%] hover:bg-neon-blue/40 transition-colors"></div>
+<div class="flex-1 bg-neon-blue/20 h-[55%] hover:bg-neon-blue/40 transition-colors"></div>
+<div class="flex-1 bg-neon-blue/20 h-[65%] hover:bg-neon-blue/40 transition-colors"></div>
+<div class="flex-1 bg-neon-blue/20 h-[80%] hover:bg-neon-blue/40 transition-colors"></div>
+<div class="flex-1 bg-neon-blue/20 h-[40%] hover:bg-neon-blue/40 transition-colors"></div>
+<div class="flex-1 bg-neon-blue/20 h-[60%] hover:bg-neon-blue/40 transition-colors"></div>
+<div class="flex-1 bg-neon-blue/20 h-[70%] hover:bg-neon-blue/40 transition-colors"></div>
+</div>
+</div>
+<!-- Code Snippet Card -->
+<div class="glass-card p-gutter flex flex-col">
+<div class="flex items-center justify-between mb-4">
+<h4 class="font-label-md text-label-md text-on-surface font-bold uppercase">Integration Code</h4>
+<button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-sm">content_copy</span></button>
+</div>
+<div class="bg-black/40 p-4 rounded-lg font-label-sm text-label-sm text-neon-blue flex-1 overflow-auto">
+<pre><code>// Initialize Nexus Agent
+const agent = await Nexus.deploy({
+  id: "AEGIS-TRADER-V1",
+  env: "PRODUCTION",
+  wallet: userWallet,
+  capabilities: [
+    "DEX_SWAP",
+    "LIQUIDITY_PROV"
+  ]
+});
+
+// Run Neural Inference
+agent.on("signal", (data) =&gt; {
+  console.log("Neural Insight:", 
+    data.confidence
+  );
+});</code></pre>
+</div>
+<button class="mt-4 w-full bg-white/5 hover:bg-white/10 text-on-surface py-3 font-label-md text-label-md transition-all border border-border-muted">
+                            Open API Docs
+                        </button>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer -->
+<footer class="mt-auto py-stack-lg px-margin-page border-t border-border-muted">
+<div class="flex flex-col md:flex-row justify-between items-center gap-stack-md">
+<p class="font-label-sm text-label-sm text-on-surface-variant">© 2024 NEXUS AI ECOSYSTEM. ALL RIGHTS RESERVED.</p>
+<div class="flex gap-stack-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface" href="#">TERM OF SERVICE</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface" href="#">PRIVACY POLICY</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface" href="#">WHITEPAPER</a>
+</div>
+</div>
+</footer>
+</main>
+<!-- Micro-interaction Script -->
+<script>
+        document.addEventListener('mousemove', (e) => {
+            const spotlights = document.querySelectorAll('.spotlight');
+            spotlights.forEach(s => {
+                s.style.left = e.clientX - 200 + 'px';
+                s.style.top = e.clientY - 200 + 'px';
+            });
+        });
+
+        // Simple spotlight effect tracker
+        const body = document.querySelector('body');
+        const spotlightDiv = document.createElement('div');
+        spotlightDiv.className = 'spotlight';
+        body.appendChild(spotlightDiv);
+    </script>
+</body></html>

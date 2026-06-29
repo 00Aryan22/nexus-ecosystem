@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -12,6 +13,9 @@ from app.modules.auth.router import router as auth_router
 from app.modules.founder_agent.router import router as founder_agent_router
 from app.modules.passports.router import router as passports_router
 from app.modules.projects.router import router as projects_router
+from app.modules.stitch.router import router as stitch_router
+
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
@@ -66,6 +70,7 @@ app.include_router(audits_router, prefix=settings.api_v1_prefix)
 app.include_router(auditor_router, prefix=settings.api_v1_prefix)
 app.include_router(analytics_router, prefix=settings.api_v1_prefix)
 app.include_router(founder_agent_router, prefix=settings.api_v1_prefix)
+app.include_router(stitch_router, prefix=settings.api_v1_prefix)
 
 
 @app.get("/health")
