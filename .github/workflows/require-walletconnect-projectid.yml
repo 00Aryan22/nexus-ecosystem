@@ -1,0 +1,36 @@
+name: CI — require WalletConnect Project ID
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  check-walletconnect-projectid:
+    name: Check NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is set
+        env:
+          SECRETS_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID }}
+          REPO_VAR_PROJECT_ID: ${{ vars.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID }}
+          WORKFLOW_ENV_PROJECT_ID: ${{ env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID }}
+        run: |
+          if [ -n "$SECRETS_PROJECT_ID" ]; then
+            echo "Found NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID in repository secrets.";
+            exit 0
+          fi
+          if [ -n "$REPO_VAR_PROJECT_ID" ]; then
+            echo "Found NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID in repository variables.";
+            exit 0
+          fi
+          if [ -n "$WORKFLOW_ENV_PROJECT_ID" ]; then
+            echo "Found NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID in workflow env.";
+            exit 0
+          fi
+          echo "ERROR: NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is not set."
+          echo "Set it as a repository secret or repository variable to allow builds to proceed."
+          exit 1

@@ -295,6 +295,7 @@ Production-quality HTML/CSS implementation of every screen, used as the design r
 - `apps/api/tests/test_auditor.py` — 8 tests (27/27 total passing)
 - `apps/web/app/(dashboard)/auditor/page.tsx` — SSE streaming frontend, progress + report viewer
 - Registered in `apps/api/app/main.py`
+- `apps/web/package.json` updated for wallet runtime compatibility: aligned React/Wagmi peer versions to `19.2.3`, added `@react-native-async-storage/async-storage`, and included `pino-pretty`.
 
 ### Phase 6 — SkillPassportNFT Contract ✅
 - `packages/contracts/contracts/SkillPassportNFT.sol` — Soulbound ERC-721 (mint, revoke, updateMetadata, transfer-blocked)

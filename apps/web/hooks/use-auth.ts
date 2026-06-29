@@ -30,6 +30,12 @@ export function useAuth() {
     void refresh();
   }, [refresh]);
 
+  const getNextPath = () => {
+    if (typeof window === "undefined") return "/dashboard";
+    const params = new URLSearchParams(window.location.search);
+    return params.get("next") || "/dashboard";
+  };
+
   const signIn = useCallback(async () => {
     if (!address) return;
     setSigningIn(true);
@@ -42,7 +48,7 @@ export function useAuth() {
         message,
       });
       setUser(verifiedUser);
-      router.push("/dashboard");
+      router.push(getNextPath());
     } finally {
       setSigningIn(false);
     }

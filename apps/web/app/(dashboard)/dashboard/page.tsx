@@ -117,6 +117,7 @@ export default function DashboardOverviewPage() {
                 { name: "Create New Project", desc: "Build mock blueprint plans", href: "/startup-builder" },
                 { name: "Submit Skill Verification", desc: "Prove smart contract experience", href: "/skill-passport" },
                 { name: "Run Smart Contract Audit", desc: "Automated vulnerability check", href: "/auditor" },
+                { name: "Open AI Founder Agent", desc: "Validate ideas and chat with the agent", href: "/founder-agent" },
               ].map((act, i) => (
                 <Link
                   key={i}

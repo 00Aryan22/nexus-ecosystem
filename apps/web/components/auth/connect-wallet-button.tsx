@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useEffect } from "react";
 
@@ -22,7 +23,7 @@ export function ConnectWalletButton({ redirectOnSuccess = true }: Props) {
   if (isAuthenticated) {
     return (
       <Button size="lg" className="neon-glow" asChild>
-        <a href="/dashboard">Go to Dashboard</a>
+        <Link href="/dashboard">Go to Dashboard</Link>
       </Button>
     );
   }

@@ -82,9 +82,16 @@ export function routeToFeatureFlag(
   if (pathname.startsWith("/startup-builder")) return "startup_builder";
   if (pathname.startsWith("/skill-passport")) return "skill_passport";
   if (pathname.startsWith("/auditor")) return "contract_auditor";
+  if (pathname.startsWith("/contract-audit")) return "contract_auditor";
+  if (pathname.startsWith("/contracts/deploy")) return "contract_auditor";
   if (pathname.startsWith("/analytics")) return "analytics";
   if (pathname.startsWith("/founder-agent")) return "founder_agent";
+  if (pathname.startsWith("/ai-founder")) return "founder_agent";
   if (pathname.startsWith("/settings")) return "settings";
+  if (pathname.startsWith("/profile")) return "settings";
+  if (pathname.startsWith("/notifications")) return "settings";
+  if (pathname.startsWith("/support")) return "settings";
+  if (pathname.startsWith("/dao-center")) return "dashboard";
   return null;
 }
 
