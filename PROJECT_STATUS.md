@@ -440,3 +440,25 @@ PINATA_JWT=<from app.pinata.cloud>
 ---
 
 *This document was last updated June 29, 2026 to reflect Phases 1–7 complete and full Stitch UI HTML/CSS implementation.*
+
+---
+
+## Operational Log — June 29, 2026 (actions performed)
+
+Summary of changes and operations performed today (local + remote):
+
+- Patched transitive QR generator `cuer` to avoid runtime crash when RainbowKit renders QR codes; created `patches/cuer+0.0.3.patch` to persist the fix.
+- Added a safe WalletConnect fallback in the frontend: updated `apps/web/lib/wagmi.ts` to use `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID?.trim() || "YOUR_PROJECT_ID"` so builds don't fail when the env var is missing; updated `apps/web/.env.example` accordingly.
+- Added a GitHub Actions workflow `.github/workflows/require-walletconnect-projectid.yml` to enforce that `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` is configured for pushes, and to warn (non-fail) on pull request workflows so contributor PRs are not blocked by missing secrets.
+- Adjusted CI behavior to enforce the secret only on `push` events while emitting a helpful warning on `pull_request` events.
+- Disabled Turbopack in `apps/web` build scripts (switched `next build --turbopack` → `next build`) to avoid LightningCSS native binary failures observed during Vercel builds; committed `apps/web/package.json` changes.
+- Created branch `ci/require-walletconnect-projectid`, committed and pushed all changes, and opened a prefilled PR on GitHub for review: https://github.com/00Aryan22/nexus-ecosystem/pull/new/ci/require-walletconnect-projectid
+- Verified local checks: ran backend tests (`python -m pytest -q`) — **28 passed**, and frontend TypeScript check (`npm run typecheck`) — passed.
+- Opened the PR page in the default browser for review (Brave not found on the machine).
+
+Notes and follow-ups:
+
+- The workflow will fail builds on `push` to `main` until the repository secret `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` is set in GitHub (recommended) or a repository variable is added. The PR warnings will guide maintainers to add the secret.
+- If you prefer the build to succeed for PRs from forks, we can instead inject a build-time fallback value (not recommended for production deployments). 
+- I can merge the PR as `00Aryan22` if you provide a GitHub Personal Access Token (repo scope), or you can review and merge it via the prefilled PR link.
+
