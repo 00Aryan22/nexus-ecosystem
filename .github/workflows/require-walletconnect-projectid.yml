@@ -7,8 +7,9 @@ on:
     branches: [ main, master ]
 
 jobs:
-  check-walletconnect-projectid:
-    name: Check NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
+  enforce-on-push:
+    name: Enforce NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID (pushes)
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,3 +35,22 @@ jobs:
           echo "ERROR: NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is not set."
           echo "Set it as a repository secret or repository variable to allow builds to proceed."
           exit 1
+
+  pr-warning:
+    name: Warn about NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID (pull requests)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Warn if NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID missing
+        env:
+          SECRETS_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID }}
+          REPO_VAR_PROJECT_ID: ${{ vars.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID }}
+          WORKFLOW_ENV_PROJECT_ID: ${{ env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID }}
+        run: |
+          if [ -n "$SECRETS_PROJECT_ID" ] || [ -n "$REPO_VAR_PROJECT_ID" ] || [ -n "$WORKFLOW_ENV_PROJECT_ID" ]; then
+            echo "NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is set somewhere (secrets/vars/env).";
+          else
+            echo "WARNING: NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is not set for this repository.";
+            echo "This will cause production builds (push to main) to fail until a repository secret or variable is added.";
+          fi
