@@ -63,7 +63,7 @@ export function isFeatureEnabled(flag: FeatureFlag): boolean {
   // Global override: enable all features if NEXT_PUBLIC_FF_ALL is set
   try {
     if (readAllOverride()) return true;
-  } catch (_e) {
+  } catch {
     // ignore and continue
   }
   const envValue = readEnvFlag(flag);
