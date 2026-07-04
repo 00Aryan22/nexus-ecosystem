@@ -1,5 +1,8 @@
-import { createClient } from '@/utils/supabase/server'
 import { cookies } from 'next/headers'
+import { createClient } from '@/lib/supabase/server'
+
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
 
 export default async function Page() {
   const cookieStore = await cookies()

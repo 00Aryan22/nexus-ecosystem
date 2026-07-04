@@ -24,10 +24,6 @@ export default function Home() {
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="flex flex-col items-center"
         >
-          <div className="mb-6 inline-flex items-center rounded-full border border-neon-blue/30 bg-neon-blue/10 px-3 py-1 text-xs font-medium text-neon-blue backdrop-blur-sm">
-            <span className="flex h-2 w-2 rounded-full bg-neon-blue mr-2 animate-pulse"></span>
-            Ethereum Build Camp • Demo Ready
-          </div>
           <h1 className="font-heading text-5xl font-extrabold tracking-tight text-foreground sm:text-7xl">
             Agentic OS for <br className="hidden sm:block" />
             <span className="bg-gradient-to-r from-neon-blue to-neon-purple bg-clip-text text-transparent">

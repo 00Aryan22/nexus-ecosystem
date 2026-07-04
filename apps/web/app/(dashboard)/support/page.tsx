@@ -1,7 +1,7 @@
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { HelpCircle, Mail, LifeBuoy } from "lucide-react";
+import { HelpCircle, Mail, LifeBuoy, BookOpen, Sparkles } from "lucide-react";
 
 export default function SupportPage() {
   return (
@@ -36,9 +36,18 @@ export default function SupportPage() {
           <div className="rounded-xl border border-border-muted bg-surface-slate/70 p-4">
             <h3 className="text-sm font-semibold text-foreground">Self-Service Guides</h3>
             <p className="mt-2 text-sm text-muted-foreground">Use docs and templates to resolve common issues quickly.</p>
-            <Button asChild className="mt-4 neon-glow">
-              <Link href="/dashboard">Return to Dashboard</Link>
-            </Button>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Button asChild variant="outline" className="border-border-muted hover:bg-white/5">
+                <Link href="/founder-agent" className="inline-flex items-center gap-2">
+                  <Sparkles className="h-4 w-4" /> AI Guide
+                </Link>
+              </Button>
+              <Button asChild className="neon-glow">
+                <Link href="/dashboard" className="inline-flex items-center gap-2">
+                  <BookOpen className="h-4 w-4" /> Return to Dashboard
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </div>

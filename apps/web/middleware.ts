@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 import { ACCESS_COOKIE } from "@/lib/constants";
-import { handleSupabaseCookies } from "@/utils/supabase/middleware";
+import { handleSupabaseCookies } from "@/lib/supabase/middleware";
 
 const PROTECTED_PREFIXES = [
   "/dashboard",

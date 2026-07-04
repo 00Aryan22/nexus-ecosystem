@@ -23,6 +23,7 @@ import { PageSpinner } from "@/components/ui/spinner";
 import { ErrorState } from "@/components/ui/error-state";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Badge } from "@/components/ui/badge";
+import { StatusBanner } from "@/components/ui/status-banner";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
@@ -49,6 +50,7 @@ export default function SkillPassportPage() {
   const [passports, setPassports] = useState<SkillPassportPublic[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<string | null>(null);
 
   // Modal / Detail state
   const [isSubmitOpen, setIsSubmitOpen] = useState(false);
@@ -89,7 +91,7 @@ export default function SkillPassportPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.skill_name || !formData.evidence_url) {
-      alert("Please fill in required fields.");
+      setFeedback("Please fill in the skill name and proof URL before submitting.");
       return;
     }
 
@@ -97,8 +99,10 @@ export default function SkillPassportPage() {
       const created = await createPassport(formData);
       setPassports((prev) => [created, ...prev]);
       setIsSubmitOpen(false);
+      setFeedback("Skill verification request submitted successfully.");
     } catch (err: any) {
-      alert(err.message || "Failed to submit passport");
+      setError(err.message || "Failed to submit passport");
+      setFeedback(null);
     }
   };
 
@@ -106,8 +110,10 @@ export default function SkillPassportPage() {
     try {
       const updated = await mintPassportNFT(id);
       setPassports((prev) => prev.map((p) => (p.id === id ? updated : p)));
+      setFeedback("Passport minted successfully on Polygon Amoy.");
     } catch (err: any) {
-      alert(err.message || "Failed to mint NFT");
+      setError(err.message || "Failed to mint NFT");
+      setFeedback(null);
     }
   };
 
@@ -149,6 +155,8 @@ export default function SkillPassportPage() {
           </Button>
         }
       />
+
+      {feedback && <StatusBanner kind="success" message={feedback} />}
 
       {/* Stats row */}
       <div className="grid gap-4 sm:grid-cols-4">

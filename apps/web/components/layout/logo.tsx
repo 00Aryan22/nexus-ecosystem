@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -26,10 +27,12 @@ export function NexusLogo({
           small ? "h-9 w-9" : "h-11 w-11"
         }`}
       >
-        <img
+        <Image
           src="/nexus-ai-logo.svg"
           alt="NEXUS AI logo"
-          className="h-full w-full object-contain"
+          fill
+          sizes={small ? "2.25rem" : "2.75rem"}
+          className="object-contain"
         />
       </div>
       {showText ? (

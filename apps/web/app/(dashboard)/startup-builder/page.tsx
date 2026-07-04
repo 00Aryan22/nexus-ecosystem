@@ -35,11 +35,13 @@ import {
   DialogFooter,
   DialogCloseButton,
 } from "@/components/ui/dialog";
+import { StatusBanner } from "@/components/ui/status-banner";
 
 export default function StartupBuilderPage() {
   const [projects, setProjects] = useState<ProjectPublic[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<string | null>(null);
 
   // Detail view state
   const [selectedProject, setSelectedProject] = useState<ProjectPublic | null>(null);
@@ -113,7 +115,7 @@ export default function StartupBuilderPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.industry || !formData.problem_statement) {
-      alert("Please fill in all required fields.");
+      setFeedback("Please fill in the project name, industry, and problem statement.");
       return;
     }
 
@@ -132,14 +134,16 @@ export default function StartupBuilderPage() {
         setSelectedProject(created);
       }
       setIsModalOpen(false);
+      setFeedback(isEditing ? "Project updated successfully." : "Project created successfully.");
     } catch (err: any) {
-      alert(err.message || "Failed to save project");
+      setError(err.message || "Failed to save project");
+      setFeedback(null);
     }
   };
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!confirm("Are you sure you want to delete this project?")) return;
+    if (!window.confirm("Are you sure you want to delete this project?")) return;
 
     try {
       await deleteProject(id);
@@ -147,9 +151,11 @@ export default function StartupBuilderPage() {
       if (selectedProject?.id === id) {
         const remaining = projects.filter((p) => p.id !== id);
         setSelectedProject(remaining.length > 0 ? remaining[0] : null);
+        setFeedback("Project deleted successfully.");
       }
     } catch (err: any) {
-      alert(err.message || "Failed to delete project");
+      setError(err.message || "Failed to delete project");
+      setFeedback(null);
     }
   };
 
@@ -187,6 +193,8 @@ export default function StartupBuilderPage() {
           </Button>
         }
       />
+
+      {feedback && <StatusBanner kind="success" message={feedback} />}
 
       {/* Main Grid: Projects sidebar (left 4 cols) & detailed blueprints (right 8 cols) */}
       <div className="grid gap-6 lg:grid-cols-12 items-start">

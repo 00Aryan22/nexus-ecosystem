@@ -30,12 +30,14 @@ import {
   DataTableHeadCell,
 } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
+import { StatusBanner } from "@/components/ui/status-banner";
 
 export default function AnalyticsPage() {
   const [events, setEvents] = useState<AnalyticsEventPublic[]>([]);
   const [metrics] = useState<{top_users: any[]; total_users: number; active_startups: number; contracts_audited: number; passports_minted: number}>({ top_users: [], total_users: 0, active_startups: 0, contracts_audited: 0, passports_minted: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<string | null>(null);
 
   const [simEventType] = useState("wallet_connected");
   const [simulating, setSimulating] = useState(false);
@@ -58,6 +60,7 @@ export default function AnalyticsPage() {
   const handleSimulateEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     setSimulating(true);
+    setFeedback(null);
     try {
       const mockPayload: Record<string, any> = {};
       if (simEventType === "wallet_connected") {
@@ -75,10 +78,11 @@ export default function AnalyticsPage() {
         event_data: mockPayload,
       });
 
-      // reload
       await loadEvents();
+      setFeedback("Analytics event ingested successfully.");
     } catch (err: any) {
-      alert("Failed to simulate event: " + err.message);
+      setError(err.message || "Failed to simulate event");
+      setFeedback(null);
     } finally {
       setSimulating(false);
     }
@@ -118,10 +122,11 @@ export default function AnalyticsPage() {
           ))}
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
           <Button variant="outline" className="border-border-muted hover:bg-white/5" onClick={loadEvents}>
             <RefreshCcw className="mr-2 h-4 w-4" /> Refresh Logs
           </Button>
+          {feedback && <StatusBanner kind="success" message={feedback} className="sm:min-w-[280px]" />}
         </div>
       </div>
 
