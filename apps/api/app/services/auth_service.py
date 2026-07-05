@@ -1,6 +1,8 @@
+import logging
 import secrets
 from datetime import UTC, datetime, timedelta
 
+from eth_utils import to_checksum_address
 from siwe import SiweMessage
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,9 +12,15 @@ from app.core.redis import get_redis
 from app.core.security import create_access_token, new_jti
 from app.models.auth import Session, User, Wallet
 
+logger = logging.getLogger(__name__)
+
 
 def _normalize_address(address: str) -> str:
     return address.lower()
+
+
+def _checksum_address(address: str) -> str:
+    return to_checksum_address(address)
 
 
 def _nonce_redis_key(wallet: str) -> str:
@@ -21,13 +29,15 @@ def _nonce_redis_key(wallet: str) -> str:
 
 async def issue_nonce(wallet: str) -> tuple[str, str, datetime]:
     wallet = _normalize_address(wallet)
+    checksum_wallet = _checksum_address(wallet)
+    logger.debug("[AuthService] issue_nonce start", {"wallet": wallet, "checksum_wallet": checksum_wallet})
     nonce = secrets.token_hex(16)
     expires_at = datetime.now(UTC) + timedelta(seconds=settings.siwe_nonce_ttl_seconds)
     issued_at = datetime.now(UTC).replace(microsecond=0).isoformat()
 
     siwe = SiweMessage(
         domain=settings.siwe_domain,
-        address=wallet,
+        address=checksum_wallet,
         uri=settings.siwe_uri,
         version="1",
         chain_id=settings.siwe_chain_id,
@@ -39,7 +49,7 @@ async def issue_nonce(wallet: str) -> tuple[str, str, datetime]:
 
     redis = await get_redis()
     await redis.set(_nonce_redis_key(wallet), nonce, ex=settings.siwe_nonce_ttl_seconds)
-
+    logger.debug("[AuthService] issue_nonce complete", {"wallet": wallet, "nonce": nonce})
     return nonce, message, expires_at
 
 
@@ -53,14 +63,22 @@ async def verify_siwe_and_login(
     user_agent: str | None,
 ) -> tuple[User, str, str]:
     wallet = _normalize_address(wallet)
+    logger.debug("[AuthService] verify_siwe_and_login start", {
+        "wallet": wallet,
+        "signature": signature[:8],
+        "ip_address": ip_address,
+        "user_agent": user_agent,
+    })
 
     redis = await get_redis()
     stored_nonce = await redis.get(_nonce_redis_key(wallet))
     if not stored_nonce:
+        logger.warning("[AuthService] verify failed: nonce missing", {"wallet": wallet})
         raise ValueError("Nonce expired or not found")
 
     siwe = SiweMessage.from_message(message)
     if siwe.nonce != stored_nonce:
+        logger.warning("[AuthService] verify failed: nonce mismatch", {"wallet": wallet, "stored_nonce": stored_nonce, "message_nonce": siwe.nonce})
         raise ValueError("Invalid nonce")
 
     siwe.verify(signature, domain=settings.siwe_domain)
