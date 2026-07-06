@@ -14,6 +14,20 @@ AI-powered Web3 operating system for founders — blockchain reputation, NFT ski
 | Blockchain | Solidity, Hardhat, Polygon Amoy, IPFS, WalletConnect |
 | DevOps | Docker Compose, GitHub Actions, Vercel |
 
+## 🎯 Engineering & Technology Decisions
+
+**NEXUS AI follows a rigorous technology evaluation process.**
+
+- **[ENGINEERING_RULE.md](./ENGINEERING_RULE.md)** — Technology adoption framework, ecosystem research pipeline, and architecture protection rules
+- **[docs/KNOWLEDGE_BASE.md](./docs/KNOWLEDGE_BASE.md)** — Decision log for all technologies (rationale, alternatives, performance metrics)
+- **[PROJECT_STATUS.md](./PROJECT_STATUS.md)** — Current project status, blockers, and production readiness
+
+Every technology decision is documented with:
+- ✅ Why it was chosen
+- ❌ What alternatives were rejected and why
+- 📊 Performance metrics and cost analysis
+- 🔄 Next review date (for continuous improvement)
+
 ## Monorepo Structure
 
 ```
@@ -98,7 +112,7 @@ npm test
 This repository is now positioned as an event-ready demo for the Ethereum Build Camp experience:
 
 - AI founder workflows for startup ideation and planning
-- Skill passport verification and NFT minting flow
+- Skill passport verification, minting, history, and reputation summaries
 - Instant Solidity audit summaries for rapid product demos
 - Supabase-backed persistence and wallet-connected frontend flow
 
@@ -132,7 +146,7 @@ Keep all private keys and JWTs in server `.env.local` and never commit them.
 | 3 — Database | Pending |
 | 4 — Frontend UI (Stitch) | Pending |
 | 5 — AI Founder Agent | Pending |
-| 6 — Skill Passport NFT | Implemented (core mint flow, metadata, reputation, frontend integration) |
+| 6 — Skill Passport NFT | Implemented (wallet validation, verify/history/reputation routes, metadata handling, frontend integration) |
 | 7 — Smart Contract Auditor | Pending |
 | 8 — Analytics Dashboard | Pending |
 | 9 — Testing | In progress |
