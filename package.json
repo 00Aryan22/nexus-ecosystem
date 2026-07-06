@@ -13,7 +13,7 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "postinstall": "patch-package"
+    "postinstall": "npx patch-package"
   },
   "devDependencies": {
     "patch-package": "^8.0.1",
