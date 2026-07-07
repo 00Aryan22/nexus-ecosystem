@@ -30,7 +30,10 @@ def _nonce_redis_key(wallet: str) -> str:
 async def issue_nonce(wallet: str) -> tuple[str, str, datetime]:
     wallet = _normalize_address(wallet)
     checksum_wallet = _checksum_address(wallet)
-    logger.debug("[AuthService] issue_nonce start", {"wallet": wallet, "checksum_wallet": checksum_wallet})
+    logger.debug(
+        "[AuthService] issue_nonce start",
+        {"wallet": wallet, "checksum_wallet": checksum_wallet},
+    )
     nonce = secrets.token_hex(16)
     expires_at = datetime.now(UTC) + timedelta(seconds=settings.siwe_nonce_ttl_seconds)
     issued_at = datetime.now(UTC).replace(microsecond=0).isoformat()
@@ -78,7 +81,14 @@ async def verify_siwe_and_login(
 
     siwe = SiweMessage.from_message(message)
     if siwe.nonce != stored_nonce:
-        logger.warning("[AuthService] verify failed: nonce mismatch", {"wallet": wallet, "stored_nonce": stored_nonce, "message_nonce": siwe.nonce})
+        logger.warning(
+            "[AuthService] verify failed: nonce mismatch",
+            {
+                "wallet": wallet,
+                "stored_nonce": stored_nonce,
+                "message_nonce": siwe.nonce,
+            },
+        )
         raise ValueError("Invalid nonce")
 
     siwe.verify(signature, domain=settings.siwe_domain)
