@@ -11,9 +11,14 @@
 | Backend pytest (132 tests) | ✅ **132/132 PASS** |
 | Ruff lint | ✅ **All checks passed** |
 | Next.js build | ✅ **32 pages, 0 errors** |
+| TypeScript (tsc --noEmit) | ✅ **0 errors** |
 | ESLint (frontend) | ✅ **0 errors, 0 warnings** |
+| Vitest (frontend tests) | ✅ **79/79 PASS** |
 | Hardhat tests (17 tests) | ✅ **17/17 PASS** |
 | Alembic migrations | ✅ **10 migrations, clean chain** |
+| Docker compose | ✅ **5 services: postgres, redis, chromadb, api, frontend** |
+| Vercel config | ✅ **vercel.json created** |
+| GitHub Actions | ✅ **CI triggers on main, master, ci/** |
 
 ## What's New in v1.0.0
 
@@ -39,26 +44,28 @@
 - **StartupRegistry**: On-chain startup profiles with founder verification
 - Deployed on Polygon Amoy (chain ID 80002)
 
-## Known Issues (Non-blocking)
+## Remaining Issues (User Secrets Required)
 
-| Issue | Status |
-|-------|--------|
-| Notifications backend module | Not implemented (frontend route exists) |
-| 2 passport wallet tests skip on `eth_utils.is_address` | Test fixture issue, not code |
-| `except: pass` in some Python error handlers | Intentional graceful degradation |
-| Docker compose missing API service | Must be added for production deployment |
+| Variable | Where Used | Why Required |
+|----------|-----------|-------------|
+| `DEPLOYER_PRIVATE_KEY` | `apps/api/app/core/config.py` | Contract deployment & admin operations |
+| `GEMINI_API_KEY` | `apps/api/app/core/config.py` | Gemini AI provider |
+| `OPENAI_API_KEY` | `apps/api/app/core/config.py` | OpenAI AI provider |
+| `EMERGENT_API_KEY` | `apps/api/app/core/config.py` | Emergent AI provider |
+| `SUPABASE_SERVICE_ROLE_KEY` | `apps/web/lib/constants.ts` | Supabase admin operations |
+| `DEPLOYER_PRIVATE_KEY` | `packages/contracts/scripts/deploy.ts` | Smart contract deployment to Amoy |
 
 ## Deployment
 
 ### Required Secrets (`.env.local`)
 | Variable | Required | Source |
 |----------|----------|--------|
-| `DATABASE_URL` | Yes | Supabase project `oinwkcxefniumshicvuj` |
+| `DATABASE_URL` | Yes | Supabase project `oinwkcxefniumshicvuj` or Docker Postgres |
 | `JWT_SECRET_KEY` | Yes | Generate via `secrets.token_urlsafe(32)` |
 | `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | Yes | WalletConnect Cloud |
-| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase dashboard |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Yes | Supabase dashboard |
-| `POLYGON_AMOY_RPC_URL` | Yes | Alchemy or Infura |
+| `NEXT_PUBLIC_SUPABASE_URL` | For Supabase integration | Supabase dashboard |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | For Supabase integration | Supabase dashboard |
+| `POLYGON_AMOY_RPC_URL` | For contracts | Alchemy or Infura |
 | `DEPLOYER_PRIVATE_KEY` | For contracts | Wallet private key |
 
 See `.env.example` for the full list.

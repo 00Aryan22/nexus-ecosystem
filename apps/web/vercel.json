@@ -1,0 +1,12 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "next build",
+  "outputDirectory": ".next",
+  "installCommand": "npm ci",
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "ci/require-walletconnect-projectid": true
+    }
+  }
+}

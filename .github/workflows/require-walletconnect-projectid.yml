@@ -2,9 +2,9 @@ name: CI — require WalletConnect Project ID
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, ci/** ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, master, ci/** ]
 
 jobs:
   enforce-on-push:

@@ -12,8 +12,9 @@ import {
   searchFounderConversations,
   streamFounderChat,
   updateAISettings,
-  updateFounderConversationTitle,
+  updateFounderConversation,
   updateProviderPreferences,
+  type AgentConversationPublic,
   type AIProviderHealth,
   type AISettings,
 } from "@/lib/api/founder-agent";
@@ -151,7 +152,7 @@ describe("streamFounderChat", () => {
   });
 });
 
-describe("updateFounderConversationTitle", () => {
+describe("updateFounderConversation", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });
@@ -164,7 +165,7 @@ describe("updateFounderConversationTitle", () => {
       json: async () => mockResponse,
     } as Response);
 
-    const result = await updateFounderConversationTitle("conv-1", "New Title");
+    const result = await updateFounderConversation("conv-1", { title: "New Title" });
 
     expect(result.title).toBe("New Title");
     expect(fetch).toHaveBeenCalledWith(
@@ -185,7 +186,7 @@ describe("updateFounderConversationTitle", () => {
       json: async () => ({}),
     } as Response);
 
-    await expect(updateFounderConversationTitle("conv-1", "title")).rejects.toThrow(
+    await expect(updateFounderConversation("conv-1", { title: "title" })).rejects.toThrow(
       "UNAUTHORIZED"
     );
   });
@@ -198,7 +199,7 @@ describe("updateFounderConversationTitle", () => {
       json: async () => ({}),
     } as Response);
 
-    await expect(updateFounderConversationTitle("bad-id", "title")).rejects.toThrow(
+    await expect(updateFounderConversation("bad-id", { title: "title" })).rejects.toThrow(
       "Not Found"
     );
   });
@@ -252,11 +253,11 @@ describe("searchFounderConversations", () => {
 });
 
 describe("filterConversations", () => {
-  const conversations = [
-    { id: "1", user_id: "u1", title: "Lean Canvas", created_at: "2026-01-01T00:00:00Z", updated_at: "2026-01-01T00:00:00Z" },
-    { id: "2", user_id: "u1", title: "SWOT Analysis", created_at: "2026-01-02T00:00:00Z", updated_at: "2026-01-02T00:00:00Z" },
-    { id: "3", user_id: "u1", title: "Pitch Deck", created_at: "2026-01-03T00:00:00Z", updated_at: "2026-01-03T00:00:00Z" },
-    { id: "4", user_id: "u1", title: null, created_at: "2026-01-04T00:00:00Z", updated_at: "2026-01-04T00:00:00Z" },
+  const conversations: AgentConversationPublic[] = [
+    { id: "1", user_id: "u1", title: "Lean Canvas", is_pinned: false, is_archived: false, created_at: "2026-01-01T00:00:00Z", updated_at: "2026-01-01T00:00:00Z" },
+    { id: "2", user_id: "u1", title: "SWOT Analysis", is_pinned: false, is_archived: false, created_at: "2026-01-02T00:00:00Z", updated_at: "2026-01-02T00:00:00Z" },
+    { id: "3", user_id: "u1", title: "Pitch Deck", is_pinned: false, is_archived: false, created_at: "2026-01-03T00:00:00Z", updated_at: "2026-01-03T00:00:00Z" },
+    { id: "4", user_id: "u1", title: null, is_pinned: false, is_archived: false, created_at: "2026-01-04T00:00:00Z", updated_at: "2026-01-04T00:00:00Z" },
   ];
 
   it("should return all conversations when query is empty", () => {
@@ -706,6 +707,8 @@ describe("fetchAISettings", () => {
       topP: 0.9,
       maxTokens: 2048,
       streamingEnabled: false,
+      memoryEnabled: true,
+      maxRetrievedDocs: 5,
     };
     global.fetch = vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => ({ data: mockSettings }) } as Response);
 
@@ -728,6 +731,8 @@ describe("updateAISettings", () => {
       topP: 1.0,
       maxTokens: 4096,
       streamingEnabled: true,
+      memoryEnabled: true,
+      maxRetrievedDocs: 5,
     };
     global.fetch = vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => ({ data: updated }) } as Response);
 

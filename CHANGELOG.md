@@ -47,5 +47,16 @@
 ### Known Issues
 - **Notifications backend** — Frontend route exists, backend module not yet implemented
 - **`except: pass` patterns** — Intentional graceful degradation in non-critical error handlers
-- **Docker compose** — API service not wired into `docker-compose.yml` (requires manual addition)
-- **Vercel** — No `vercel.json` config (Next.js auto-detection sufficient for basic deployment)
+- **Notifications backend** — Frontend route exists, backend module not yet implemented
+- **User secrets** — `DEPLOYER_PRIVATE_KEY`, `GEMINI_API_KEY`, `OPENAI_API_KEY` must be provided by repo owner
+
+### Fixed (v1.0.0 final sprint)
+- Pytest timeout on machines without PostgreSQL — conftest now forces `DATABASE_URL=sqlite+aiosqlite:///:memory:` before engine init (132 tests in 17s)
+- `next.config.ts` webpack alias referencing deleted `async-storage-browser.ts` — removed entire webpack config block
+- `__tests__/founder-agent.test.ts` TypeScript errors — fixed `updateFounderConversationTitle`→`updateFounderConversation` call signatures, added missing `is_pinned`/`is_archived` fields, added `memoryEnabled`/`maxRetrievedDocs` to AI settings mocks
+- Stale `.next/types/` causing TS6053 errors — cleaned and regenerated via fresh build
+- Docker compose missing `api` and `frontend` services — added with healthcheck dependency on postgres
+- GitHub Actions CI only triggered on `main`/`master` — widened to `ci/**` branches
+- Missing `vercel.json` — created with Next.js framework config
+- Missing `infra/supabase/config.toml` — created with project ref `oinwkcxefniumshicvuj`
+- Missing `.python-version` — created for Python 3.11 consistency

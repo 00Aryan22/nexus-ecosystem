@@ -1,4 +1,9 @@
 import os
+
+# Force SQLite in-memory BEFORE any engine/settings imports
+os.environ.setdefault("DATABASE_URL", "sqlite+aiosqlite:///:memory:")
+os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key-for-pytest-only-not-production")
+
 from collections.abc import AsyncGenerator
 from datetime import UTC, datetime, timedelta
 
@@ -12,8 +17,6 @@ import app.models  # noqa: F401  (side-effect: registers all ORM models)
 from app.core.security import create_access_token, new_jti
 from app.main import app
 from app.models.auth import Session, User
-
-os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key-for-pytest-only-not-production")
 
 
 # ---------------------------------------------------------------------------
