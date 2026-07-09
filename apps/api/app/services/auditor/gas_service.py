@@ -10,7 +10,9 @@ from app.services.llm.provider import llm_router
 
 logger = logging.getLogger(__name__)
 
-GAS_SYSTEM_PROMPT = "You are an expert in Solidity gas optimization. Focus only on gas-related improvements."
+GAS_SYSTEM_PROMPT = (
+    "You are an expert in Solidity gas optimization. Focus only on gas-related improvements."
+)
 
 
 async def analyze_gas_optimizations(
@@ -36,6 +38,7 @@ async def analyze_gas_optimizations(
         result = json.loads(full_response)
     except json.JSONDecodeError:
         import re
+
         match = re.search(r"\{.*\}", full_response, re.DOTALL)
         if match:
             try:

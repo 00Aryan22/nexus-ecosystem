@@ -26,7 +26,8 @@ async def test_get_passport_reputation_empty(db_session: AsyncSession, test_user
 
 @pytest.mark.asyncio
 async def test_get_passport_reputation_with_mixed_passports(
-    db_session: AsyncSession, test_user,
+    db_session: AsyncSession,
+    test_user,
 ) -> None:
     for score, status in [(85.0, "pending"), (92.0, "approved"), (70.0, "minted")]:
         p = SkillPassport(
@@ -57,17 +58,17 @@ async def test_get_passport_by_wallet_invalid_address() -> None:
 
 @pytest.mark.asyncio
 async def test_get_passport_by_wallet_not_found(
-    db_session: AsyncSession, test_user,
+    db_session: AsyncSession,
+    test_user,
 ) -> None:
-    result = await get_passport_by_wallet(
-        db_session, "0x0000000000000000000000000000000000000001"
-    )
+    result = await get_passport_by_wallet(db_session, "0x0000000000000000000000000000000000000001")
     assert result is None
 
 
 @pytest.mark.asyncio
 async def test_get_passport_by_wallet_found(
-    db_session: AsyncSession, test_user,
+    db_session: AsyncSession,
+    test_user,
 ) -> None:
     passport = SkillPassport(
         user_id=test_user.id,
@@ -89,7 +90,8 @@ async def test_get_passport_by_wallet_found(
 
 @pytest.mark.asyncio
 async def test_mint_passport_nft_duplicate_mint_returns_existing(
-    db_session: AsyncSession, test_user,
+    db_session: AsyncSession,
+    test_user,
 ) -> None:
     passport = SkillPassport(
         user_id=test_user.id,

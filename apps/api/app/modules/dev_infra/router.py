@@ -22,11 +22,13 @@ router = APIRouter(
 # Schemas
 # ---------------------------------------------------------------------------
 
+
 class ContractVerificationRequest(BaseModel):
     contract_name: str = Field(..., min_length=1, max_length=255)
     source_code: str = Field(..., min_length=1, max_length=200_000)
     compiler_version: str = Field(default="0.8.28", max_length=20)
     contract_address: str = Field(..., min_length=40, max_length=42)
+
 
 class VerificationResult(BaseModel):
     verified: bool
@@ -36,9 +38,11 @@ class VerificationResult(BaseModel):
     matches: bool
     warnings: list[str] = []
 
+
 class ABIRequest(BaseModel):
     source_code: str = Field(..., min_length=1, max_length=200_000)
     contract_name: str | None = Field(default=None, max_length=255)
+
 
 class ABIResult(BaseModel):
     abi: list[dict]
@@ -47,9 +51,11 @@ class ABIResult(BaseModel):
     events: list[dict]
     errors: list[dict]
 
+
 class GasEstimateRequest(BaseModel):
     source_code: str = Field(..., min_length=1, max_length=200_000)
     function_name: str | None = Field(default=None, max_length=255)
+
 
 class GasEstimateResult(BaseModel):
     estimated_gas: int
@@ -57,13 +63,16 @@ class GasEstimateResult(BaseModel):
     complexity: str
     breakdown: dict[str, int] = {}
 
+
 # ---------------------------------------------------------------------------
 # Helper: Extract function/event/error signatures from Solidity source
 # ---------------------------------------------------------------------------
 
+
 def _extract_contract_name(source: str) -> str | None:
     match = re.search(r"contract\s+(\w+)", source)
     return match.group(1) if match else None
+
 
 def _extract_functions(source: str) -> list[dict]:
     functions = []
@@ -73,31 +82,39 @@ def _extract_functions(source: str) -> list[dict]:
         r"\s*(view|pure|payable)?\s*(returns\s*\([^)]*\))?"
     )
     for match in re.finditer(pattern, source):
-        functions.append({
-            "name": match.group(1),
-            "params": match.group(2),
-            "visibility": match.group(3) or "public",
-            "state_mutability": match.group(4) or "nonpayable",
-            "returns": match.group(5) or "",
-        })
+        functions.append(
+            {
+                "name": match.group(1),
+                "params": match.group(2),
+                "visibility": match.group(3) or "public",
+                "state_mutability": match.group(4) or "nonpayable",
+                "returns": match.group(5) or "",
+            }
+        )
     return functions
+
 
 def _extract_events(source: str) -> list[dict]:
     events = []
     pattern = r"event\s+(\w+)\s*\(([^)]*)\)"
     for match in re.finditer(pattern, source):
-        events.append({
-            "name": match.group(1),
-            "params": match.group(2),
-        })
+        events.append(
+            {
+                "name": match.group(1),
+                "params": match.group(2),
+            }
+        )
     return events
+
 
 def _estimate_gas(source: str, func_name: str | None) -> int:
     """Simple heuristic gas estimation based on opcode patterns."""
     base_gas = 21000
     storage_writes = len(re.findall(r"(?<!//)\s*(sstore|=\s*\w+\s*;)", source))
     storage_reads = len(re.findall(r"(?<!//)\s*sload", source))
-    external_calls = len(re.findall(r"(?<!//)\s*\.call\s*\{|\.delegatecall\s*\(|\.transfer\s*\(", source))
+    external_calls = len(
+        re.findall(r"(?<!//)\s*\.call\s*\{|\.delegatecall\s*\(|\.transfer\s*\(", source)
+    )
     loops = len(re.findall(r"(?<!//)\s*(for|while)\s*\(", source))
     mappings = len(re.findall(r"mapping\s*\(", source))
 
@@ -109,9 +126,11 @@ def _estimate_gas(source: str, func_name: str | None) -> int:
     gas += mappings * 500
     return min(gas, 5_000_000)
 
+
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
+
 
 @router.post(
     "/verify",
@@ -126,7 +145,9 @@ async def verify_contract(
     derived_name = _extract_contract_name(body.source_code)
 
     if derived_name and derived_name != body.contract_name:
-        _warn = f"Contract name mismatch: source says '{derived_name}', provided '{body.contract_name}'"
+        _warn = (
+            f"Contract name mismatch: source says '{derived_name}', provided '{body.contract_name}'"
+        )
         warnings.append(_warn)
 
     has_constructor = "constructor" in body.source_code
@@ -137,14 +158,16 @@ async def verify_contract(
     if not has_spdx:
         warnings.append("Missing SPDX license identifier")
 
-    return ApiResponse(data=VerificationResult(
-        verified=True,
-        contract_name=body.contract_name,
-        contract_address=body.contract_address,
-        compiler_version=body.compiler_version,
-        matches=derived_name == body.contract_name if derived_name else False,
-        warnings=warnings,
-    ))
+    return ApiResponse(
+        data=VerificationResult(
+            verified=True,
+            contract_name=body.contract_name,
+            contract_address=body.contract_address,
+            compiler_version=body.compiler_version,
+            matches=derived_name == body.contract_name if derived_name else False,
+            warnings=warnings,
+        )
+    )
 
 
 @router.post(
@@ -164,17 +187,26 @@ async def generate_abi(
 
     error_pattern = r"error\s+(\w+)\s*\(([^)]*)\)"
     for match in re.finditer(error_pattern, body.source_code):
-        errors.append({
-            "name": match.group(1),
-            "params": match.group(2),
-        })
+        errors.append(
+            {
+                "name": match.group(1),
+                "params": match.group(2),
+            }
+        )
 
     abi: list[dict] = []
     for func in functions:
         abi_entry = {
             "type": "function",
             "name": func["name"],
-            "inputs": [{"name": p.split(" ")[-1] if " " in p else p, "type": p.split(" ")[0] if " " in p else "uint256"} for p in func["params"].split(",") if p.strip()],
+            "inputs": [
+                {
+                    "name": p.split(" ")[-1] if " " in p else p,
+                    "type": p.split(" ")[0] if " " in p else "uint256",
+                }
+                for p in func["params"].split(",")
+                if p.strip()
+            ],
             "outputs": [],
             "stateMutability": func["state_mutability"],
         }
@@ -182,31 +214,56 @@ async def generate_abi(
             returns_match = re.search(r"returns\s*\(([^)]*)\)", func["returns"])
             if returns_match:
                 return_types = returns_match.group(1).split(",")
-                abi_entry["outputs"] = [{"type": t.strip().split(" ")[0] if " " in t.strip() else t.strip(), "name": ""} for t in return_types if t.strip()]
+                abi_entry["outputs"] = [
+                    {"type": t.strip().split(" ")[0] if " " in t.strip() else t.strip(), "name": ""}
+                    for t in return_types
+                    if t.strip()
+                ]
         abi.append(abi_entry)
 
     for event in events:
-        abi.append({
-            "type": "event",
-            "name": event["name"],
-            "inputs": [{"name": p.split(" ")[-1] if " " in p else p, "type": p.split(" ")[0] if " " in p else "uint256", "indexed": False} for p in event["params"].split(",") if p.strip()],
-            "anonymous": False,
-        })
+        abi.append(
+            {
+                "type": "event",
+                "name": event["name"],
+                "inputs": [
+                    {
+                        "name": p.split(" ")[-1] if " " in p else p,
+                        "type": p.split(" ")[0] if " " in p else "uint256",
+                        "indexed": False,
+                    }
+                    for p in event["params"].split(",")
+                    if p.strip()
+                ],
+                "anonymous": False,
+            }
+        )
 
     for error in errors:
-        abi.append({
-            "type": "error",
-            "name": error["name"],
-            "inputs": [{"name": p.split(" ")[-1] if " " in p else p, "type": p.split(" ")[0] if " " in p else "string"} for p in error["params"].split(",") if p.strip()],
-        })
+        abi.append(
+            {
+                "type": "error",
+                "name": error["name"],
+                "inputs": [
+                    {
+                        "name": p.split(" ")[-1] if " " in p else p,
+                        "type": p.split(" ")[0] if " " in p else "string",
+                    }
+                    for p in error["params"].split(",")
+                    if p.strip()
+                ],
+            }
+        )
 
-    return ApiResponse(data=ABIResult(
-        abi=abi,
-        contract_name=contract_name,
-        functions=functions,
-        events=events,
-        errors=errors,
-    ))
+    return ApiResponse(
+        data=ABIResult(
+            abi=abi,
+            contract_name=contract_name,
+            functions=functions,
+            events=events,
+            errors=errors,
+        )
+    )
 
 
 @router.post(
@@ -228,16 +285,20 @@ async def estimate_gas(
     if total_gas > 1000000:
         complexity = "very high"
 
-    return ApiResponse(data=GasEstimateResult(
-        estimated_gas=total_gas,
-        function_name=body.function_name,
-        complexity=complexity,
-        breakdown={
-            "base": 21000,
-            "storage_writes": max(0, total_gas - 21000 - 7000 - 2100) if "call" in body.source_code else 0,
-            "external_calls": 7000 if ".call" in body.source_code else 0,
-        },
-    ))
+    return ApiResponse(
+        data=GasEstimateResult(
+            estimated_gas=total_gas,
+            function_name=body.function_name,
+            complexity=complexity,
+            breakdown={
+                "base": 21000,
+                "storage_writes": max(0, total_gas - 21000 - 7000 - 2100)
+                if "call" in body.source_code
+                else 0,
+                "external_calls": 7000 if ".call" in body.source_code else 0,
+            },
+        )
+    )
 
 
 @router.get(

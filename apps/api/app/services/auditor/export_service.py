@@ -39,43 +39,55 @@ def export_audit_markdown(audit: Audit) -> str:
     ]
 
     for v in vulns:
-        lines.extend([
-            f"### {v.get('id', 'V?')}: {v.get('title', 'Untitled')}",
-            "",
-            f"- **Severity:** {v.get('severity', 'N/A')}",
-            f"- **Description:** {v.get('description', '')}",
-        ])
+        lines.extend(
+            [
+                f"### {v.get('id', 'V?')}: {v.get('title', 'Untitled')}",
+                "",
+                f"- **Severity:** {v.get('severity', 'N/A')}",
+                f"- **Description:** {v.get('description', '')}",
+            ]
+        )
         if v.get("line_hint"):
             lines.append(f"- **Location:** {v['line_hint']}")
-        lines.extend([
-            f"- **Recommendation:** {v.get('recommendation', '')}",
-            "",
-        ])
-        if v.get("code_fix"):
-            lines.extend([
-                "```solidity",
-                v["code_fix"],
-                "```",
+        lines.extend(
+            [
+                f"- **Recommendation:** {v.get('recommendation', '')}",
                 "",
-            ])
+            ]
+        )
+        if v.get("code_fix"):
+            lines.extend(
+                [
+                    "```solidity",
+                    v["code_fix"],
+                    "```",
+                    "",
+                ]
+            )
 
     if gas_opts:
-        lines.extend([
-            "## Gas Optimizations",
-            "",
-        ])
-        for g in gas_opts:
-            lines.extend([
-                f"- **{g.get('title', '')}:** {g.get('description', '')}",
-                f"  - *Recommendation:* {g.get('recommendation', '')}",
+        lines.extend(
+            [
+                "## Gas Optimizations",
                 "",
-            ])
+            ]
+        )
+        for g in gas_opts:
+            lines.extend(
+                [
+                    f"- **{g.get('title', '')}:** {g.get('description', '')}",
+                    f"  - *Recommendation:* {g.get('recommendation', '')}",
+                    "",
+                ]
+            )
 
     if practices:
-        lines.extend([
-            "## Best Practices",
-            "",
-        ])
+        lines.extend(
+            [
+                "## Best Practices",
+                "",
+            ]
+        )
         for bp in practices:
             lines.append(f"- {bp}")
         lines.append("")
@@ -89,15 +101,18 @@ def export_audit_markdown(audit: Audit) -> str:
 
 def export_audit_json(audit: Audit) -> str:
     report = audit.report_json or {}
-    return json.dumps({
-        "contract_name": audit.contract_name,
-        "overall_risk": audit.overall_risk,
-        "risk_score": report.get("risk_score"),
-        "vulnerabilities": report.get("vulnerabilities", []),
-        "gas_optimizations": report.get("gas_optimizations", []),
-        "best_practices": report.get("best_practices", []),
-        "executive_summary": report.get("executive_summary", ""),
-        "ai_model_used": audit.ai_model_used,
-        "processing_ms": audit.processing_ms,
-        "completed_at": str(audit.completed_at),
-    }, indent=2)
+    return json.dumps(
+        {
+            "contract_name": audit.contract_name,
+            "overall_risk": audit.overall_risk,
+            "risk_score": report.get("risk_score"),
+            "vulnerabilities": report.get("vulnerabilities", []),
+            "gas_optimizations": report.get("gas_optimizations", []),
+            "best_practices": report.get("best_practices", []),
+            "executive_summary": report.get("executive_summary", ""),
+            "ai_model_used": audit.ai_model_used,
+            "processing_ms": audit.processing_ms,
+            "completed_at": str(audit.completed_at),
+        },
+        indent=2,
+    )

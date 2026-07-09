@@ -24,9 +24,7 @@ class OpenAIProvider(LLMProvider):
     def __init__(self, api_key: str | None = None):
         self.api_key = api_key or settings.openai_api_key
 
-    async def stream_generate(
-        self, prompt: str, system: str, history: list[dict[str, str]]
-    ):
+    async def stream_generate(self, prompt: str, system: str, history: list[dict[str, str]]):
         if not self.api_key:
             raise ValueError("OpenAI API Key not configured")
 
@@ -55,9 +53,7 @@ class OpenAIProvider(LLMProvider):
                         try:
                             payload = json.loads(data)
                             chunk = (
-                                payload.get("choices", [{}])[0]
-                                .get("delta", {})
-                                .get("content", "")
+                                payload.get("choices", [{}])[0].get("delta", {}).get("content", "")
                             )
                             if chunk:
                                 yield chunk

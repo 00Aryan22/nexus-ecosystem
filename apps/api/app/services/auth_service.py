@@ -27,7 +27,11 @@ def _nonce_redis_key(wallet: str) -> str:
     return f"siwe:nonce:{_normalize_address(wallet)}"
 
 
-async def issue_nonce(wallet: str) -> tuple[str, str, datetime]:
+async def issue_nonce(
+    wallet: str,
+    domain: str | None = None,
+    uri: str | None = None,
+) -> tuple[str, str, datetime]:
     wallet = _normalize_address(wallet)
     checksum_wallet = _checksum_address(wallet)
     logger.debug(
@@ -38,10 +42,13 @@ async def issue_nonce(wallet: str) -> tuple[str, str, datetime]:
     expires_at = datetime.now(UTC) + timedelta(seconds=settings.siwe_nonce_ttl_seconds)
     issued_at = datetime.now(UTC).replace(microsecond=0).isoformat()
 
+    siwe_domain = domain or settings.siwe_domain
+    siwe_uri = uri or settings.siwe_uri
+
     siwe = SiweMessage(
-        domain=settings.siwe_domain,
+        domain=siwe_domain,
         address=checksum_wallet,
-        uri=settings.siwe_uri,
+        uri=siwe_uri,
         version="1",
         chain_id=settings.siwe_chain_id,
         nonce=nonce,
@@ -66,12 +73,15 @@ async def verify_siwe_and_login(
     user_agent: str | None,
 ) -> tuple[User, str, str]:
     wallet = _normalize_address(wallet)
-    logger.debug("[AuthService] verify_siwe_and_login start", {
-        "wallet": wallet,
-        "signature": signature[:8],
-        "ip_address": ip_address,
-        "user_agent": user_agent,
-    })
+    logger.debug(
+        "[AuthService] verify_siwe_and_login start",
+        {
+            "wallet": wallet,
+            "signature": signature[:8],
+            "ip_address": ip_address,
+            "user_agent": user_agent,
+        },
+    )
 
     redis = await get_redis()
     stored_nonce = await redis.get(_nonce_redis_key(wallet))
@@ -93,7 +103,14 @@ async def verify_siwe_and_login(
 
     await redis.delete(_nonce_redis_key(wallet))
 
-    siwe.verify(signature, domain=settings.siwe_domain)
+    # Support dynamic Vercel previews when running with default localhost domain configuration
+    expected_domain = settings.siwe_domain
+    if expected_domain == "localhost" and (
+        siwe.domain.endswith(".vercel.app") or "vercel" in siwe.domain or siwe.domain == "localhost"
+    ):
+        expected_domain = siwe.domain
+
+    siwe.verify(signature, domain=expected_domain)
 
     result = await db.execute(select(User).where(User.wallet_address == wallet))
     user = result.scalar_one_or_none()

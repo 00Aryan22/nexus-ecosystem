@@ -147,11 +147,11 @@ async def analyze_audit_sync(
 ) -> ApiResponse[AuditDetail]:
     """Run analysis synchronously and return result."""
     await check_rate_limit(request, bucket=f"audits:analyze:{audit_id}", limit=5, window_seconds=60)
-    
+
     audit = await get_audit(db, audit_id)
     if audit is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Audit not found")
     ensure_owner(audit.user_id, user)
-    
+
     analyzed = await run_audit_analysis(db, audit_id, audit.source_code, audit.contract_name)
     return ApiResponse(data=AuditDetail.model_validate(analyzed))

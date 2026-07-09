@@ -76,9 +76,7 @@ MOCK_REPORT = {
 }
 
 
-async def _mock_stream(
-    *_args, **_kwargs
-) -> AsyncGenerator[tuple[str, str | None], None]:
+async def _mock_stream(*_args, **_kwargs) -> AsyncGenerator[tuple[str, str | None], None]:
     yield json.dumps(MOCK_REPORT), "mock"
 
 

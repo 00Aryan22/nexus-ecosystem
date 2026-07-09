@@ -10,6 +10,7 @@ httpx>=0.28.0
 python-jose[cryptography]>=3.3.0
 eth-account>=0.13.0
 siwe>=4.0.0
+reportlab>=4.2.0
 
 # Dev / test
 pytest>=8.3.0

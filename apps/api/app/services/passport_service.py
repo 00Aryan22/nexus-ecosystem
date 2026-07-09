@@ -174,9 +174,12 @@ async def get_passport_reputation(db: AsyncSession, user: User) -> dict[str, Any
     minted = [passport for passport in passports if passport.status == "minted"]
     average_score = round(sum(scores) / len(scores), 2) if scores else 0.0
     badge = (
-        "Diamond" if average_score >= 90
-        else "Gold" if average_score >= 75
-        else "Silver" if average_score >= 60
+        "Diamond"
+        if average_score >= 90
+        else "Gold"
+        if average_score >= 75
+        else "Silver"
+        if average_score >= 60
         else "Bronze"
     )
     return {
@@ -234,10 +237,14 @@ async def mint_passport_nft(
     }
 
     metadata_uri = await _pin_metadata_to_ipfs(metadata_payload, passport.id)
-    token_id = int(
-        hashlib.sha256(str(passport.id).encode("utf-8")).hexdigest()[:8],
-        16,
-    ) % 1000000 + 1
+    token_id = (
+        int(
+            hashlib.sha256(str(passport.id).encode("utf-8")).hexdigest()[:8],
+            16,
+        )
+        % 1000000
+        + 1
+    )
     tx_hash = "0x" + hashlib.sha256(f"{passport.id}:{wallet}".encode()).hexdigest()
 
     nft_record = NftRecord(

@@ -17,12 +17,9 @@ class LLMProvider(ABC):
     @abstractmethod
     async def stream_generate(
         self, prompt: str, system: str, history: list[dict[str, str]]
-    ) -> AsyncGenerator[str, None]:
-        ...
+    ) -> AsyncGenerator[str, None]: ...
 
-    async def chat(
-        self, prompt: str, system: str, history: list[dict[str, str]]
-    ) -> str:
+    async def chat(self, prompt: str, system: str, history: list[dict[str, str]]) -> str:
         chunks: list[str] = []
         async for chunk in self.stream_generate(prompt, system, history):
             chunks.append(chunk)

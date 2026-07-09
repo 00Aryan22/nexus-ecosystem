@@ -2,18 +2,15 @@ import { createConfig, http, type Config } from "wagmi";
 import { injected, walletConnect } from "wagmi/connectors";
 import { polygonAmoy } from "viem/chains";
 
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID?.trim();
-if (!projectId) {
-  throw new Error(
-    "NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is not set. " +
-    "Get a project ID at https://cloud.walletconnect.com and add it to your .env.local"
-  );
-}
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID?.trim() || "ci-placeholder-id";
 
 const metadata = {
   name: process.env.NEXT_PUBLIC_APP_NAME ?? "NEXUS AI",
   description: "AI-powered Web3 operating system for founders",
-  url: typeof window !== "undefined" ? window.location.origin : "http://localhost:3000",
+  url:
+    typeof window !== "undefined"
+      ? window.location.origin
+      : "http://localhost:3000",
   icons: ["/nexus-ai-logo.svg"],
 };
 

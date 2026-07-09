@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _hash_source(code: str) -> str:
     return hashlib.sha256(code.encode()).hexdigest()[:64]
 
@@ -85,6 +86,7 @@ def _extract_json(raw: str) -> dict:
 # ---------------------------------------------------------------------------
 # Streaming analysis — yields SSE-compatible text chunks AND saves to DB
 # ---------------------------------------------------------------------------
+
 
 async def stream_audit_analysis(
     db: AsyncSession,
@@ -190,6 +192,7 @@ async def stream_audit_analysis(
 # Non-streaming synchronous analysis (used when SSE is not requested)
 # ---------------------------------------------------------------------------
 
+
 async def run_audit_analysis(
     db: AsyncSession,
     audit_id: UUID,
@@ -212,6 +215,7 @@ async def run_audit_analysis(
 # CRUD helpers
 # ---------------------------------------------------------------------------
 
+
 async def create_audit(db: AsyncSession, user: User, body: AuditSubmit) -> Audit:
     audit = Audit(
         user_id=user.id,
@@ -226,12 +230,8 @@ async def create_audit(db: AsyncSession, user: User, body: AuditSubmit) -> Audit
     return audit
 
 
-async def get_audit_for_user(
-    db: AsyncSession, audit_id: UUID, user_id: UUID
-) -> Audit | None:
-    result = await db.execute(
-        select(Audit).where(Audit.id == audit_id, Audit.user_id == user_id)
-    )
+async def get_audit_for_user(db: AsyncSession, audit_id: UUID, user_id: UUID) -> Audit | None:
+    result = await db.execute(select(Audit).where(Audit.id == audit_id, Audit.user_id == user_id))
     return result.scalar_one_or_none()
 
 
@@ -254,8 +254,6 @@ async def list_user_audits(
 async def delete_audit(db: AsyncSession, audit_id: UUID, user_id: UUID) -> bool:
     from sqlalchemy import delete
 
-    result = await db.execute(
-        delete(Audit).where(Audit.id == audit_id, Audit.user_id == user_id)
-    )
+    result = await db.execute(delete(Audit).where(Audit.id == audit_id, Audit.user_id == user_id))
     await db.commit()
     return result.rowcount > 0

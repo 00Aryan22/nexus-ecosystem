@@ -153,9 +153,7 @@ class MemoryService:
 
         if workspace_id:
             base = base.where(KnowledgeDocument.workspace_id == workspace_id)
-            count_base = count_base.where(
-                KnowledgeDocument.workspace_id == workspace_id
-            )
+            count_base = count_base.where(KnowledgeDocument.workspace_id == workspace_id)
 
         total_result = await self.db.execute(count_base)
         total = total_result.scalar_one()

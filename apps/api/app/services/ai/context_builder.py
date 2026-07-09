@@ -57,9 +57,7 @@ class ContextBuilder:
             workspace_id=workspace_id,
         )
         if self.config.min_similarity_score > 0:
-            results = [
-                r for r in results if r.score >= self.config.min_similarity_score
-            ]
+            results = [r for r in results if r.score >= self.config.min_similarity_score]
         return results
 
     def build_context_block(self, results: list[SearchResultItem]) -> str:

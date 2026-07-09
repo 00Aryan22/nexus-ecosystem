@@ -68,8 +68,7 @@ class FakeVectorStore(VectorStore):
             scores.append((doc_id, sim))
         scores.sort(key=lambda x: x[1], reverse=True)
         return [
-            SearchResult(doc_id=s, score=sc, metadata=self._meta.get(s))
-            for s, sc in scores[:top_k]
+            SearchResult(doc_id=s, score=sc, metadata=self._meta.get(s)) for s, sc in scores[:top_k]
         ]
 
     async def delete(self, doc_id: str) -> None:
@@ -180,9 +179,7 @@ class TestMemoryService:
     async def test_create_document(
         self, memory_service: MemoryService, db_session: AsyncSession
     ) -> None:
-        body = DocumentCreate(
-            title="Test Doc", source="manual", content="Hello world memory test"
-        )
+        body = DocumentCreate(title="Test Doc", source="manual", content="Hello world memory test")
         doc = await memory_service.create_document(body)
 
         assert doc.id is not None
@@ -200,9 +197,7 @@ class TestMemoryService:
         )
         assert result.scalar_one_or_none() is not None
 
-    async def test_create_document_with_metadata(
-        self, memory_service: MemoryService
-    ) -> None:
+    async def test_create_document_with_metadata(self, memory_service: MemoryService) -> None:
         body = DocumentCreate(
             title="Meta Doc",
             source="api",
@@ -212,21 +207,15 @@ class TestMemoryService:
         doc = await memory_service.create_document(body)
         assert doc.doc_metadata == {"key": "value", "tags": ["a", "b"]}
 
-    async def test_create_document_with_workspace(
-        self, memory_service: MemoryService
-    ) -> None:
+    async def test_create_document_with_workspace(self, memory_service: MemoryService) -> None:
         body = DocumentCreate(
             title="WS Doc", source="manual", content="Scoped doc", workspace_id="ws-123"
         )
         doc = await memory_service.create_document(body)
         assert doc.workspace_id == "ws-123"
 
-    async def test_update_document_content(
-        self, memory_service: MemoryService
-    ) -> None:
-        body = DocumentCreate(
-            title="Original", source="manual", content="Original content"
-        )
+    async def test_update_document_content(self, memory_service: MemoryService) -> None:
+        body = DocumentCreate(title="Original", source="manual", content="Original content")
         doc = await memory_service.create_document(body)
 
         updated = await memory_service.update_document(
@@ -236,20 +225,14 @@ class TestMemoryService:
         assert updated.content == "Updated content"
         assert updated.title == "Original"  # unchanged
 
-    async def test_update_document_not_found(
-        self, memory_service: MemoryService
-    ) -> None:
-        result = await memory_service.update_document(
-            uuid.uuid4(), DocumentUpdate(title="Nope")
-        )
+    async def test_update_document_not_found(self, memory_service: MemoryService) -> None:
+        result = await memory_service.update_document(uuid.uuid4(), DocumentUpdate(title="Nope"))
         assert result is None
 
     async def test_delete_document(
         self, memory_service: MemoryService, db_session: AsyncSession
     ) -> None:
-        body = DocumentCreate(
-            title="Delete Me", source="manual", content="To be deleted"
-        )
+        body = DocumentCreate(title="Delete Me", source="manual", content="To be deleted")
         doc = await memory_service.create_document(body)
 
         deleted = await memory_service.delete_document(doc.id)
@@ -262,15 +245,11 @@ class TestMemoryService:
         )
         assert result.scalar_one_or_none() is None
 
-    async def test_delete_document_not_found(
-        self, memory_service: MemoryService
-    ) -> None:
+    async def test_delete_document_not_found(self, memory_service: MemoryService) -> None:
         result = await memory_service.delete_document(uuid.uuid4())
         assert result is False
 
-    async def test_search_documents(
-        self, memory_service: MemoryService
-    ) -> None:
+    async def test_search_documents(self, memory_service: MemoryService) -> None:
         await memory_service.create_document(
             DocumentCreate(
                 title="AI Concepts",
@@ -293,24 +272,18 @@ class TestMemoryService:
             )
         )
 
-        results = await memory_service.search_documents(
-            query="artificial intelligence", top_k=5
-        )
+        results = await memory_service.search_documents(query="artificial intelligence", top_k=5)
         assert len(results) >= 1
         # The fake vector store uses simple dot product, so all should return
         # but the highest similarity should be for "AI Concepts" since
         # fake embedding produces different vectors per index.
         assert any(r.title == "AI Concepts" for r in results)
 
-    async def test_search_documents_empty(
-        self, memory_service: MemoryService
-    ) -> None:
+    async def test_search_documents_empty(self, memory_service: MemoryService) -> None:
         results = await memory_service.search_documents(query="nothing", top_k=5)
         assert results == []
 
-    async def test_search_documents_with_workspace(
-        self, memory_service: MemoryService
-    ) -> None:
+    async def test_search_documents_with_workspace(self, memory_service: MemoryService) -> None:
         await memory_service.create_document(
             DocumentCreate(
                 title="WS1 Doc",
@@ -334,9 +307,7 @@ class TestMemoryService:
         assert len(results) >= 1
         assert all(r.source == "manual" for r in results)
 
-    async def test_list_documents(
-        self, memory_service: MemoryService
-    ) -> None:
+    async def test_list_documents(self, memory_service: MemoryService) -> None:
         await memory_service.create_document(
             DocumentCreate(title="Doc 1", source="manual", content="First")
         )
@@ -355,14 +326,10 @@ class TestMemoryService:
         self, memory_service: MemoryService
     ) -> None:
         await memory_service.create_document(
-            DocumentCreate(
-                title="WS1", source="manual", content="A", workspace_id="ws-1"
-            )
+            DocumentCreate(title="WS1", source="manual", content="A", workspace_id="ws-1")
         )
         await memory_service.create_document(
-            DocumentCreate(
-                title="WS2", source="manual", content="B", workspace_id="ws-2"
-            )
+            DocumentCreate(title="WS2", source="manual", content="B", workspace_id="ws-2")
         )
 
         docs, total = await memory_service.list_documents(workspace_id="ws-1")
@@ -503,9 +470,7 @@ class TestMemoryAPI:
 
     @pytest.mark.asyncio
     async def test_search_empty_query(self, client: AsyncClient) -> None:
-        response = await client.post(
-            "/api/v1/memory/search", json={"query": "", "top_k": 5}
-        )
+        response = await client.post("/api/v1/memory/search", json={"query": "", "top_k": 5})
         assert response.status_code == 422
 
     @pytest.mark.asyncio

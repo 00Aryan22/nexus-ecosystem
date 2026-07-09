@@ -21,8 +21,7 @@ logger = logging.getLogger(__name__)
 
 class EmbeddingProvider(ABC):
     @abstractmethod
-    async def embed(self, texts: list[str]) -> list[list[float]]:
-        ...
+    async def embed(self, texts: list[str]) -> list[list[float]]: ...
 
     @property
     def dimensions(self) -> int:

@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.deps import get_current_user_public
 from app.core.config import settings
 from app.core.database import get_db
+from app.core.rate_limit import check_rate_limit
 from app.core.security import (
     TokenError,
     create_access_token,
@@ -28,13 +29,28 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.get("/nonce", response_model=ApiResponse[NonceData])
-async def get_nonce(wallet: str, response: Response) -> ApiResponse[NonceData]:
+async def get_nonce(wallet: str, request: Request, response: Response) -> ApiResponse[NonceData]:
+    await check_rate_limit(request, bucket="auth:nonce", limit=20, window_seconds=60)
     if not wallet.startswith("0x") or len(wallet) != 42:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail="Invalid wallet address",
         )
-    nonce, message, expires_at = await issue_nonce(wallet)
+
+    forwarded_host = request.headers.get("x-forwarded-host")
+    forwarded_proto = request.headers.get("x-forwarded-proto", "https")
+    host = forwarded_host or request.headers.get("host")
+
+    domain = None
+    uri = None
+    if host:
+        domain = host
+        proto = "http" if "localhost" in host or "127.0.0.1" in host else forwarded_proto
+        uri = f"{proto}://{host}"
+        if ":" in domain:
+            domain = domain.split(":")[0]
+
+    nonce, message, expires_at = await issue_nonce(wallet, domain=domain, uri=uri)
     csrf_token = create_csrf_token()
     response.set_cookie(
         key=settings.cookie_csrf_name,
@@ -57,6 +73,7 @@ async def verify_wallet(
     response: Response,
     db: AsyncSession = Depends(get_db),
 ) -> ApiResponse[VerifyData]:
+    await check_rate_limit(request, bucket="auth:verify", limit=10, window_seconds=60)
     try:
         user, access_token, jti = await verify_siwe_and_login(
             db,
@@ -114,6 +131,7 @@ async def logout(
     response: Response,
     db: AsyncSession = Depends(get_db),
 ) -> ApiResponse[dict]:
+    await check_rate_limit(request, bucket="auth:logout", limit=20, window_seconds=60)
     access_token = request.cookies.get(settings.cookie_access_name)
     refresh_token = request.cookies.get(settings.cookie_refresh_name)
 
@@ -161,6 +179,7 @@ async def refresh_access_token(
     response: Response,
     db: AsyncSession = Depends(get_db),
 ) -> ApiResponse[VerifyData]:
+    await check_rate_limit(request, bucket="auth:refresh", limit=10, window_seconds=60)
     refresh_token = request.cookies.get(settings.cookie_refresh_name)
     if request.headers.get("x-csrf-token") != request.cookies.get(settings.cookie_csrf_name):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid CSRF token")

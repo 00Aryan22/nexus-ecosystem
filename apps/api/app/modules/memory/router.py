@@ -67,9 +67,7 @@ async def list_documents(
         workspace_id=workspace_id, page=page, page_size=page_size
     )
     total_pages = (total + page_size - 1) // page_size
-    meta = PaginationMeta(
-        page=page, page_size=page_size, total=total, total_pages=total_pages
-    )
+    meta = PaginationMeta(page=page, page_size=page_size, total=total, total_pages=total_pages)
     return ApiResponse(
         data=[DocumentPublic.model_validate(d) for d in docs],
         meta=meta.model_dump(),

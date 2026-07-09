@@ -1,23 +1,7 @@
 import type { Metadata } from "next";
 import { Providers } from "@/components/providers";
 import { ToastContainer } from "@/components/ui/toast";
-import { Geist, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-
-const geist = Geist({
-  variable: "--font-geist",
-  subsets: ["latin"],
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "NEXUS AI",
@@ -36,9 +20,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body
-        className={`${geist.variable} ${inter.variable} ${jetbrainsMono.variable} min-h-screen`}
-      >
+      <head>
+        {/* Fonts loaded via CSS @import in globals.css — avoids build-time network fetches */}
+      </head>
+      <body className="min-h-screen font-sans">
         <Providers>
           {children}
           <ToastContainer />

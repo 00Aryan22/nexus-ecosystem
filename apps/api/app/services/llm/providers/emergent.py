@@ -17,9 +17,7 @@ class EmergentProvider(LLMProvider):
         self.api_key = api_key or settings.emergent_api_key
         self.endpoint = endpoint or settings.emergent_endpoint
 
-    async def stream_generate(
-        self, prompt: str, system: str, history: list[dict[str, str]]
-    ):
+    async def stream_generate(self, prompt: str, system: str, history: list[dict[str, str]]):
         if not self.api_key:
             raise ValueError("Emergent API Key not configured")
 

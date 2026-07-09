@@ -8,9 +8,7 @@ from app.services.llm.registry import ProviderRegistry
 
 
 async def get_ai_settings(db: AsyncSession, user: User) -> AISettings:
-    result = await db.execute(
-        select(UserAISettings).where(UserAISettings.user_id == user.id)
-    )
+    result = await db.execute(select(UserAISettings).where(UserAISettings.user_id == user.id))
     settings = result.scalars().first()
     if not settings:
         return AISettings(
@@ -29,12 +27,8 @@ async def get_ai_settings(db: AsyncSession, user: User) -> AISettings:
     )
 
 
-async def update_ai_settings(
-    db: AsyncSession, user: User, update: AISettings
-) -> AISettings:
-    result = await db.execute(
-        select(UserAISettings).where(UserAISettings.user_id == user.id)
-    )
+async def update_ai_settings(db: AsyncSession, user: User, update: AISettings) -> AISettings:
+    result = await db.execute(select(UserAISettings).where(UserAISettings.user_id == user.id))
     settings = result.scalars().first()
     if not settings:
         settings = UserAISettings(

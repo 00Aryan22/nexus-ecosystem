@@ -44,6 +44,7 @@ _MAX_SOURCE_SIZE = 200_000  # characters
 
 # ─── Submit + immediately analyze (SSE streaming) ─────────────────────────
 
+
 @router.post(
     "/analyze",
     summary="Submit contract and stream AI analysis via SSE",
@@ -94,6 +95,7 @@ async def analyze_contract(
 
 # ─── List user's audits ───────────────────────────────────────────────────
 
+
 @router.get(
     "/history",
     response_model=ApiResponse[list[AuditPublic]],
@@ -122,6 +124,7 @@ async def list_audits(
 
 # ─── Get single audit ─────────────────────────────────────────────────────
 
+
 @router.get(
     "/{audit_id}",
     response_model=ApiResponse[AuditDetail],
@@ -140,6 +143,7 @@ async def get_audit(
 
 # ─── Get report (alias) ───────────────────────────────────────────────────
 
+
 @router.get(
     "/report/{audit_id}",
     response_model=ApiResponse[AuditDetail],
@@ -154,6 +158,7 @@ async def get_audit_report(
 
 
 # ─── Delete audit ────────────────────────────────────────────────────────
+
 
 @router.get(
     "/{audit_id}/export",
@@ -184,9 +189,7 @@ async def export_audit(
     return PlainTextResponse(
         content=content,
         media_type=media_type,
-        headers={
-            "Content-Disposition": f'attachment; filename="audit-{audit_id[:8]}.{suffix}"'
-        },
+        headers={"Content-Disposition": f'attachment; filename="audit-{audit_id[:8]}.{suffix}"'},
     )
 
 

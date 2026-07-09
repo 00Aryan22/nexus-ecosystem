@@ -1,11 +1,17 @@
 import { NextResponse } from "next/server";
 
 import { API_BASE } from "@/lib/constants";
-import { clearAccessCookie, clearRefreshCookie, getCsrfTokenFromCookieHeader } from "@/lib/auth-cookies";
+import { clearAccessCookie, clearRefreshCookie } from "@/lib/auth-cookies";
 
 export async function POST(request: Request) {
   const cookieHeader = request.headers.get("cookie");
-  const csrfToken = request.headers.get("x-csrf-token") ?? getCsrfTokenFromCookieHeader(cookieHeader);
+  const csrfToken = request.headers.get("x-csrf-token");
+  if (!csrfToken) {
+    return NextResponse.json(
+      { error: { message: "Forbidden: Missing CSRF token" } },
+      { status: 403 },
+    );
+  }
 
   if (cookieHeader) {
     const headers: Record<string, string> = { Cookie: cookieHeader };

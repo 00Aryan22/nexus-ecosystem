@@ -124,13 +124,15 @@ async def search_conversations(
                 preview += "..."
             match_preview = preview
 
-        results.append({
-            "id": conv.id,
-            "title": conv.title,
-            "match_preview": match_preview,
-            "created_at": conv.created_at,
-            "updated_at": conv.updated_at,
-        })
+        results.append(
+            {
+                "id": conv.id,
+                "title": conv.title,
+                "match_preview": match_preview,
+                "created_at": conv.created_at,
+                "updated_at": conv.updated_at,
+            }
+        )
 
     return results
 
@@ -355,9 +357,7 @@ async def stream_agent_response(
     if context_builder and enable_memory:
         results = await context_builder.search_memory(query=prompt)
         context_block = context_builder.build_context_block(results)
-        enhanced_prompt = context_builder.build_prompt_with_context(
-            enhanced_prompt, context_block
-        )
+        enhanced_prompt = context_builder.build_prompt_with_context(enhanced_prompt, context_block)
 
     history = await get_conversation_history(db, conversation_id)
     llm_history = history
@@ -453,9 +453,7 @@ async def export_conversation_as_markdown(
     return "\n".join(lines)
 
 
-async def export_conversation_as_json(
-    db: AsyncSession, conversation_id: str, user_id: UUID
-) -> str:
+async def export_conversation_as_json(db: AsyncSession, conversation_id: str, user_id: UUID) -> str:
     conv = await get_conversation_for_user(db, conversation_id, user_id)
     if not conv:
         return ""
@@ -520,9 +518,7 @@ async def export_conversation_as_pdf(
     story: list = []
 
     story.append(Paragraph(f"Conversation: {conv.title or 'Untitled'}", styles["Title"]))
-    created_str = (
-        conv.created_at.strftime("%Y-%m-%d %H:%M UTC") if conv.created_at else "N/A"
-    )
+    created_str = conv.created_at.strftime("%Y-%m-%d %H:%M UTC") if conv.created_at else "N/A"
     story.append(Paragraph(f"Created: {created_str}", styles["Normal"]))
     story.append(Spacer(1, 0.2 * inch))
 
@@ -532,9 +528,7 @@ async def export_conversation_as_pdf(
         story.append(Paragraph(f"<b>{label}</b> ({ts})", styles["Heading2"]))
         story.append(Spacer(1, 0.1 * inch))
         # Escape HTML entities in content for reportlab
-        safe_content = (
-            msg.content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-        )
+        safe_content = msg.content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
         story.append(Paragraph(safe_content, styles["Normal"]))
         story.append(Spacer(1, 0.15 * inch))
 

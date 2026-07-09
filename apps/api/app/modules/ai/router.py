@@ -26,7 +26,9 @@ router = APIRouter(
     response_model=ApiResponse[list[AIProviderPublic]],
     summary="List all available AI providers",
 )
-async def list_providers():
+async def list_providers(
+    _user: User = Depends(get_current_user),
+):
     providers: list[AIProviderPublic] = []
     for name in ProviderRegistry.list_providers():
         p = ProviderRegistry.get(name)
@@ -48,7 +50,10 @@ async def list_providers():
     response_model=ApiResponse[list[AIModelPublic]],
     summary="List available models for a provider (path param)",
 )
-async def list_providers_models(provider: str):
+async def list_providers_models(
+    provider: str,
+    _user: User = Depends(get_current_user),
+):
     try:
         p = ProviderRegistry.get(provider)
     except ValueError:
@@ -65,6 +70,7 @@ async def list_providers_models(provider: str):
 )
 async def list_models(
     provider: str = Query(..., description="Provider ID (e.g. gemini, ollama, openai)"),
+    _user: User = Depends(get_current_user),
 ):
     try:
         p = ProviderRegistry.get(provider)
@@ -114,7 +120,9 @@ async def update_settings(
     response_model=ApiResponse[list[AIProviderHealth]],
     summary="Get health status of all AI providers",
 )
-async def provider_health():
+async def provider_health(
+    _user: User = Depends(get_current_user),
+):
     results: list[AIProviderHealth] = []
     for name in ProviderRegistry.list_providers():
         p = ProviderRegistry.get(name)

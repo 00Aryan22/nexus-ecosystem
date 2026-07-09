@@ -16,9 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 class SearchResult:
-    def __init__(
-        self, doc_id: str, score: float, metadata: dict[str, Any] | None = None
-    ) -> None:
+    def __init__(self, doc_id: str, score: float, metadata: dict[str, Any] | None = None) -> None:
         self.doc_id = doc_id
         self.score = score
         self.metadata = metadata or {}
@@ -28,20 +26,16 @@ class VectorStore(ABC):
     @abstractmethod
     async def add(
         self, doc_id: str, embedding: list[float], metadata: dict[str, Any] | None = None
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @abstractmethod
-    async def search(self, embedding: list[float], top_k: int = 5) -> list[SearchResult]:
-        ...
+    async def search(self, embedding: list[float], top_k: int = 5) -> list[SearchResult]: ...
 
     @abstractmethod
-    async def delete(self, doc_id: str) -> None:
-        ...
+    async def delete(self, doc_id: str) -> None: ...
 
     @abstractmethod
-    async def count(self) -> int:
-        ...
+    async def count(self) -> int: ...
 
 
 class ChromaDBVectorStore(VectorStore):
@@ -65,9 +59,7 @@ class ChromaDBVectorStore(VectorStore):
         try:
             import chromadb
         except ImportError:
-            raise RuntimeError(
-                "chromadb is not installed. Run: pip install chromadb"
-            )
+            raise RuntimeError("chromadb is not installed. Run: pip install chromadb")
 
         if self.persist_directory:
             self._client = chromadb.PersistentClient(path=self.persist_directory)

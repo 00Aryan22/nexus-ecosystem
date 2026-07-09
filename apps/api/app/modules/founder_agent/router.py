@@ -94,6 +94,19 @@ async def create_conversation(
 
 
 @router.get(
+    "/conversations/archived",
+    response_model=ApiResponse[list[AgentConversationPublic]],
+    summary="List archived conversations",
+)
+async def list_archived(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    conversations = await list_archived_conversations(db, user.id)
+    return ApiResponse(data=[AgentConversationPublic.model_validate(c) for c in conversations])
+
+
+@router.get(
     "/conversations/{conversation_id}",
     response_model=ApiResponse[AgentConversationDetail],
     summary="Get conversation history",
@@ -175,7 +188,9 @@ async def patch_conversation(
     db: AsyncSession = Depends(get_db),
 ):
     conv = await update_conversation(
-        db, conversation_id, user.id,
+        db,
+        conversation_id,
+        user.id,
         title=body.title,
         is_pinned=body.is_pinned,
         is_archived=body.is_archived,
@@ -183,19 +198,6 @@ async def patch_conversation(
     if not conv:
         raise HTTPException(status_code=404, detail="Conversation not found")
     return ApiResponse(data=AgentConversationPublic.model_validate(conv))
-
-
-@router.get(
-    "/conversations/archived",
-    response_model=ApiResponse[list[AgentConversationPublic]],
-    summary="List archived conversations",
-)
-async def list_archived(
-    user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db),
-):
-    conversations = await list_archived_conversations(db, user.id)
-    return ApiResponse(data=[AgentConversationPublic.model_validate(c) for c in conversations])
 
 
 @router.delete(

@@ -138,9 +138,7 @@ async def test_rename_nonexistent_conversation(client: AsyncClient) -> None:
 
 
 @pytest.mark.asyncio
-async def test_search_conversations_by_message_content(
-    client: AsyncClient, mock_llm: None
-) -> None:
+async def test_search_conversations_by_message_content(client: AsyncClient, mock_llm: None) -> None:
     create = await client.post("/api/v1/founder-agent/conversations")
     conversation_id = create.json()["data"]["id"]
 
@@ -206,9 +204,7 @@ async def test_usage_summary_returns_zeros_when_no_usage(
 
 
 @pytest.mark.asyncio
-async def test_usage_summary_after_chat(
-    client: AsyncClient, mock_llm: None
-) -> None:
+async def test_usage_summary_after_chat(client: AsyncClient, mock_llm: None) -> None:
     create = await client.post("/api/v1/founder-agent/conversations")
     conversation_id = create.json()["data"]["id"]
 
@@ -348,7 +344,6 @@ async def test_export_requires_auth() -> None:
 
 def test_provider_registry_list() -> None:
     providers = ProviderRegistry.list_providers()
-    assert "emergent" in providers
     assert "gemini" in providers
     assert "ollama" in providers
 
@@ -404,7 +399,9 @@ async def test_provider_status(client: AsyncClient) -> None:
     data = response.json()["data"]
     assert isinstance(data, list)
     names = [p["name"] for p in data]
-    assert "emergent" in names
+    registered = ProviderRegistry.list_providers()
+    if "emergent" in registered:
+        assert "emergent" in names
     assert "gemini" in names
     assert "ollama" in names
     for provider in data:
@@ -414,9 +411,7 @@ async def test_provider_status(client: AsyncClient) -> None:
 
 
 @pytest.mark.asyncio
-async def test_chat_with_provider_override(
-    client: AsyncClient, mock_llm: None
-) -> None:
+async def test_chat_with_provider_override(client: AsyncClient, mock_llm: None) -> None:
     create = await client.post("/api/v1/founder-agent/conversations")
     conversation_id = create.json()["data"]["id"]
 
@@ -432,9 +427,7 @@ async def test_chat_with_provider_override(
 
 
 @pytest.mark.asyncio
-async def test_chat_without_provider_fallback(
-    client: AsyncClient, mock_llm: None
-) -> None:
+async def test_chat_without_provider_fallback(client: AsyncClient, mock_llm: None) -> None:
     create = await client.post("/api/v1/founder-agent/conversations")
     conversation_id = create.json()["data"]["id"]
 

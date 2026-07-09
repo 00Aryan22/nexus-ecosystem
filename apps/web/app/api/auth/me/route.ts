@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { API_BASE, ACCESS_COOKIE } from "@/lib/constants";
-import { getCsrfTokenFromCookieHeader, setAccessCookie, setRefreshCookie } from "@/lib/auth-cookies";
+import { setAccessCookie, setRefreshCookie } from "@/lib/auth-cookies";
 
 async function refreshSession(cookieHeader: string, csrfToken: string | null) {
   const headers: Record<string, string> = {};
@@ -22,7 +22,13 @@ export async function GET(request: Request) {
   const cookieStore = await cookies();
   const token = cookieStore.get(ACCESS_COOKIE)?.value;
   const cookieHeader = request.headers.get("cookie") ?? "";
-  const csrfToken = request.headers.get("x-csrf-token") ?? getCsrfTokenFromCookieHeader(cookieHeader);
+  const csrfToken = request.headers.get("x-csrf-token");
+  if (!csrfToken) {
+    return NextResponse.json(
+      { error: { message: "Forbidden: Missing CSRF token" } },
+      { status: 403 },
+    );
+  }
 
   const tryMe = async (authToken: string | null) => {
     const headers: HeadersInit = { "Cache-Control": "no-store" };

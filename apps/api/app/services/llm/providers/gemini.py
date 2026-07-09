@@ -18,9 +18,7 @@ class GeminiProvider(LLMProvider):
     def __init__(self, api_key: str | None = None):
         self.api_key = api_key or settings.gemini_api_key
 
-    async def stream_generate(
-        self, prompt: str, system: str, history: list[dict[str, str]]
-    ):
+    async def stream_generate(self, prompt: str, system: str, history: list[dict[str, str]]):
         if not self.api_key:
             raise ValueError("Gemini API Key not configured")
 

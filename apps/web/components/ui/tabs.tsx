@@ -59,6 +59,7 @@ function Tabs({
 function TabsList({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
+      role="tablist"
       data-slot="tabs-list"
       className={cn(
         "inline-flex items-center gap-1 rounded-lg border border-border-muted bg-surface-slate/40 p-1",
@@ -84,6 +85,11 @@ function TabsTrigger({
 
   return (
     <button
+      role="tab"
+      id={`tabs-trigger-${value}`}
+      aria-controls={`tabs-content-${value}`}
+      aria-selected={isActive}
+      tabIndex={isActive ? 0 : -1}
       data-slot="tabs-trigger"
       data-state={isActive ? "active" : "inactive"}
       className={cn(
@@ -116,6 +122,9 @@ function TabsContent({
 
   return (
     <div
+      role="tabpanel"
+      id={`tabs-content-${value}`}
+      aria-labelledby={`tabs-trigger-${value}`}
       data-slot="tabs-content"
       className={cn("mt-4", className)}
       {...props}

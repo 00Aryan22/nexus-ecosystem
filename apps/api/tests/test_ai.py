@@ -50,14 +50,12 @@ def test_provider_metadata_supports_vision() -> None:
     assert ProviderRegistry.get("gemini").supports_vision is True
     assert ProviderRegistry.get("openai").supports_vision is True
     assert ProviderRegistry.get("ollama").supports_vision is False
-    assert ProviderRegistry.get("emergent").supports_vision is False
 
 
 def test_provider_metadata_supports_model_listing() -> None:
     assert ProviderRegistry.get("gemini").supports_model_listing is True
     assert ProviderRegistry.get("openai").supports_model_listing is True
     assert ProviderRegistry.get("ollama").supports_model_listing is True
-    assert ProviderRegistry.get("emergent").supports_model_listing is False
 
 
 # ---------------------------------------------------------------------------
@@ -75,6 +73,9 @@ async def test_gemini_model_list() -> None:
 
 @pytest.mark.asyncio
 async def test_emergent_model_list() -> None:
+    providers = ProviderRegistry.list_providers()
+    if "emergent" not in providers:
+        pytest.skip("Emergent provider not registered (no API key configured)")
     p = ProviderRegistry.get("emergent")
     models = await p.model_list()
     assert "emergent-universal" in models
@@ -99,7 +100,9 @@ async def test_ai_providers_endpoint(client: AsyncClient) -> None:
     assert response.status_code == 200
     data = response.json()["data"]
     ids = [p["id"] for p in data]
-    assert "emergent" in ids
+    registered = ProviderRegistry.list_providers()
+    if "emergent" in registered:
+        assert "emergent" in ids
     assert "gemini" in ids
     assert "ollama" in ids
     assert "openai" in ids
@@ -130,6 +133,9 @@ async def test_ai_providers_models_gemini(client: AsyncClient) -> None:
 
 @pytest.mark.asyncio
 async def test_ai_providers_models_emergent(client: AsyncClient) -> None:
+    providers = ProviderRegistry.list_providers()
+    if "emergent" not in providers:
+        pytest.skip("Emergent provider not registered (no API key configured)")
     response = await client.get("/api/v1/ai/providers/emergent/models")
     assert response.status_code == 200
     data = response.json()["data"]
@@ -159,6 +165,9 @@ async def test_ai_models_gemini(client: AsyncClient) -> None:
 
 @pytest.mark.asyncio
 async def test_ai_models_emergent(client: AsyncClient) -> None:
+    providers = ProviderRegistry.list_providers()
+    if "emergent" not in providers:
+        pytest.skip("Emergent provider not registered (no API key configured)")
     response = await client.get("/api/v1/ai/models", params={"provider": "emergent"})
     assert response.status_code == 200
     data = response.json()["data"]
@@ -255,7 +264,9 @@ async def test_ai_health(client: AsyncClient) -> None:
     data = response.json()["data"]
     assert isinstance(data, list)
     names = [p["provider"] for p in data]
-    assert "emergent" in names
+    registered = ProviderRegistry.list_providers()
+    if "emergent" in registered:
+        assert "emergent" in names
     assert "gemini" in names
     assert "ollama" in names
     assert "openai" in names

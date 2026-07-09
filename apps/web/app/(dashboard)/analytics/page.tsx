@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import {
   fetchAnalyticsEvents,
+  fetchDashboard,
   recordAnalyticsEvent,
   AnalyticsEventPublic,
+  DashboardSummary,
 } from "@/lib/api/client";
 import {
   RefreshCcw,
@@ -34,7 +36,7 @@ import { StatusBanner } from "@/components/ui/status-banner";
 
 export default function AnalyticsPage() {
   const [events, setEvents] = useState<AnalyticsEventPublic[]>([]);
-  const [metrics] = useState<{top_users: any[]; total_users: number; active_startups: number; contracts_audited: number; passports_minted: number}>({ top_users: [], total_users: 0, active_startups: 0, contracts_audited: 0, passports_minted: 0 });
+  const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -44,10 +46,15 @@ export default function AnalyticsPage() {
   const loadEvents = async () => {
     setLoading(true);
     try {
-      const data = await fetchAnalyticsEvents();
-      setEvents(data);
+      const [data, dash] = await Promise.allSettled([
+        fetchAnalyticsEvents(),
+        fetchDashboard(),
+      ]);
+      if (data.status === "fulfilled") setEvents(data.value);
+      if (dash.status === "fulfilled") setSummary(dash.value);
+      if (data.status === "rejected") setError(data.reason?.message || "Failed to load events");
     } catch (err: any) {
-      setError(err.message || "Failed to load events");
+      setError(err.message || "Failed to load analytics");
     } finally {
       setLoading(false);
     }
@@ -106,10 +113,10 @@ export default function AnalyticsPage() {
         
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { label: "Total Users", val: metrics.total_users, icon: Users, col: "text-neon-blue" },
-            { label: "Active Startups", val: metrics.active_startups, icon: Briefcase, col: "text-neon-purple" },
-            { label: "Smart Contracts Audited", val: metrics.contracts_audited, icon: ShieldAlert, col: "text-amber-500" },
-            { label: "Passports Minted", val: metrics.passports_minted, icon: Award, col: "text-emerald-400" },
+            { label: "Total Projects", val: summary?.total_projects ?? "—", icon: Briefcase, col: "text-neon-blue" },
+            { label: "Total Passports", val: summary?.total_passports ?? "—", icon: Users, col: "text-neon-purple" },
+            { label: "Contracts Audited", val: summary?.total_audits ?? "—", icon: ShieldAlert, col: "text-amber-500" },
+            { label: "Passports Minted", val: summary?.minted_passports ?? "—", icon: Award, col: "text-emerald-400" },
           ].map((stat, i) => (
             <StatCard
               key={i}
@@ -180,14 +187,26 @@ export default function AnalyticsPage() {
                 </tr>
               </DataTableHead>
               <DataTableBody>
-                {metrics.top_users.map((u: any, i: number) => (
+                {(summary?.recent_events ?? [])
+                  .filter((e) => e.wallet_address)
+                  .slice(0, 5)
+                  .map((e, i) => (
                   <DataTableRow key={i}>
                     <DataTableCell className="font-mono text-neon-blue">
-                      {u.address.substring(0, 8)}...
+                      {e.wallet_address!.substring(0, 10)}...
                     </DataTableCell>
-                    <DataTableCell className="text-right font-bold">{u.score}</DataTableCell>
+                    <DataTableCell className="text-right font-bold text-muted-foreground capitalize text-xs">
+                      {e.event_type.replace(/_/g, " ")}
+                    </DataTableCell>
                   </DataTableRow>
                 ))}
+                {(summary?.recent_events ?? []).filter((e) => e.wallet_address).length === 0 && (
+                  <DataTableRow>
+                    <DataTableCell colSpan={2} className="text-center text-muted-foreground text-xs py-4">
+                      No wallet activity yet.
+                    </DataTableCell>
+                  </DataTableRow>
+                )}
               </DataTableBody>
             </DataTableContent>
           </DataTable>

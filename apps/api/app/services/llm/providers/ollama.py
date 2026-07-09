@@ -17,9 +17,7 @@ class OllamaProvider(LLMProvider):
         self.endpoint = endpoint or settings.ollama_chat_url
         self.model = model or settings.ollama_model
 
-    async def stream_generate(
-        self, prompt: str, system: str, history: list[dict[str, str]]
-    ):
+    async def stream_generate(self, prompt: str, system: str, history: list[dict[str, str]]):
         messages = (
             [{"role": "system", "content": system}]
             + history

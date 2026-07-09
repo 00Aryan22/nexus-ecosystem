@@ -13,4 +13,4 @@ COPY --from=base /app/apps/web/public ./public
 COPY --from=base /app/apps/web/package.json ./package.json
 COPY --from=base /app/node_modules ./node_modules
 EXPOSE 3000
-CMD ["npx", "next", "start", "--prefix", "apps/web"]
+CMD ["npx", "next", "start"]

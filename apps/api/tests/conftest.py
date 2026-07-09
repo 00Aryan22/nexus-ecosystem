@@ -130,6 +130,7 @@ async def db_session() -> AsyncGenerator[AsyncSession, None]:
 async def test_user(db_session: AsyncSession) -> User:
     import hashlib
     import uuid
+
     # Generate deterministic but unique wallet addresses that fit VARCHAR(42)
     wallet = f"0x{hashlib.sha256(str(uuid.uuid4()).encode()).hexdigest()[:40]}"
     await db_session.execute(delete(User).where(User.wallet_address == wallet))
