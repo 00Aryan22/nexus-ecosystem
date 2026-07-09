@@ -72,7 +72,9 @@ jobs:
           PY
 
       - name: Ruff lint
-        run: python -m ruff check app tests
+        run: |
+          python -m ruff check app tests
+          python -m ruff format --check app tests
 
       - name: Run tests
         run: python -m pytest -q --tb=short
