@@ -7,6 +7,7 @@ import { Menu, X, Wallet, ShieldCheck, Activity } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PageTransition } from "@/components/layout/page-transition";
+import { NexusLogo } from "@/components/layout/logo";
 import { useUIStore } from "@/store/ui-store";
 import { isFeatureEnabled, routeToFeatureFlag } from "@/lib/feature-flags";
 
@@ -20,12 +21,20 @@ export default function DashboardLayout({
   const pathname = usePathname();
 
   const getPageTitle = () => {
+    if (pathname.startsWith("/dashboard/history")) return "Dashboard History";
     if (pathname.startsWith("/dashboard")) return "Dashboard Overview";
     if (pathname.startsWith("/startup-builder")) return "Startup Builder Workspace";
     if (pathname.startsWith("/skill-passport")) return "Verifiable Skill Passports";
     if (pathname.startsWith("/auditor")) return "Smart Contract Auditor";
+    if (pathname.startsWith("/contract-audit")) return "Contract Audit";
     if (pathname.startsWith("/analytics")) return "Product Analytics";
-    if (pathname.startsWith("/founder-agent")) return "AI Founder Agent";
+    if (pathname.startsWith("/founder-agent") || pathname.startsWith("/ai-founder")) return "AI Founder Agent";
+    if (pathname.startsWith("/workspace")) return "Workspace Knowledge";
+    if (pathname.startsWith("/dao-center")) return "DAO Center";
+    if (pathname.startsWith("/profile")) return "Profile";
+    if (pathname.startsWith("/notifications")) return "Notifications";
+    if (pathname.startsWith("/support")) return "Support";
+    if (pathname.startsWith("/contracts/deploy")) return "Contract Deployment";
     if (pathname.startsWith("/settings")) return "System Settings";
     return "Nexus OS";
   };
@@ -79,12 +88,7 @@ export default function DashboardLayout({
 
       {/* Mobile Header Nav */}
       <header className="flex h-16 items-center justify-between border-b border-border-muted bg-surface-slate/85 px-4 backdrop-blur-xl md:hidden sticky top-0 z-50">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="h-5 w-5 rounded bg-gradient-to-tr from-neon-blue to-neon-purple flex items-center justify-center font-bold text-white text-[10px] tracking-wider">
-            N
-          </div>
-          <span className="font-heading font-bold text-sm tracking-tight">NEXUS AI</span>
-        </Link>
+        <NexusLogo className="h-full" small showText />
 
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -105,6 +109,11 @@ export default function DashboardLayout({
               { name: "Contract Auditor", href: "/auditor" },
               { name: "Analytics", href: "/analytics" },
               { name: "Founder Agent", href: "/founder-agent" },
+              { name: "Workspace", href: "/workspace" },
+              { name: "DAO Center", href: "/dao-center" },
+              { name: "Notifications", href: "/notifications" },
+              { name: "Profile", href: "/profile" },
+              { name: "Support", href: "/support" },
               { name: "Settings", href: "/settings" },
             ].map((link) => (
               <Link

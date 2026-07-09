@@ -1,7 +1,11 @@
+from datetime import UTC, datetime
+
 import pytest
+from eth_account import Account
 from httpx import ASGITransport, AsyncClient
 
 from app.main import app
+from app.services.auth_service import issue_nonce
 
 
 @pytest.mark.asyncio
@@ -22,3 +26,15 @@ async def test_auth_nonce_valid_format() -> None:
     body = response.json()
     assert body["data"]["nonce"]
     assert "NEXUS AI" in body["data"]["message"]
+
+
+@pytest.mark.asyncio
+async def test_issue_nonce_accepts_lowercase_wallet_and_emits_checksum_address() -> None:
+    account = Account.from_key("0x" + "11" * 32)
+    lower_wallet = account.address.lower()
+
+    nonce, message, expires_at = await issue_nonce(lower_wallet)
+
+    assert nonce
+    assert account.address in message
+    assert expires_at > datetime.now(UTC)

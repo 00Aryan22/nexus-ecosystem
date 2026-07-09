@@ -1,8 +1,8 @@
 import json
 import logging
 
-from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi.responses import Response, StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -16,23 +16,31 @@ from app.modules.founder_agent.schemas import (
     AgentConversationPublic,
     AgentMessagePublic,
     ChatRequest,
+    ConversationSearchResult,
     ConversationUpdateRequest,
     PromptSuggestion,
+    ProviderPreference,
+    ProviderStatus,
     StartupPlanPublic,
     UsageSummary,
 )
 from app.schemas.common import ApiResponse
+from app.services.ai.context_builder import create_context_builder
 from app.services.founder_agent.prompts import PROMPT_SUGGESTIONS
 from app.services.founder_agent.service import (
     delete_conversation,
+    export_conversation,
     get_conversation_for_user,
     get_or_create_conversation,
     get_usage_summary,
+    list_archived_conversations,
     list_startup_plans,
     list_user_conversations,
+    search_conversations,
     stream_agent_response,
-    update_conversation_title,
+    update_conversation,
 )
+from app.services.llm.provider import ProviderRegistry, llm_router
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +64,22 @@ async def list_conversations(
     return ApiResponse(data=[AgentConversationPublic.model_validate(c) for c in conversations])
 
 
+@router.get(
+    "/conversations/search",
+    response_model=ApiResponse[list[ConversationSearchResult]],
+    summary="Search conversations",
+)
+async def search_conversations_endpoint(
+    q: str,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    if not q.strip():
+        return ApiResponse(data=[])
+    results = await search_conversations(db, user.id, q.strip())
+    return ApiResponse(data=[ConversationSearchResult.model_validate(r) for r in results])
+
+
 @router.post(
     "/conversations",
     response_model=ApiResponse[AgentConversationPublic],
@@ -67,6 +91,19 @@ async def create_conversation(
 ):
     conv = await get_or_create_conversation(db, user)
     return ApiResponse(data=AgentConversationPublic.model_validate(conv))
+
+
+@router.get(
+    "/conversations/archived",
+    response_model=ApiResponse[list[AgentConversationPublic]],
+    summary="List archived conversations",
+)
+async def list_archived(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    conversations = await list_archived_conversations(db, user.id)
+    return ApiResponse(data=[AgentConversationPublic.model_validate(c) for c in conversations])
 
 
 @router.get(
@@ -105,6 +142,40 @@ async def get_conversation(
     return ApiResponse(data=conv_data)
 
 
+@router.get(
+    "/conversations/{conversation_id}/export",
+    summary="Export a conversation in markdown, JSON, or PDF format",
+    responses={
+        200: {
+            "content": {
+                "text/markdown": {},
+                "application/json": {},
+                "application/pdf": {},
+            },
+        },
+        400: {"description": "Unsupported format"},
+        404: {"description": "Conversation not found"},
+    },
+)
+async def get_conversation_export(
+    conversation_id: str,
+    fmt: str = Query("md", alias="format", description="Export format: md, json, or pdf"),
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    content, media_type = await export_conversation(db, conversation_id, user.id, fmt)
+    filename_suffix = fmt
+    return Response(
+        content=content,
+        media_type=media_type,
+        headers={
+            "Content-Disposition": (
+                f'attachment; filename="conversation-{conversation_id[:8]}.{filename_suffix}"'
+            )
+        },
+    )
+
+
 @router.patch(
     "/conversations/{conversation_id}",
     response_model=ApiResponse[AgentConversationPublic],
@@ -116,7 +187,14 @@ async def patch_conversation(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    conv = await update_conversation_title(db, conversation_id, user.id, body.title)
+    conv = await update_conversation(
+        db,
+        conversation_id,
+        user.id,
+        title=body.title,
+        is_pinned=body.is_pinned,
+        is_archived=body.is_archived,
+    )
     if not conv:
         raise HTTPException(status_code=404, detail="Conversation not found")
     return ApiResponse(data=AgentConversationPublic.model_validate(conv))
@@ -160,6 +238,10 @@ async def chat_with_agent(
 
     await append_message(db, conversation_id, "user", body.prompt)
 
+    resolved_provider = body.provider or user.default_llm_provider
+
+    context_builder = create_context_builder(db) if body.enable_memory else None
+
     async def sse_generator():
         try:
             async for chunk in stream_agent_response(
@@ -168,6 +250,9 @@ async def chat_with_agent(
                 user.id,
                 body.prompt,
                 body.plan_type,
+                provider_name=resolved_provider,
+                context_builder=context_builder,
+                enable_memory=body.enable_memory,
             ):
                 yield f"data: {json.dumps({'text': chunk})}\n\n"
         except Exception as exc:
@@ -240,3 +325,59 @@ async def get_usage(
 async def get_prompt_suggestions():
     suggestions = [PromptSuggestion.model_validate(s) for s in PROMPT_SUGGESTIONS]
     return ApiResponse(data=suggestions)
+
+
+@router.get(
+    "/provider/preferences",
+    response_model=ApiResponse[ProviderPreference],
+    summary="Get user's LLM provider preferences",
+)
+async def get_provider_preferences(
+    user: User = Depends(get_current_user),
+):
+    return ApiResponse(data=ProviderPreference(provider=user.default_llm_provider))
+
+
+@router.put(
+    "/provider/preferences",
+    response_model=ApiResponse[ProviderPreference],
+    summary="Update user's LLM provider preferences",
+)
+async def update_provider_preferences(
+    body: ProviderPreference,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    available = ProviderRegistry.list_providers()
+    if body.provider not in available:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unknown provider '{body.provider}'. Available: {', '.join(available)}",
+        )
+    user.default_llm_provider = body.provider
+    db.add(user)
+    await db.commit()
+    await db.refresh(user)
+    return ApiResponse(data=ProviderPreference(provider=user.default_llm_provider))
+
+
+@router.get(
+    "/provider/status",
+    response_model=ApiResponse[list[ProviderStatus]],
+    summary="Get health status of all LLM providers",
+)
+async def get_provider_status():
+    results: list[ProviderStatus] = []
+    for name in ProviderRegistry.list_providers():
+        provider = ProviderRegistry.get(name)
+        configured = await provider.health()
+        available = await llm_router.check_provider_health(name)
+        results.append(
+            ProviderStatus(
+                name=name,
+                displayName=provider.display_name,
+                available=available,
+                configured=configured,
+            )
+        )
+    return ApiResponse(data=results)

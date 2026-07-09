@@ -9,12 +9,19 @@ import {
   ShieldAlert,
   BarChart3,
   Bot,
+  BookOpen,
   Settings as SettingsIcon,
   LogOut,
   Wallet,
+  Bell,
+  User,
+  Users,
+  FileCode,
+  Heart,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
+import { NexusLogo } from "@/components/layout/logo";
 import { isFeatureEnabled, FeatureFlag } from "@/lib/feature-flags";
 
 type NavItem = {
@@ -50,16 +57,52 @@ const NAV_ITEMS: NavItem[] = [
     flag: "contract_auditor",
   },
   {
+    name: "AI Founder Agent",
+    href: "/founder-agent",
+    icon: Bot,
+    flag: "founder_agent",
+  },
+  {
+    name: "Workspace",
+    href: "/workspace",
+    icon: BookOpen,
+    flag: "dashboard",
+  },
+  {
+    name: "DAO Center",
+    href: "/dao-center",
+    icon: Users,
+    flag: "dashboard",
+  },
+  {
     name: "Analytics",
     href: "/analytics",
     icon: BarChart3,
     flag: "analytics",
   },
   {
-    name: "Founder Agent",
-    href: "/founder-agent",
-    icon: Bot,
-    flag: "founder_agent",
+    name: "Contract Deploy",
+    href: "/contracts/deploy",
+    icon: FileCode,
+    flag: "contract_deploy",
+  },
+  {
+    name: "Notifications",
+    href: "/notifications",
+    icon: Bell,
+    flag: "settings",
+  },
+  {
+    name: "Profile",
+    href: "/profile",
+    icon: User,
+    flag: "settings",
+  },
+  {
+    name: "Community",
+    href: "/support",
+    icon: Heart,
+    flag: "public_goods",
   },
   {
     name: "Settings",
@@ -81,14 +124,7 @@ export function Sidebar() {
     <aside className="fixed bottom-0 left-0 top-0 hidden w-[240px] border-r border-border-muted bg-surface-slate/95 backdrop-blur-xl md:flex flex-col z-40">
       {/* Brand Logo */}
       <div className="flex h-16 items-center px-6 border-b border-border-muted">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="h-6 w-6 rounded bg-gradient-to-tr from-neon-blue to-neon-purple flex items-center justify-center font-bold text-white text-xs tracking-wider shadow-[0_0_10px_rgba(59,130,246,0.5)]">
-            N
-          </div>
-          <span className="font-heading font-bold text-lg tracking-tight bg-gradient-to-r from-white via-[#E3E2E3] to-[#8c909f] bg-clip-text text-transparent">
-            NEXUS AI
-          </span>
-        </Link>
+        <NexusLogo className="h-full" />
       </div>
 
       {/* Navigation Links */}

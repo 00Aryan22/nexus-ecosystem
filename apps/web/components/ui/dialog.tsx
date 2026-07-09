@@ -15,23 +15,75 @@ interface DialogProps {
   onClose: () => void;
   children: React.ReactNode;
   className?: string;
+  "aria-labelledby"?: string;
+  "aria-describedby"?: string;
 }
 
-function Dialog({ open, onClose, children, className }: DialogProps) {
-  // Close on Escape
+function Dialog({
+  open,
+  onClose,
+  children,
+  className,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
+}: DialogProps) {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const previousFocusRef = React.useRef<HTMLElement | null>(null);
+
+  // Close on Escape & Lock scroll
   React.useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
-    }
     if (open) {
-      document.addEventListener("keydown", handleKeyDown);
+      previousFocusRef.current = document.activeElement as HTMLElement;
       document.body.style.overflow = "hidden";
     }
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
     };
-  }, [open, onClose]);
+  }, [open]);
+
+  // Focus trap / Focus restoration
+  React.useEffect(() => {
+    if (open) {
+      // Eagerly focus container on open
+      setTimeout(() => {
+        containerRef.current?.focus();
+      }, 50);
+    } else {
+      previousFocusRef.current?.focus();
+      previousFocusRef.current = null;
+    }
+  }, [open]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Escape") {
+      onClose();
+      return;
+    }
+    if (e.key === "Tab") {
+      if (!containerRef.current) return;
+      const focusableElements = containerRef.current.querySelectorAll<HTMLElement>(
+        'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]'
+      );
+      if (focusableElements.length === 0) {
+        e.preventDefault();
+        return;
+      }
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          lastElement.focus();
+          e.preventDefault();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          firstElement.focus();
+          e.preventDefault();
+        }
+      }
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -49,12 +101,19 @@ function Dialog({ open, onClose, children, className }: DialogProps) {
 
           {/* Content */}
           <motion.div
+            ref={containerRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={ariaLabelledBy}
+            aria-describedby={ariaDescribedBy}
+            onKeyDown={handleKeyDown}
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             className={cn(
-              "relative w-full max-w-lg rounded-xl border border-border bg-surface-slate shadow-2xl",
+              "relative w-full max-w-lg rounded-xl border border-border bg-surface-slate shadow-2xl focus:outline-none",
               className
             )}
           >

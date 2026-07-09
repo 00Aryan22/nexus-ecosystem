@@ -4,7 +4,8 @@ from enum import StrEnum
 from typing import Any
 from uuid import UUID
 
-from pydantic import BaseModel, Field, HttpUrl
+from eth_utils import is_address
+from pydantic import BaseModel, Field, HttpUrl, field_validator
 
 
 class PassportStatus(StrEnum):
@@ -25,6 +26,32 @@ class SkillPassportCreate(BaseModel):
 
 class PassportMintRequest(BaseModel):
     wallet_address: str | None = Field(default=None, max_length=42)
+
+    @field_validator("wallet_address")
+    @classmethod
+    def validate_wallet_address(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        if not is_address(value):
+            raise ValueError("wallet_address must be a valid Ethereum address")
+        return value
+
+
+class PassportVerifyRequest(BaseModel):
+    passport_id: UUID
+    evaluation_score: Decimal | None = Field(default=None, ge=0, le=100)
+    evaluation_notes: str | None = Field(default=None, max_length=10000)
+    status: PassportStatus | None = None
+
+
+class PassportReputationSummary(BaseModel):
+    score: float
+    total_passports: int
+    minted_passports: int
+    verified_passports: int
+    average_score: float
+    best_badge: str
+    wallet_address: str | None = None
 
 
 class SkillPassportUpdate(BaseModel):

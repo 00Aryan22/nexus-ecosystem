@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pydantic import AliasChoices, Field
+from pydantic import AliasChoices, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 _REPO_ROOT = Path(__file__).resolve().parents[4]
@@ -24,6 +24,17 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
 
     jwt_secret_key: str = ""
+
+    @field_validator("jwt_secret_key")
+    @classmethod
+    def validate_jwt_secret_key(cls, v: str) -> str:
+        if not v or len(v) < 32:
+            raise ValueError(
+                "JWT_SECRET_KEY must be at least 32 characters long. "
+                'Generate one with: python -c "import secrets; print(secrets.token_urlsafe(48))"'
+            )
+        return v
+
     jwt_algorithm: str = "HS256"
     jwt_access_token_expire_minutes: int = 15
     jwt_refresh_token_expire_days: int = 7
@@ -36,12 +47,15 @@ class Settings(BaseSettings):
     siwe_nonce_ttl_seconds: int = 300
 
     cookie_access_name: str = "nexus_access_token"
+    cookie_refresh_name: str = "nexus_refresh_token"
+    cookie_csrf_name: str = "nexus_csrf_token"
     cookie_secure: bool = False
     cookie_samesite: str = "lax"
 
     emergent_api_key: str = ""
     emergent_endpoint: str = "https://api.emergent.ai/v1/chat/completions"
     gemini_api_key: str = ""
+    openai_api_key: str = ""
     ollama_base_url: str = "http://localhost:11434"
     ollama_model: str = "llama3"
     llm_max_retries: int = 2

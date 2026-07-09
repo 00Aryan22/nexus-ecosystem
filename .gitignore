@@ -28,6 +28,8 @@ apps/api/.env
 # IDE
 .idea/
 .vscode/
+!.vscode/tasks.json
+!.vscode/launch.json
 *.swp
 .DS_Store
 
@@ -63,3 +65,4 @@ Thumbs.db
 # Python
 .mypy_cache/
 .ruff_cache/
+.env*

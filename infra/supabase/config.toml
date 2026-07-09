@@ -1,0 +1,8 @@
+[project]
+ref = "oinwkcxefniumshicvuj"
+
+[auth]
+enabled = true
+
+[storage]
+enabled = true

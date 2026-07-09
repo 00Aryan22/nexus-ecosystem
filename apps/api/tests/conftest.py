@@ -1,4 +1,9 @@
 import os
+
+# Force SQLite in-memory BEFORE any engine/settings imports
+os.environ.setdefault("DATABASE_URL", "sqlite+aiosqlite:///:memory:")
+os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key-for-pytest-only-not-production")
+
 from collections.abc import AsyncGenerator
 from datetime import UTC, datetime, timedelta
 
@@ -12,8 +17,6 @@ import app.models  # noqa: F401  (side-effect: registers all ORM models)
 from app.core.security import create_access_token, new_jti
 from app.main import app
 from app.models.auth import Session, User
-
-os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key-for-pytest-only-not-production")
 
 
 # ---------------------------------------------------------------------------
@@ -35,6 +38,52 @@ async def setup_database():
     # Alembic in CI, but creating them again is harmless (checkfirst=True).
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        # Ensure new columns exist on existing tables (PostgreSQL)
+        try:
+            await conn.execute(
+                text(
+                    "ALTER TABLE users ADD COLUMN IF NOT EXISTS default_llm_provider "
+                    "VARCHAR(30) NOT NULL DEFAULT 'gemini'"
+                )
+            )
+        except Exception as e:
+            print(f"Warning: Could not add default_llm_provider column: {e}")
+        try:
+            await conn.execute(
+                text(
+                    "ALTER TABLE founder_conversations ADD COLUMN IF NOT EXISTS is_pinned "
+                    "BOOLEAN NOT NULL DEFAULT false"
+                )
+            )
+        except Exception as e:
+            print(f"Warning: Could not add is_pinned column: {e}")
+        try:
+            await conn.execute(
+                text(
+                    "ALTER TABLE founder_conversations ADD COLUMN IF NOT EXISTS is_archived "
+                    "BOOLEAN NOT NULL DEFAULT false"
+                )
+            )
+        except Exception as e:
+            print(f"Warning: Could not add is_archived column: {e}")
+        try:
+            await conn.execute(
+                text(
+                    "ALTER TABLE user_ai_settings ADD COLUMN IF NOT EXISTS memory_enabled "
+                    "BOOLEAN NOT NULL DEFAULT true"
+                )
+            )
+        except Exception as e:
+            print(f"Warning: Could not add memory_enabled column: {e}")
+        try:
+            await conn.execute(
+                text(
+                    "ALTER TABLE user_ai_settings ADD COLUMN IF NOT EXISTS max_retrieved_docs "
+                    "INTEGER NOT NULL DEFAULT 5"
+                )
+            )
+        except Exception as e:
+            print(f"Warning: Could not add max_retrieved_docs column: {e}")
 
     # Clear any existing data so test sessions start from a clean state.
     # Skip clearing on SQLite (in-memory), always clear on PostgreSQL
@@ -79,7 +128,11 @@ async def db_session() -> AsyncGenerator[AsyncSession, None]:
 
 @pytest.fixture
 async def test_user(db_session: AsyncSession) -> User:
-    wallet = "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd"
+    import hashlib
+    import uuid
+
+    # Generate deterministic but unique wallet addresses that fit VARCHAR(42)
+    wallet = f"0x{hashlib.sha256(str(uuid.uuid4()).encode()).hexdigest()[:40]}"
     await db_session.execute(delete(User).where(User.wallet_address == wallet))
     await db_session.commit()
     user = User(wallet_address=wallet, role="founder", is_active=True)

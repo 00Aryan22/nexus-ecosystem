@@ -41,3 +41,21 @@ class AuditPublic(BaseModel):
 
 class AuditDetail(AuditPublic):
     report_json: dict[str, Any] | None = None
+
+
+class GasOptimizationRequest(BaseModel):
+    contract_name: str | None = Field(default=None, max_length=255)
+    source_code: str = Field(..., min_length=1, max_length=200_000)
+
+
+class GasOptimizationItem(BaseModel):
+    title: str
+    description: str
+    recommendation: str
+    estimated_savings: str | None = None
+
+
+class GasOptimizationResponse(BaseModel):
+    optimizations: list[GasOptimizationItem]
+    estimated_gas_savings: str
+    contract_name: str | None = None

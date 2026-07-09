@@ -4,10 +4,11 @@ from typing import Any
 from urllib.parse import urlparse
 
 import httpx
-from fastapi import APIRouter, HTTPException, Query, Response
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 
+from app.api.deps import get_current_user
 from app.core.config import settings
 
 router = APIRouter(
@@ -48,7 +49,10 @@ def _safe_headers(resp: httpx.Response) -> dict[str, str]:
 
 
 @router.post("/request")
-async def stitch_request(req: StitchRequest):
+async def stitch_request(
+    req: StitchRequest,
+    _user=Depends(get_current_user),
+):
     """Proxy a request to the Stitch API using server-side API key."""
     base = settings.stitch_url.rstrip("/")
     path = req.path.lstrip("/") if req.path else ""
@@ -96,6 +100,7 @@ async def stitch_widget(
     path: str | None = "",
     raw: bool = False,
     url: str | None = None,
+    _user=Depends(get_current_user),
 ):
     """Proxy a GET request to the Stitch base URL and return raw content."""
     base = settings.stitch_url.rstrip("/")
@@ -150,6 +155,7 @@ async def stitch_widget(
 @router.get("/inspect")
 async def stitch_inspect(
     url: str = Query(..., description="Absolute URL to inspect"),
+    _user=Depends(get_current_user),
 ):
     """Return status and headers from an absolute URL (validates host)."""
     parsed = urlparse(url)
@@ -167,9 +173,7 @@ async def stitch_inspect(
 
     hdrs = _safe_headers(resp)
     if resp.status_code >= 400:
-        logger.warning(
-            "Stitch inspect %s returned %s (%s)", url, resp.status_code, hdrs
-        )
+        logger.warning("Stitch inspect %s returned %s (%s)", url, resp.status_code, hdrs)
 
     last_probe["inspect"] = {
         "url": url,
@@ -187,6 +191,7 @@ async def stitch_inspect(
 @router.get("/launch")
 async def stitch_launch(
     url: str = Query(..., description="Absolute vendor URL to open"),
+    _user=Depends(get_current_user),
 ):
     """Redirect the browser to the vendor URL."""
     parsed = urlparse(url)
@@ -199,6 +204,8 @@ async def stitch_launch(
 
 
 @router.get("/debug-last")
-async def stitch_debug_last():
+async def stitch_debug_last(
+    _user=Depends(get_current_user),
+):
     """Return the last upstream probe snapshots."""
     return last_probe

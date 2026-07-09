@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAccount, useSignMessage } from "wagmi";
 import { useRouter } from "next/navigation";
 
@@ -14,12 +14,15 @@ export function useAuth() {
   const [user, setUser] = useState<UserPublic | null>(null);
   const [loading, setLoading] = useState(true);
   const [signingIn, setSigningIn] = useState(false);
+  const hasInitializedSessionRef = useRef(false);
+  const signInAttemptRef = useRef<string | null>(null);
 
   const refresh = useCallback(async () => {
     try {
       const me = await authApi.fetchMe();
       setUser(me);
-    } catch {
+    } catch (error) {
+      console.error("[Auth] refresh session failed", error);
       setUser(null);
     } finally {
       setLoading(false);
@@ -27,30 +30,58 @@ export function useAuth() {
   }, []);
 
   useEffect(() => {
+    if (hasInitializedSessionRef.current) return;
+    hasInitializedSessionRef.current = true;
     void refresh();
   }, [refresh]);
 
-  const signIn = useCallback(async () => {
-    if (!address) return;
-    setSigningIn(true);
-    try {
-      const { message } = await authApi.fetchNonce(address);
-      const signature = await signMessageAsync({ message });
-      const verifiedUser = await authApi.verifySignature({
-        wallet: address,
-        signature,
-        message,
-      });
-      setUser(verifiedUser);
-      router.push("/dashboard");
-    } finally {
-      setSigningIn(false);
-    }
-  }, [address, signMessageAsync, router]);
+  const getNextPath = () => {
+    if (typeof window === "undefined") return "/dashboard";
+    const params = new URLSearchParams(window.location.search);
+    return params.get("next") || "/dashboard";
+  };
+
+  const signIn = useCallback(
+    async (signInAddress?: string) => {
+      const walletAddress = signInAddress || address;
+      if (!walletAddress) {
+        return null;
+      }
+      const normalizedAddress = walletAddress.toLowerCase();
+      if (user?.wallet_address?.toLowerCase() === normalizedAddress) {
+        return user;
+      }
+      if (signInAttemptRef.current === normalizedAddress) {
+        return null;
+      }
+      signInAttemptRef.current = normalizedAddress;
+      setSigningIn(true);
+      try {
+        const { message } = await authApi.fetchNonce(walletAddress);
+        const signature = await signMessageAsync({ message });
+        const verifiedUser = await authApi.verifySignature({
+          wallet: walletAddress,
+          signature,
+          message,
+        });
+        setUser(verifiedUser);
+        router.push(getNextPath());
+        return verifiedUser;
+      } catch (error) {
+        console.error("[Auth] signIn failed", error);
+        throw error;
+      } finally {
+        signInAttemptRef.current = null;
+        setSigningIn(false);
+      }
+    },
+    [address, signMessageAsync, router, user]
+  );
 
   const signOut = useCallback(async () => {
     await authApi.logout();
     setUser(null);
+    router.refresh();
     router.push("/");
   }, [router]);
 

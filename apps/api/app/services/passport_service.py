@@ -5,6 +5,7 @@ from typing import Any
 from uuid import UUID
 
 import httpx
+from eth_utils import is_address
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -12,8 +13,10 @@ from sqlalchemy.orm import selectinload
 from app.core.config import settings
 from app.models.auth import User
 from app.models.passport import NftRecord, SkillPassport
+from app.schemas.analytics import AnalyticsEventCreate
 from app.schemas.common import PaginationParams
 from app.schemas.passport import SkillPassportCreate, SkillPassportUpdate
+from app.services.analytics_service import record_event
 
 
 async def create_passport(db: AsyncSession, user: User, body: SkillPassportCreate) -> SkillPassport:
@@ -29,6 +32,7 @@ async def create_passport(db: AsyncSession, user: User, body: SkillPassportCreat
     db.add(passport)
     await db.flush()
     await db.refresh(passport)
+    await _record_activity(db, user, "passport_created", {"passport_id": str(passport.id)})
     return passport
 
 
@@ -70,7 +74,30 @@ async def update_passport(
         setattr(passport, key, value)
     await db.flush()
     await db.refresh(passport)
+    if passport.status in {"approved", "minted"}:
+        await _record_activity(
+            db,
+            passport.user,
+            "passport_verified",
+            {"passport_id": str(passport.id), "status": passport.status},
+        )
     return passport
+
+
+async def _record_activity(
+    db: AsyncSession,
+    user: User,
+    event_type: str,
+    event_data: dict[str, Any] | None = None,
+) -> None:
+    await record_event(
+        db,
+        user=user,
+        session=None,
+        body=AnalyticsEventCreate(event_type=event_type, event_data=event_data),
+        ip_address=None,
+        user_agent=None,
+    )
 
 
 def _build_reputation_summary(
@@ -124,6 +151,61 @@ async def _pin_metadata_to_ipfs(payload: dict[str, Any], passport_id: UUID) -> s
     return f"ipfs://mock-{passport_id}"
 
 
+async def get_passport_reputation(db: AsyncSession, user: User) -> dict[str, Any]:
+    result = await db.execute(
+        select(SkillPassport)
+        .where(SkillPassport.user_id == user.id)
+        .order_by(SkillPassport.created_at.desc())
+    )
+    passports = list(result.scalars().all())
+    if not passports:
+        return {
+            "score": 0.0,
+            "total_passports": 0,
+            "minted_passports": 0,
+            "verified_passports": 0,
+            "average_score": 0.0,
+            "best_badge": "Bronze",
+            "wallet_address": user.wallet_address,
+        }
+
+    scores = [float(passport.evaluation_score or Decimal("0")) for passport in passports]
+    verified = [passport for passport in passports if passport.status in {"approved", "minted"}]
+    minted = [passport for passport in passports if passport.status == "minted"]
+    average_score = round(sum(scores) / len(scores), 2) if scores else 0.0
+    badge = (
+        "Diamond"
+        if average_score >= 90
+        else "Gold"
+        if average_score >= 75
+        else "Silver"
+        if average_score >= 60
+        else "Bronze"
+    )
+    return {
+        "score": round(max(scores) if scores else 0.0, 2),
+        "total_passports": len(passports),
+        "minted_passports": len(minted),
+        "verified_passports": len(verified),
+        "average_score": average_score,
+        "best_badge": badge,
+        "wallet_address": user.wallet_address,
+    }
+
+
+async def get_passport_by_wallet(db: AsyncSession, wallet_address: str) -> SkillPassport | None:
+    if not is_address(wallet_address):
+        raise ValueError("wallet_address must be a valid Ethereum address")
+
+    result = await db.execute(
+        select(SkillPassport)
+        .join(SkillPassport.user)
+        .where(User.wallet_address == wallet_address)
+        .order_by(SkillPassport.created_at.desc())
+    )
+    return result.scalar_one_or_none()
+
+
 async def mint_passport_nft(
     db: AsyncSession,
     user: User,
@@ -134,6 +216,9 @@ async def mint_passport_nft(
         return passport
 
     wallet = wallet_address or user.wallet_address
+    if not is_address(wallet):
+        raise ValueError("wallet_address must be a valid Ethereum address")
+
     reputation = _build_reputation_summary(passport, wallet)
     metadata_payload = {
         "name": f"{passport.skill_name} Skill Passport",
@@ -152,10 +237,14 @@ async def mint_passport_nft(
     }
 
     metadata_uri = await _pin_metadata_to_ipfs(metadata_payload, passport.id)
-    token_id = int(
-        hashlib.sha256(str(passport.id).encode("utf-8")).hexdigest()[:8],
-        16,
-    ) % 1000000 + 1
+    token_id = (
+        int(
+            hashlib.sha256(str(passport.id).encode("utf-8")).hexdigest()[:8],
+            16,
+        )
+        % 1000000
+        + 1
+    )
     tx_hash = "0x" + hashlib.sha256(f"{passport.id}:{wallet}".encode()).hexdigest()
 
     nft_record = NftRecord(
@@ -176,4 +265,10 @@ async def mint_passport_nft(
     await db.flush()
     await db.refresh(passport)
     await db.refresh(nft_record)
+    await _record_activity(
+        db,
+        user,
+        "passport_minted",
+        {"passport_id": str(passport.id), "tx_hash": tx_hash[:66]},
+    )
     return passport

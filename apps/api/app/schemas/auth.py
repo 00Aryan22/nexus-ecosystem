@@ -1,10 +1,13 @@
 from datetime import datetime
+from typing import Generic, TypeVar
 from uuid import UUID
 
 from pydantic import BaseModel, Field
 
+T = TypeVar("T")
 
-class ApiResponse[T](BaseModel):
+
+class ApiResponse(BaseModel, Generic[T]):
     data: T | None = None
     error: dict | None = None
     meta: dict = Field(default_factory=dict)
@@ -39,4 +42,5 @@ class AuthTokens(BaseModel):
 
 class VerifyData(BaseModel):
     access_token: str
+    refresh_token: str | None = None
     user: UserPublic
