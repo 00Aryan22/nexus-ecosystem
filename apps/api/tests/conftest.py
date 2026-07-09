@@ -63,6 +63,24 @@ async def setup_database():
             )
         except Exception as e:
             print(f"Warning: Could not add is_archived column: {e}")
+        try:
+            await conn.execute(
+                text(
+                    "ALTER TABLE user_ai_settings ADD COLUMN IF NOT EXISTS memory_enabled "
+                    "BOOLEAN NOT NULL DEFAULT true"
+                )
+            )
+        except Exception as e:
+            print(f"Warning: Could not add memory_enabled column: {e}")
+        try:
+            await conn.execute(
+                text(
+                    "ALTER TABLE user_ai_settings ADD COLUMN IF NOT EXISTS max_retrieved_docs "
+                    "INTEGER NOT NULL DEFAULT 5"
+                )
+            )
+        except Exception as e:
+            print(f"Warning: Could not add max_retrieved_docs column: {e}")
 
     # Clear any existing data so test sessions start from a clean state.
     # Skip clearing on SQLite (in-memory), always clear on PostgreSQL
@@ -110,7 +128,7 @@ async def test_user(db_session: AsyncSession) -> User:
     import hashlib
     import uuid
     # Generate deterministic but unique wallet addresses that fit VARCHAR(42)
-    wallet = f"0x{hashlib.sha256(str(uuid.uuid4()).encode()).hexdigest()[:38]}"
+    wallet = f"0x{hashlib.sha256(str(uuid.uuid4()).encode()).hexdigest()[:40]}"
     await db_session.execute(delete(User).where(User.wallet_address == wallet))
     await db_session.commit()
     user = User(wallet_address=wallet, role="founder", is_active=True)

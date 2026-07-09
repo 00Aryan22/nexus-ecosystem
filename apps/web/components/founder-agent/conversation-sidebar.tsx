@@ -16,13 +16,11 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogBody, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { filterConversations } from "@/components/founder-agent/search-utils";
 import type { AgentConversationPublic } from "@/lib/api/founder-agent";
 
 interface ConversationSidebarProps {
   conversations: AgentConversationPublic[];
-  archivedConversations?: AgentConversationPublic[];
   activeId: string | null;
   loading?: boolean;
   onSelect: (id: string) => void;
@@ -248,7 +246,6 @@ function ConversationItem({
 
 function ConversationSidebar({
   conversations,
-  archivedConversations,
   activeId,
   loading,
   onSelect,

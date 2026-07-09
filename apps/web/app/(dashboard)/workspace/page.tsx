@@ -253,9 +253,13 @@ export default function WorkspacePage() {
       ) : viewMode === "search" ? (
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-muted-foreground">
-            Search Results ({searchResults.length})
+            {searching ? "Searching..." : `Search Results (${searchResults.length})`}
           </h3>
-          {searchResults.length === 0 ? (
+          {searching ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-neon-purple border-t-transparent" />
+            </div>
+          ) : searchResults.length === 0 ? (
             <EmptyState
               icon={Search}
               title="No matches"

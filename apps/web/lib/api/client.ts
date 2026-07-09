@@ -596,10 +596,6 @@ export async function mintPassportNFT(id: string): Promise<SkillPassportPublic> 
   );
 }
 
-export async function mintMockPassportNFT(id: string): Promise<SkillPassportPublic> {
-  return mintPassportNFT(id);
-}
-
 // --- AUDIT APIs ---
 
 export async function fetchAudits(): Promise<AuditPublic[]> {

@@ -28,15 +28,7 @@ export function ConnectWalletButton() {
   const isMetaMaskAvailable =
     hasInjectedProvider && Boolean((window as Window & { ethereum?: { isMetaMask?: boolean } }).ethereum?.isMetaMask);
 
-  useEffect(() => {
-    console.debug("[ConnectWalletButton] state", {
-      isConnected,
-      isAuthenticated,
-      signingIn,
-      address,
-      chainId,
-    });
-  }, [isConnected, isAuthenticated, signingIn, address, chainId]);
+
 
   useEffect(() => {
     if (!isConnected || !address) return;
@@ -65,7 +57,6 @@ export function ConnectWalletButton() {
 
     try {
       setStatusMessage(null);
-      console.debug("[ConnectWalletButton] signing in with connected wallet", { address });
       await signIn(address);
     } catch (error) {
       console.error("[ConnectWalletButton] sign in failed", error);
@@ -97,9 +88,7 @@ export function ConnectWalletButton() {
 
     try {
       setStatusMessage(null);
-      console.debug("[ConnectWalletButton] connecting wallet", { connectorId });
       const result = await connectAsync({ connector });
-      console.debug("[ConnectWalletButton] wallet connected", { result });
       setModalOpen(false);
 
       const walletAddress = Array.isArray(result.accounts) ? result.accounts[0] : address;

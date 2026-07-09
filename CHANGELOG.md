@@ -26,7 +26,7 @@
 - **Final audit report** — `PROJECT_STATUS.md` with complete technology checklist
 
 ### Changed
-- **Database schema** — 9 Alembic migrations covering users, passports, projects, audits, analytics, founder agent, AI settings, memory, knowledge documents, conversations
+- **Database schema** — 10 Alembic migrations (001–010) covering users, passports, projects, audits, analytics, founder agent, AI settings, memory, knowledge documents, conversations
 - **Frontend architecture** — Route group (`(dashboard)`) with module-specific sub-routes
 - **Authentication** — Fully SIWE (Sign-In with Ethereum) with JWT session management
 - **Config system** — Pydantic Settings v2 with environment variable validation
@@ -35,14 +35,17 @@
 
 ### Fixed
 - `is_pinned` / `is_archived` missing from `founder_conversations` table — Created migration 009
+- `user_ai_settings` table missing from migrations — Created migration 010 with full table + `default_llm_provider` column
 - pytest test DB schema drift — Added ALTER TABLE statements in `conftest.py`
 - Ruff E501 line-length violations — Added per-file ignores in `pyproject.toml`
 - Cross-platform CRLF/LF consistency — `.gitattributes` normalization
-- Wallet address validation in passport tests — Pre-existing `eth_utils.is_address` fixture issue documented
+- Wallet address generation in passport test fixtures — `eth_utils.is_address` validation now passes
+- Frontend ESLint warnings — Removed unused imports/variables across 4 files
+- Removed `console.debug()` calls from production frontend code
+- Removed dead code: `mintMockPassportNFT`, unused page-module stubs, `async-storage-browser.ts`
 
 ### Known Issues
-- **11 pytest tests skipped** — Require external API keys (streaming, AI settings, passport wallet validation, search/chat endpoints)
 - **Notifications backend** — Frontend route exists, backend module not yet implemented
-- **Passport wallet tests** (2) — `eth_utils.is_address` rejects randomly generated test addresses (fixture-level, not code)
-- **Supabase CLI** — Not linked in CI; migrations must be run manually
-- **Vercel CLI** — Not linked; deployment requires manual `vercel` commands
+- **`except: pass` patterns** — Intentional graceful degradation in non-critical error handlers
+- **Docker compose** — API service not wired into `docker-compose.yml` (requires manual addition)
+- **Vercel** — No `vercel.json` config (Next.js auto-detection sufficient for basic deployment)

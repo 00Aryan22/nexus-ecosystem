@@ -22,6 +22,7 @@ from app.models import (  # noqa: F401
     StartupPlan,
     UsageStat,
     User,
+    UserAISettings,
     Wallet,
 )
 

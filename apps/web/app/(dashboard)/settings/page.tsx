@@ -4,12 +4,10 @@ import { useCallback, useEffect, useState } from "react";
 import {
   Activity,
   Briefcase,
-  Cpu,
   Key,
   Save,
   Search,
   ShieldCheck,
-  User,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +16,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/page-header";
 import { Select } from "@/components/ui/select";
-import { StatusBanner } from "@/components/ui/status-banner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
 import {
@@ -121,7 +118,6 @@ export default function SettingsPage() {
   ];
 
   const providerList = aiProviders.data ?? [];
-  const currentProviderMeta = providerList.find((p) => p.id === provider);
   const currentHealth = aiHealth.data?.find((h) => h.provider === provider);
 
   return (

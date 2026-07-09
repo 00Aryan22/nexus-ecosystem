@@ -23,7 +23,6 @@ import {
   useAIProviders,
   useAISettings,
   useArchiveConversation,
-  useArchivedConversations,
   useCreateConversation,
   useDeleteConversation,
   useFounderConversation,
@@ -75,7 +74,6 @@ export default function FounderAgentPage() {
   const [memoryActive, setMemoryActive] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -93,7 +91,6 @@ export default function FounderAgentPage() {
   const renameConversation = useUpdateConversationTitle();
   const togglePin = useTogglePinConversation();
   const archiveConv = useArchiveConversation();
-  const archivedQuery = useArchivedConversations();
   const usageSummary = useUsageSummary();
   const providerPrefs = useProviderPreferences();
   const providerStatus = useProviderStatus();
@@ -252,7 +249,7 @@ export default function FounderAgentPage() {
         setStreaming(false);
       }
     },
-    [streaming, ensureConversation, queryClient, currentProvider]
+    [streaming, ensureConversation, queryClient, currentProvider, memoryActive]
   );
 
   const handleRetry = useCallback(async () => {
@@ -448,7 +445,6 @@ export default function FounderAgentPage() {
       <div className="flex flex-1 gap-4 min-h-0 flex-col lg:flex-row">
         <ConversationSidebar
           conversations={conversationsQuery.data ?? []}
-          archivedConversations={archivedQuery.data ?? []}
           activeId={activeConversationId}
           loading={conversationsQuery.isLoading}
           onSelect={handleSelectConversation}

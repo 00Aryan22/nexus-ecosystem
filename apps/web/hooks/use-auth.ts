@@ -18,10 +18,8 @@ export function useAuth() {
   const signInAttemptRef = useRef<string | null>(null);
 
   const refresh = useCallback(async () => {
-    console.debug("[Auth] refresh session start");
     try {
       const me = await authApi.fetchMe();
-      console.debug("[Auth] refresh session result", { me });
       setUser(me);
     } catch (error) {
       console.error("[Auth] refresh session failed", error);
@@ -46,9 +44,7 @@ export function useAuth() {
   const signIn = useCallback(
     async (signInAddress?: string) => {
       const walletAddress = signInAddress || address;
-      console.debug("[Auth] signIn start", { walletAddress });
       if (!walletAddress) {
-        console.debug("[Auth] signIn aborted: no address");
         return null;
       }
       const normalizedAddress = walletAddress.toLowerCase();
@@ -62,18 +58,14 @@ export function useAuth() {
       setSigningIn(true);
       try {
         const { message } = await authApi.fetchNonce(walletAddress);
-        console.debug("[Auth] signIn fetched nonce", { message });
         const signature = await signMessageAsync({ message });
-        console.debug("[Auth] signIn got signature", { signature: signature?.slice(0, 8) });
         const verifiedUser = await authApi.verifySignature({
           wallet: walletAddress,
           signature,
           message,
         });
-        console.debug("[Auth] signIn verified user", { wallet: verifiedUser.wallet_address });
         setUser(verifiedUser);
         router.push(getNextPath());
-        console.debug("[Auth] signIn redirect", { next: getNextPath() });
         return verifiedUser;
       } catch (error) {
         console.error("[Auth] signIn failed", error);
