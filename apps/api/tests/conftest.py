@@ -35,6 +35,34 @@ async def setup_database():
     # Alembic in CI, but creating them again is harmless (checkfirst=True).
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        # Ensure new columns exist on existing tables (PostgreSQL)
+        try:
+            await conn.execute(
+                text(
+                    "ALTER TABLE users ADD COLUMN IF NOT EXISTS default_llm_provider "
+                    "VARCHAR(30) NOT NULL DEFAULT 'gemini'"
+                )
+            )
+        except Exception as e:
+            print(f"Warning: Could not add default_llm_provider column: {e}")
+        try:
+            await conn.execute(
+                text(
+                    "ALTER TABLE founder_conversations ADD COLUMN IF NOT EXISTS is_pinned "
+                    "BOOLEAN NOT NULL DEFAULT false"
+                )
+            )
+        except Exception as e:
+            print(f"Warning: Could not add is_pinned column: {e}")
+        try:
+            await conn.execute(
+                text(
+                    "ALTER TABLE founder_conversations ADD COLUMN IF NOT EXISTS is_archived "
+                    "BOOLEAN NOT NULL DEFAULT false"
+                )
+            )
+        except Exception as e:
+            print(f"Warning: Could not add is_archived column: {e}")
 
     # Clear any existing data so test sessions start from a clean state.
     # Skip clearing on SQLite (in-memory), always clear on PostgreSQL
@@ -79,7 +107,10 @@ async def db_session() -> AsyncGenerator[AsyncSession, None]:
 
 @pytest.fixture
 async def test_user(db_session: AsyncSession) -> User:
-    wallet = "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd"
+    import hashlib
+    import uuid
+    # Generate deterministic but unique wallet addresses that fit VARCHAR(42)
+    wallet = f"0x{hashlib.sha256(str(uuid.uuid4()).encode()).hexdigest()[:38]}"
     await db_session.execute(delete(User).where(User.wallet_address == wallet))
     await db_session.commit()
     user = User(wallet_address=wallet, role="founder", is_active=True)

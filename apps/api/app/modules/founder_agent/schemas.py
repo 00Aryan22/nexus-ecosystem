@@ -17,8 +17,10 @@ class AgentMessagePublic(BaseModel):
 
 class AgentConversationPublic(BaseModel):
     id: str
-    user_id: UUID  # ORM returns uuid.UUID — must not be declared as str
+    user_id: UUID
     title: str | None = None
+    is_pinned: bool = False
+    is_archived: bool = False
     created_at: datetime
     updated_at: datetime
 
@@ -37,6 +39,27 @@ class ChatRequest(BaseModel):
         default=None,
         description="Optional framework hint (e.g. lean_canvas, swot, pitch_deck)",
     )
+    provider: str | None = Field(
+        default=None,
+        description="Optional LLM provider override (emergent, gemini, ollama)",
+    )
+    enable_memory: bool = Field(
+        default=True,
+        description="Enable semantic memory search to inject relevant workspace knowledge",
+    )
+
+
+class ProviderPreference(BaseModel):
+    provider: str = Field(default="gemini", description="Default LLM provider")
+
+
+class ProviderStatus(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    name: str
+    displayName: str = Field(validation_alias="display_name")
+    available: bool
+    configured: bool
 
 
 class StartupPlanPublic(BaseModel):
@@ -88,4 +111,16 @@ class PromptSuggestion(BaseModel):
 
 
 class ConversationUpdateRequest(BaseModel):
-    title: str = Field(..., min_length=1, max_length=255)
+    title: str | None = Field(None, min_length=1, max_length=255)
+    is_pinned: bool | None = None
+    is_archived: bool | None = None
+
+
+class ConversationSearchResult(BaseModel):
+    id: str
+    title: str | None = None
+    match_preview: str | None = None
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)

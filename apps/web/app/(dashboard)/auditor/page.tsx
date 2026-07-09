@@ -92,8 +92,7 @@ export default function ContractAuditorPage() {
     abortRef.current = ctrl;
 
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "/api/v1";
-      const res = await fetch(`${apiBase}/auditor/analyze`, {
+      const res = await fetch("/api/v1/auditor/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

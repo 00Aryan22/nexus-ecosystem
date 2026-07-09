@@ -39,4 +39,5 @@ class AuthTokens(BaseModel):
 
 class VerifyData(BaseModel):
     access_token: str
+    refresh_token: str | None = None
     user: UserPublic

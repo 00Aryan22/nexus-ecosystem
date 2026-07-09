@@ -57,6 +57,23 @@ simply omit those entries. Always include at least the executive_summary and ove
 """.strip()
 
 
+GAS_OPTIMIZATION_PROMPT = """
+You are an expert Solidity gas optimization specialist. Analyze the provided contract and return ONLY a JSON object with gas optimization suggestions.
+
+{
+  "optimizations": [
+    {
+      "title": "Optimization title",
+      "description": "Explanation of the gas inefficiency",
+      "recommendation": "How to fix it",
+      "estimated_savings": "Approximate gas saved (e.g., ~200 gas per tx)"
+    }
+  ],
+  "estimated_gas_savings": "Total estimated gas savings across all optimizations"
+}
+"""
+
+
 def build_audit_prompt(source_code: str, contract_name: str | None = None) -> str:
     name_hint = f" (file: {contract_name})" if contract_name else ""
     return (

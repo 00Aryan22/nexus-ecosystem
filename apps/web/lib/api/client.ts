@@ -44,6 +44,16 @@ export type SkillPassportPublic = {
   } | null;
 };
 
+export type PassportReputationSummary = {
+  score: number;
+  total_passports: number;
+  minted_passports: number;
+  verified_passports: number;
+  average_score: number;
+  best_badge: string;
+  wallet_address?: string | null;
+};
+
 export type AuditPublic = {
   id: string;
   user_id: string;
@@ -270,6 +280,10 @@ const INITIAL_EVENTS: AnalyticsEventPublic[] = [
 // Control whether local mock fallbacks are allowed. Default: false (use real API).
 const USE_MOCKS = (process.env.NEXT_PUBLIC_USE_MOCKS ?? "false") === "true";
 
+// Default request timeout in milliseconds.
+// Prevents hung fetches from exhausting serverless function budget in production.
+const REQUEST_TIMEOUT_MS = 30_000;
+
 // Helper to interact with LocalStorage
 function getLocalItem<T>(key: string, initial: T): T {
   if (typeof window === "undefined") return initial;
@@ -296,8 +310,15 @@ async function apiRequest<T>(
   options?: RequestInit,
   mockFallback?: () => T
 ): Promise<T> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const mergedOptions: RequestInit = {
+    ...options,
+    signal: options?.signal ?? controller.signal,
+  };
+
   try {
-    const res = await fetch(url, options);
+    const res = await fetch(url, mergedOptions);
 
     // If session expired / auth needed, throw directly to let client handle redirect
     if (res.status === 401) {
@@ -319,7 +340,14 @@ async function apiRequest<T>(
 
     return envelope.data;
   } catch (error: any) {
+    if (error.name === "AbortError" || error.name === "TimeoutError") {
+      clearTimeout(timeoutId);
+      const timeoutError = new Error(`Request timed out after ${REQUEST_TIMEOUT_MS}ms: ${url}`);
+      timeoutError.name = "TimeoutError";
+      throw timeoutError;
+    }
     if (error.message === "UNAUTHORIZED") {
+      clearTimeout(timeoutId);
       throw error;
     }
     console.warn(`API call to ${url} failed.`, error);
@@ -329,6 +357,8 @@ async function apiRequest<T>(
       return mockFallback();
     }
     throw error;
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 
@@ -455,6 +485,23 @@ export async function deleteProject(id: string): Promise<{ deleted: boolean; id:
 export async function fetchPassports(): Promise<SkillPassportPublic[]> {
   return apiRequest("/api/v1/passports", {}, () => {
     return getLocalItem("passports", INITIAL_PASSPORTS);
+  });
+}
+
+export async function fetchPassportReputation(): Promise<PassportReputationSummary> {
+  return apiRequest("/api/v1/passports/reputation", {}, () => {
+    const passports = getLocalItem("passports", INITIAL_PASSPORTS);
+    const scores = passports.map((passport) => passport.evaluation_score);
+    const average = scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
+    return {
+      score: Math.max(...scores, 0),
+      total_passports: passports.length,
+      minted_passports: passports.filter((passport) => passport.status === "minted").length,
+      verified_passports: passports.filter((passport) => passport.status === "approved" || passport.status === "minted").length,
+      average_score: average,
+      best_badge: average >= 90 ? "Diamond" : average >= 75 ? "Gold" : average >= 60 ? "Silver" : "Bronze",
+      wallet_address: null,
+    };
   });
 }
 

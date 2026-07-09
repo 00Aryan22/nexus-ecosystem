@@ -110,6 +110,7 @@ async def stream_audit_analysis(
 
     audit.status = "processing"
     await db.commit()
+    await db.refresh(audit)
 
     yield json.dumps({"event": "progress", "text": "Initializing AI security scanner..."})
 
@@ -153,7 +154,13 @@ async def stream_audit_analysis(
             )
         report_summary = " ".join(p for p in summary_parts if p)
 
-        # Update Audit row
+        # Refresh audit to get latest version from database (handle stale object)
+        result = await db.execute(select(Audit).where(Audit.id == audit_id))
+        audit = result.scalar_one_or_none()
+        if not audit:
+            yield json.dumps({"event": "error", "text": "Audit record not found"})
+            return
+
         audit.status = "complete"
         audit.report_json = report_data
         audit.report_summary = report_summary[:2000]

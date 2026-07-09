@@ -9,13 +9,15 @@ import {
   ShieldAlert,
   BarChart3,
   Bot,
+  BookOpen,
   Settings as SettingsIcon,
   LogOut,
   Wallet,
   Bell,
   User,
   Users,
-  HelpCircle,
+  FileCode,
+  Heart,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
@@ -61,6 +63,12 @@ const NAV_ITEMS: NavItem[] = [
     flag: "founder_agent",
   },
   {
+    name: "Workspace",
+    href: "/workspace",
+    icon: BookOpen,
+    flag: "dashboard",
+  },
+  {
     name: "DAO Center",
     href: "/dao-center",
     icon: Users,
@@ -71,6 +79,12 @@ const NAV_ITEMS: NavItem[] = [
     href: "/analytics",
     icon: BarChart3,
     flag: "analytics",
+  },
+  {
+    name: "Contract Deploy",
+    href: "/contracts/deploy",
+    icon: FileCode,
+    flag: "contract_deploy",
   },
   {
     name: "Notifications",
@@ -85,10 +99,10 @@ const NAV_ITEMS: NavItem[] = [
     flag: "settings",
   },
   {
-    name: "Support",
+    name: "Community",
     href: "/support",
-    icon: HelpCircle,
-    flag: "settings",
+    icon: Heart,
+    flag: "public_goods",
   },
   {
     name: "Settings",

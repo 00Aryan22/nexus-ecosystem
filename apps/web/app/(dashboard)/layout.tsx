@@ -29,6 +29,7 @@ export default function DashboardLayout({
     if (pathname.startsWith("/contract-audit")) return "Contract Audit";
     if (pathname.startsWith("/analytics")) return "Product Analytics";
     if (pathname.startsWith("/founder-agent") || pathname.startsWith("/ai-founder")) return "AI Founder Agent";
+    if (pathname.startsWith("/workspace")) return "Workspace Knowledge";
     if (pathname.startsWith("/dao-center")) return "DAO Center";
     if (pathname.startsWith("/profile")) return "Profile";
     if (pathname.startsWith("/notifications")) return "Notifications";
@@ -108,6 +109,7 @@ export default function DashboardLayout({
               { name: "Contract Auditor", href: "/auditor" },
               { name: "Analytics", href: "/analytics" },
               { name: "Founder Agent", href: "/founder-agent" },
+              { name: "Workspace", href: "/workspace" },
               { name: "DAO Center", href: "/dao-center" },
               { name: "Notifications", href: "/notifications" },
               { name: "Profile", href: "/profile" },

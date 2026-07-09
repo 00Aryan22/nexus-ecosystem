@@ -6,11 +6,14 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.core.redis import close_redis
+from app.modules.ai.router import router as ai_router
 from app.modules.analytics.router import router as analytics_router
 from app.modules.auditor.router import router as auditor_router
 from app.modules.audits.router import router as audits_router
 from app.modules.auth.router import router as auth_router
+from app.modules.dev_infra.router import router as dev_infra_router
 from app.modules.founder_agent.router import router as founder_agent_router
+from app.modules.memory.router import router as memory_router
 from app.modules.passports.router import router as passports_router
 from app.modules.projects.router import router as projects_router
 from app.modules.stitch.router import router as stitch_router
@@ -70,7 +73,10 @@ app.include_router(audits_router, prefix=settings.api_v1_prefix)
 app.include_router(auditor_router, prefix=settings.api_v1_prefix)
 app.include_router(analytics_router, prefix=settings.api_v1_prefix)
 app.include_router(founder_agent_router, prefix=settings.api_v1_prefix)
+app.include_router(ai_router, prefix=settings.api_v1_prefix)
 app.include_router(stitch_router, prefix=settings.api_v1_prefix)
+app.include_router(memory_router, prefix=settings.api_v1_prefix)
+app.include_router(dev_infra_router, prefix=settings.api_v1_prefix)
 
 
 @app.get("/health")

@@ -7,7 +7,19 @@ import { useState, type ReactNode } from "react";
 import { wagmiConfig } from "@/lib/wagmi";
 
 export function Providers({ children }: { children: ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 1000 * 30,
+            gcTime: 1000 * 60 * 5,
+            retry: 1,
+            refetchOnWindowFocus: false,
+          },
+        },
+      })
+  );
 
   return (
     <WagmiProvider config={wagmiConfig}>

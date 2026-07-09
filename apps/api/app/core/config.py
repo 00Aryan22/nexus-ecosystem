@@ -36,12 +36,15 @@ class Settings(BaseSettings):
     siwe_nonce_ttl_seconds: int = 300
 
     cookie_access_name: str = "nexus_access_token"
+    cookie_refresh_name: str = "nexus_refresh_token"
+    cookie_csrf_name: str = "nexus_csrf_token"
     cookie_secure: bool = False
     cookie_samesite: str = "lax"
 
     emergent_api_key: str = ""
     emergent_endpoint: str = "https://api.emergent.ai/v1/chat/completions"
     gemini_api_key: str = ""
+    openai_api_key: str = ""
     ollama_base_url: str = "http://localhost:11434"
     ollama_model: str = "llama3"
     llm_max_retries: int = 2

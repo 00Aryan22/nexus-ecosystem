@@ -22,7 +22,12 @@ export async function GET(request: NextRequest) {
     }
 
     if (parsed !== undefined) {
-      return NextResponse.json(parsed, { status: upstream.status });
+      const response = NextResponse.json(parsed, { status: upstream.status });
+      const setCookie = upstream.headers.get("set-cookie");
+      if (setCookie) {
+        response.headers.append("set-cookie", setCookie);
+      }
+      return response;
     }
 
     return NextResponse.json(

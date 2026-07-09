@@ -1,20 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
 import { Loader2, Wallet, ShieldCheck, Smartphone, PlugZap } from "lucide-react";
 
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 
-type Props = {
-  redirectOnSuccess?: boolean;
-};
-
 const expectedChainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 80002);
 
-export function ConnectWalletButton({ redirectOnSuccess = true }: Props) {
+export function ConnectWalletButton() {
   const { isConnected, isAuthenticated, signingIn, signIn } = useAuth();
   const { connectAsync, connectors, error, isPending } = useConnect();
   const { address, chainId } = useAccount();
@@ -22,38 +18,62 @@ export function ConnectWalletButton({ redirectOnSuccess = true }: Props) {
   const { switchChainAsync, isPending: isSwitchingChain } = useSwitchChain();
   const [modalOpen, setModalOpen] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (redirectOnSuccess && isConnected && !isAuthenticated && !signingIn) {
-      void signIn();
-    }
-  }, [isConnected, isAuthenticated, signingIn, signIn, redirectOnSuccess]);
-
-  useEffect(() => {
-    if (!isConnected || !address) return;
-
-    if (chainId !== expectedChainId) {
-      void switchChainAsync({ chainId: expectedChainId })
-        .catch(() => {
-          setStatusMessage("Switch to Polygon Amoy to continue.");
-        });
-    }
-  }, [address, chainId, isConnected, switchChainAsync]);
-
-  if (isAuthenticated) {
-    return (
-      <Button size="lg" className="neon-glow" asChild>
-        <Link href="/dashboard">Go to Dashboard</Link>
-      </Button>
-    );
-  }
+  const signInAttemptRef = useRef<string | null>(null);
 
   const connected = Boolean(address && isConnected);
   const injectedConnector = connectors.find((connector) => connector.id === "injected");
   const walletConnectConnector = connectors.find((connector) => connector.id === "walletConnect");
   const hasInjectedProvider =
     typeof window !== "undefined" && Boolean((window as Window & { ethereum?: { isMetaMask?: boolean } }).ethereum);
-  const isMetaMaskAvailable = hasInjectedProvider && Boolean((window as Window & { ethereum?: { isMetaMask?: boolean } }).ethereum?.isMetaMask);
+  const isMetaMaskAvailable =
+    hasInjectedProvider && Boolean((window as Window & { ethereum?: { isMetaMask?: boolean } }).ethereum?.isMetaMask);
+
+  useEffect(() => {
+    console.debug("[ConnectWalletButton] state", {
+      isConnected,
+      isAuthenticated,
+      signingIn,
+      address,
+      chainId,
+    });
+  }, [isConnected, isAuthenticated, signingIn, address, chainId]);
+
+  useEffect(() => {
+    if (!isConnected || !address) return;
+
+    if (chainId !== expectedChainId) {
+      void switchChainAsync({ chainId: expectedChainId }).catch(() => {
+        setStatusMessage("Switch to Polygon Amoy to continue.");
+      });
+    }
+  }, [address, chainId, isConnected, switchChainAsync]);
+
+  const handleSignIn = async () => {
+    if (!address) {
+      setStatusMessage("No wallet address available to sign in.");
+      return;
+    }
+
+    if (signingIn) return;
+
+    const normalizedAddress = address.toLowerCase();
+    if (signInAttemptRef.current === normalizedAddress) {
+      return;
+    }
+
+    signInAttemptRef.current = normalizedAddress;
+
+    try {
+      setStatusMessage(null);
+      console.debug("[ConnectWalletButton] signing in with connected wallet", { address });
+      await signIn(address);
+    } catch (error) {
+      console.error("[ConnectWalletButton] sign in failed", error);
+      setStatusMessage("Unable to sign in with the connected wallet. Please try again.");
+    } finally {
+      signInAttemptRef.current = null;
+    }
+  };
 
   const handleConnect = async (connectorId: string) => {
     const connector = connectorId === "walletConnect" ? walletConnectConnector : injectedConnector;
@@ -63,19 +83,71 @@ export function ConnectWalletButton({ redirectOnSuccess = true }: Props) {
     }
 
     if (connectorId === "injected" && !isMetaMaskAvailable) {
-      setStatusMessage("MetaMask is not installed or not available in this browser. Install MetaMask or choose WalletConnect instead.");
+      setStatusMessage(
+        "MetaMask is not installed or not available in this browser. Install MetaMask or choose WalletConnect instead."
+      );
+      return;
+    }
+
+    if (connected && !isAuthenticated) {
+      setModalOpen(false);
+      await handleSignIn();
       return;
     }
 
     try {
       setStatusMessage(null);
-      await connectAsync({ connector });
+      console.debug("[ConnectWalletButton] connecting wallet", { connectorId });
+      const result = await connectAsync({ connector });
+      console.debug("[ConnectWalletButton] wallet connected", { result });
       setModalOpen(false);
+
+      const walletAddress = Array.isArray(result.accounts) ? result.accounts[0] : address;
+      if (!isAuthenticated && walletAddress && signInAttemptRef.current !== walletAddress.toLowerCase()) {
+        await signIn(walletAddress);
+      }
     } catch (connectError) {
+      console.error("[ConnectWalletButton] connect failed", { connectError });
+
+      if (
+        connectError instanceof Error &&
+        connectError.name === "ConnectorAlreadyConnectedError"
+      ) {
+        if (address && !isAuthenticated) {
+          setModalOpen(false);
+          await handleSignIn();
+          return;
+        }
+
+        setStatusMessage("Wallet is already connected. Please sign in or disconnect to try again.");
+        return;
+      }
+
       const message = connectError instanceof Error ? connectError.message : "Unable to connect wallet";
-      setStatusMessage(message.includes("Provider not found") ? "No compatible wallet provider was detected. Install MetaMask or try the WalletConnect QR flow." : message);
+      setStatusMessage(
+        message.includes("Provider not found")
+          ? "No compatible wallet provider was detected. Install MetaMask or try the WalletConnect QR flow."
+          : message
+      );
     }
   };
+
+  const handlePrimaryAction = async () => {
+    if (connected && !isAuthenticated) {
+      await handleSignIn();
+      return;
+    }
+
+    setModalOpen(true);
+  };
+
+  if (isAuthenticated) {
+    return (
+      <Button size="lg" className="neon-glow" asChild>
+        <Link href="/dashboard">Go to Dashboard</Link>
+      </Button>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-3">
@@ -83,7 +155,7 @@ export function ConnectWalletButton({ redirectOnSuccess = true }: Props) {
         size="lg"
         className="neon-glow"
         disabled={signingIn || isPending || isSwitchingChain}
-        onClick={() => setModalOpen(true)}
+        onClick={() => void handlePrimaryAction()}
       >
         {signingIn ? "Signing in…" : isPending ? "Connecting…" : connected ? "Sign In with Wallet" : "Connect Wallet"}
       </Button>

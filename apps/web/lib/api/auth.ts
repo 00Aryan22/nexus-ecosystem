@@ -1,3 +1,5 @@
+import { CSRF_COOKIE } from "@/lib/constants";
+
 export type UserPublic = {
   id: string;
   wallet_address: string;
@@ -10,6 +12,13 @@ type ApiResponse<T> = {
   data: T | null;
   error: { message?: string } | null;
 };
+
+function readCookie(name: string): string | undefined {
+  if (typeof document === "undefined") return undefined;
+  const cookie = document.cookie;
+  const match = cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+  return match?.[1];
+}
 
 export async function fetchNonce(wallet: string) {
   console.debug("[Auth API] fetchNonce", { wallet });
@@ -39,9 +48,14 @@ export async function verifySignature(payload: {
   message: string;
 }) {
   console.debug("[Auth API] verifySignature", { wallet: payload.wallet });
+  const csrfToken = readCookie(CSRF_COOKIE);
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (csrfToken) {
+    headers["x-csrf-token"] = csrfToken;
+  }
   const res = await fetch("/api/auth/verify", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify(payload),
   });
   console.debug("[Auth API] verifySignature response", { status: res.status, statusText: res.statusText });
@@ -62,7 +76,16 @@ export async function verifySignature(payload: {
 }
 
 export async function fetchMe(): Promise<UserPublic | null> {
-  const res = await fetch("/api/auth/me");
+  const csrfToken = readCookie(CSRF_COOKIE);
+  const headers: HeadersInit = { "Cache-Control": "no-store" };
+  if (csrfToken) {
+    headers["x-csrf-token"] = csrfToken;
+  }
+  const res = await fetch("/api/auth/me", {
+    headers,
+    cache: "no-store",
+    credentials: "same-origin",
+  });
   if (res.status === 401) return null;
   if (!res.ok) throw new Error("Failed to fetch session");
   const json = (await res.json()) as ApiResponse<UserPublic>;
@@ -70,5 +93,10 @@ export async function fetchMe(): Promise<UserPublic | null> {
 }
 
 export async function logout() {
-  await fetch("/api/auth/logout", { method: "POST" });
+  const csrfToken = readCookie("nexus_csrf_token");
+  const headers: Record<string, string> = {};
+  if (csrfToken) {
+    headers["x-csrf-token"] = csrfToken;
+  }
+  await fetch("/api/auth/logout", { method: "POST", headers });
 }

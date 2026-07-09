@@ -91,8 +91,9 @@ async def verify_siwe_and_login(
         )
         raise ValueError("Invalid nonce")
 
-    siwe.verify(signature, domain=settings.siwe_domain)
     await redis.delete(_nonce_redis_key(wallet))
+
+    siwe.verify(signature, domain=settings.siwe_domain)
 
     result = await db.execute(select(User).where(User.wallet_address == wallet))
     user = result.scalar_one_or_none()
@@ -126,7 +127,7 @@ async def verify_siwe_and_login(
             db.add(wallet_row)
 
     jti = new_jti()
-    expires_at = datetime.now(UTC) + timedelta(minutes=settings.jwt_access_token_expire_minutes)
+    expires_at = datetime.now(UTC) + timedelta(days=settings.jwt_refresh_token_expire_days)
     session = Session(
         user_id=user.id,
         jwt_jti=jti,

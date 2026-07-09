@@ -12,18 +12,26 @@ export type FeatureFlag =
   | "startup_builder"
   | "skill_passport"
   | "contract_auditor"
+  | "contract_deploy"
   | "analytics"
   | "founder_agent"
-  | "settings";
+  | "workspace"
+  | "onboarding"
+  | "settings"
+  | "public_goods";
 
 const FLAG_DEFAULTS: Record<FeatureFlag, boolean> = {
   dashboard: true,
   startup_builder: true,
   skill_passport: true,
   contract_auditor: true,
+  contract_deploy: true,
   analytics: true,
   founder_agent: true,
+  workspace: true,
+  onboarding: true,
   settings: true,
+  public_goods: true,
 };
 
 function readEnvFlag(flag: FeatureFlag): boolean | undefined {
@@ -90,8 +98,11 @@ export function routeToFeatureFlag(
   if (pathname.startsWith("/settings")) return "settings";
   if (pathname.startsWith("/profile")) return "settings";
   if (pathname.startsWith("/notifications")) return "settings";
-  if (pathname.startsWith("/support")) return "settings";
+  if (pathname.startsWith("/support")) return "public_goods";
   if (pathname.startsWith("/dao-center")) return "dashboard";
+  if (pathname.startsWith("/contracts/deploy")) return "contract_deploy";
+  if (pathname.startsWith("/onboarding")) return "onboarding";
+  if (pathname.startsWith("/workspace")) return "workspace";
   return null;
 }
 

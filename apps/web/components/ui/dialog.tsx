@@ -15,6 +15,8 @@ interface DialogProps {
   onClose: () => void;
   children: React.ReactNode;
   className?: string;
+  "aria-labelledby"?: string;
+  "aria-describedby"?: string;
 }
 
 function Dialog({ open, onClose, children, className }: DialogProps) {

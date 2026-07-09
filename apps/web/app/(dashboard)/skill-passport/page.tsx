@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import {
   fetchPassports,
+  fetchPassportReputation,
   createPassport,
   mintPassportNFT,
   SkillPassportPublic,
+  PassportReputationSummary,
 } from "@/lib/api/client";
 import {
   Award,
@@ -49,8 +51,11 @@ import {
 export default function SkillPassportPage() {
   const [passports, setPassports] = useState<SkillPassportPublic[]>([]);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [mintingId, setMintingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [reputation, setReputation] = useState<PassportReputationSummary | null>(null);
 
   // Modal / Detail state
   const [isSubmitOpen, setIsSubmitOpen] = useState(false);
@@ -67,8 +72,12 @@ export default function SkillPassportPage() {
   useEffect(() => {
     async function loadData() {
       try {
-        const data = await fetchPassports();
-        setPassports(data);
+        const [passportData, reputationData] = await Promise.all([
+          fetchPassports(),
+          fetchPassportReputation(),
+        ]);
+        setPassports(passportData);
+        setReputation(reputationData);
       } catch (err: any) {
         setError(err.message || "Failed to load passports");
       } finally {
@@ -95,25 +104,41 @@ export default function SkillPassportPage() {
       return;
     }
 
+    setSubmitting(true);
     try {
       const created = await createPassport(formData);
-      setPassports((prev) => [created, ...prev]);
+      const [passportData, reputationData] = await Promise.all([
+        fetchPassports(),
+        fetchPassportReputation(),
+      ]);
+      setPassports(passportData);
+      setReputation(reputationData);
       setIsSubmitOpen(false);
-      setFeedback("Skill verification request submitted successfully.");
+      setFeedback(`Skill verification request submitted successfully for ${created.skill_name}.`);
     } catch (err: any) {
       setError(err.message || "Failed to submit passport");
       setFeedback(null);
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handleMint = async (id: string) => {
+    setMintingId(id);
     try {
       const updated = await mintPassportNFT(id);
-      setPassports((prev) => prev.map((p) => (p.id === id ? updated : p)));
-      setFeedback("Passport minted successfully on Polygon Amoy.");
+      const [passportData, reputationData] = await Promise.all([
+        fetchPassports(),
+        fetchPassportReputation(),
+      ]);
+      setPassports(passportData);
+      setReputation(reputationData);
+      setFeedback(`Passport minted successfully for ${updated.skill_name} on Polygon Amoy.`);
     } catch (err: any) {
       setError(err.message || "Failed to mint NFT");
       setFeedback(null);
+    } finally {
+      setMintingId(null);
     }
   };
 
@@ -164,7 +189,7 @@ export default function SkillPassportPage() {
           { label: "Total Skills", val: passports.length, icon: Award, col: "text-neon-blue" },
           { label: "On-Chain Passports", val: passports.filter((p) => p.status === "minted").length, icon: Cpu, col: "text-neon-purple" },
           { label: "Review Pending", val: passports.filter((p) => p.status === "pending").length, icon: FileText, col: "text-yellow-400" },
-          { label: "Ecosystem Reputation Score", val: "A+", icon: BadgeCheck, col: "text-emerald-400" },
+          { label: "Ecosystem Reputation Score", val: reputation ? `${reputation.score.toFixed(0)}/100` : "—", icon: BadgeCheck, col: "text-emerald-400" },
         ].map((stat, i) => (
           <StatCard 
             key={i}
@@ -232,8 +257,9 @@ export default function SkillPassportPage() {
                           size="sm"
                           className="bg-neon-purple hover:bg-neon-purple/80 text-white py-1 px-3 text-[10px] h-7"
                           onClick={() => void handleMint(p.id)}
+                          disabled={mintingId === p.id}
                         >
-                          <Zap className="mr-1 h-3 w-3" /> Mint SBT NFT
+                          <Zap className="mr-1 h-3 w-3" /> {mintingId === p.id ? "Minting..." : "Mint SBT NFT"}
                         </Button>
                       )}
                       {p.status === "minted" && p.nft_record && (
@@ -391,8 +417,8 @@ export default function SkillPassportPage() {
           >
             Cancel
           </Button>
-          <Button form="skill-form" type="submit" className="bg-neon-purple hover:bg-neon-purple/80 text-white font-semibold px-6">
-            Submit Proof
+          <Button form="skill-form" type="submit" className="bg-neon-purple hover:bg-neon-purple/80 text-white font-semibold px-6" disabled={submitting}>
+            {submitting ? "Submitting..." : "Submit Proof"}
           </Button>
         </DialogFooter>
       </Dialog>

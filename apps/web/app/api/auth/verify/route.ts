@@ -1,14 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { API_BASE } from "@/lib/constants";
-import { setAccessCookie } from "@/lib/auth-cookies";
+import { getCsrfTokenFromCookieHeader, setAccessCookie, setRefreshCookie } from "@/lib/auth-cookies";
 
 export async function POST(request: NextRequest) {
   const payload = await request.json();
+  const cookieHeader = request.headers.get("cookie") ?? "";
+  const csrfToken = request.headers.get("x-csrf-token") ?? getCsrfTokenFromCookieHeader(cookieHeader);
+
   try {
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (cookieHeader) {
+      headers.Cookie = cookieHeader;
+    }
+    if (csrfToken) {
+      headers["x-csrf-token"] = csrfToken;
+    }
     const upstream = await fetch(`${API_BASE}/auth/verify`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(payload),
     });
     const bodyText = await upstream.text();
@@ -27,6 +37,9 @@ export async function POST(request: NextRequest) {
 
     if (upstream.ok && body?.data?.access_token) {
       setAccessCookie(response, body.data.access_token, 15 * 60);
+    }
+    if (upstream.ok && body?.data?.refresh_token) {
+      setRefreshCookie(response, body.data.refresh_token, 7 * 24 * 60 * 60);
     }
     return response;
   } catch (error: any) {

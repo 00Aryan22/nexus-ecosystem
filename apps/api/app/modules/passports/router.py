@@ -12,6 +12,8 @@ from app.models.auth import User
 from app.schemas.common import ApiResponse, PaginationParams
 from app.schemas.passport import (
     PassportMintRequest,
+    PassportReputationSummary,
+    PassportVerifyRequest,
     SkillPassportCreate,
     SkillPassportPublic,
     SkillPassportUpdate,
@@ -19,6 +21,8 @@ from app.schemas.passport import (
 from app.services.passport_service import (
     create_passport,
     get_passport,
+    get_passport_by_wallet,
+    get_passport_reputation,
     list_passports,
     mint_passport_nft,
     update_passport,
@@ -72,6 +76,81 @@ async def list_passports_endpoint(
         data=[SkillPassportPublic.model_validate(p) for p in items],
         meta=pagination_meta(total, params).model_dump(),
     )
+
+
+@router.get(
+    "/history",
+    response_model=ApiResponse[list[SkillPassportPublic]],
+    summary="List passport history",
+    description="Returns the authenticated user's passport history, including minted NFTs.",
+)
+async def history_passports_endpoint(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+    params: PaginationParams = Depends(pagination_params),
+) -> ApiResponse[list[SkillPassportPublic]]:
+    items, total = await list_passports(db, user, params)
+    return ApiResponse(
+        data=[SkillPassportPublic.model_validate(p) for p in items],
+        meta=pagination_meta(total, params).model_dump(),
+    )
+
+
+@router.get(
+    "/reputation",
+    response_model=ApiResponse[PassportReputationSummary],
+    summary="Get passport reputation summary",
+    description="Returns aggregated reputation metrics for the authenticated user.",
+)
+async def reputation_passports_endpoint(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> ApiResponse[PassportReputationSummary]:
+    summary = await get_passport_reputation(db, user)
+    return ApiResponse(data=PassportReputationSummary.model_validate(summary))
+
+
+@router.get(
+    "/wallet/{wallet_address}",
+    response_model=ApiResponse[SkillPassportPublic],
+    summary="Get latest passport for a wallet",
+    description="Returns the latest skill passport associated with the provided wallet address.",
+)
+async def wallet_passport_endpoint(
+    wallet_address: str,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> ApiResponse[SkillPassportPublic]:
+    passport = await get_passport_by_wallet(db, wallet_address)
+    if passport is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Passport not found")
+    ensure_owner(passport.user_id, user)
+    return ApiResponse(data=SkillPassportPublic.model_validate(passport))
+
+
+@router.post(
+    "/verify",
+    response_model=ApiResponse[SkillPassportPublic],
+    summary="Verify a submitted passport",
+    description="Updates evaluation metadata and status for an existing passport.",
+)
+async def verify_passport_endpoint(
+    body: PassportVerifyRequest,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> ApiResponse[SkillPassportPublic]:
+    passport = await get_passport(db, body.passport_id)
+    if passport is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Passport not found")
+    ensure_owner(passport.user_id, user)
+    update_payload = SkillPassportUpdate(
+        evaluation_score=body.evaluation_score,
+        evaluation_notes=body.evaluation_notes,
+        status=body.status,
+    )
+    updated = await update_passport(db, passport, update_payload)
+    refreshed = await get_passport(db, updated.id)
+    return ApiResponse(data=SkillPassportPublic.model_validate(refreshed))
 
 
 @router.get(

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Providers } from "@/components/providers";
+import { ToastContainer } from "@/components/ui/toast";
 import { Geist, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -38,7 +39,10 @@ export default function RootLayout({
       <body
         className={`${geist.variable} ${inter.variable} ${jetbrainsMono.variable} min-h-screen`}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <ToastContainer />
+        </Providers>
       </body>
     </html>
   );

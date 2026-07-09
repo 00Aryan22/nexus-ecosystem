@@ -20,6 +20,7 @@ const PROTECTED_PREFIXES = [
   "/contracts/deploy",
   "/dashboard/history",
   "/contract-audit",
+  "/workspace",
 ];
 
 export async function middleware(request: NextRequest) {
@@ -60,5 +61,6 @@ export const config = {
     "/profile/:path*",
     "/support/:path*",
     "/settings/:path*",
+    "/workspace/:path*",
   ],
 };
