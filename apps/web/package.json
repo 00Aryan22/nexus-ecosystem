@@ -13,6 +13,10 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
+  "optionalDependencies": {
+    "lightningcss-linux-x64-gnu": "1.32.0",
+    "lightningcss-linux-x64-musl": "1.32.0"
+  },
   "dependencies": {
     "@rainbow-me/rainbowkit": "^2.2.11",
     "@reown/appkit": "^1.7.8",

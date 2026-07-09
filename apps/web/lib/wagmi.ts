@@ -2,8 +2,13 @@ import { createConfig, http, type Config } from "wagmi";
 import { injected, walletConnect } from "wagmi/connectors";
 import { polygonAmoy } from "viem/chains";
 
-const projectId =
-  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID?.trim() || "4e8a90634703200ea82978273daa8c1d";
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID?.trim();
+if (!projectId) {
+  throw new Error(
+    "NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is not set. " +
+    "Get a project ID at https://cloud.walletconnect.com and add it to your .env.local"
+  );
+}
 
 const metadata = {
   name: process.env.NEXT_PUBLIC_APP_NAME ?? "NEXUS AI",
