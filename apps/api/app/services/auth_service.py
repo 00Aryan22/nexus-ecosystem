@@ -3,7 +3,7 @@ import secrets
 from datetime import UTC, datetime, timedelta
 
 from eth_utils import to_checksum_address
-from siwe import SiweMessage
+from siwe import SiweMessage, VerificationError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -122,7 +122,11 @@ async def verify_siwe_and_login(
         "AUTH_VERIFY_BEFORE_SIWE_VERIFY",
         {"domain": expected_domain, "sig_len": len(signature), "msg_len": len(message)},
     )
-    siwe.verify(signature, domain=expected_domain)
+    try:
+        siwe.verify(signature, domain=expected_domain)
+    except VerificationError as exc:
+        logger.warning("[AuthService] SIWE verify failed: %s", type(exc).__name__)
+        raise ValueError(f"SIWE verification failed: {type(exc).__name__}") from exc
     logger.debug("AUTH_VERIFY_SIWE_OK")
 
     result = await db.execute(select(User).where(User.wallet_address == wallet))

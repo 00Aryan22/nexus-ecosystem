@@ -26,9 +26,11 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     # Eagerly initialise DB engine on startup so the first request is fast
-    from app.core.database import get_engine
+    from app.core.database import Base, get_engine
 
-    await get_engine()
+    engine = await get_engine()
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
     yield
     await close_redis()
     from app.core.database import dispose_engine
