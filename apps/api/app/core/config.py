@@ -3,15 +3,46 @@ from pathlib import Path
 from pydantic import AliasChoices, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-_REPO_ROOT = Path(__file__).resolve().parents[4]
+
+def _find_repo_root(start: Path) -> Path | None:
+    """Walk up from *start* looking for the monorepo root.
+
+    Checks for markers in priority order: .git directory, then
+    package.json (monorepo), then pyproject.toml (standalone backend).
+    Returns None when no marker is found — process environment will
+    still be used.
+    """
+    for parent in [start] + list(start.parents):
+        if (parent / ".git").exists():
+            return parent
+    for parent in [start] + list(start.parents):
+        if (parent / "package.json").exists():
+            return parent
+    for parent in [start] + list(start.parents):
+        if (parent / "pyproject.toml").exists():
+            return parent
+    return None
+
+
+def _env_file_paths(root: Path | None) -> list[Path]:
+    """Return a tuple of .env file paths, skipping any that don't exist."""
+    if root is None:
+        return []
+    paths: list[Path] = []
+    for name in (".env.local", ".env"):
+        candidate = root / name
+        if candidate.exists():
+            paths.append(candidate)
+    return paths
+
+
+_REPO_ROOT = _find_repo_root(Path(__file__).resolve())
+_ENV_FILES = _env_file_paths(_REPO_ROOT)
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=(
-            _REPO_ROOT / ".env.local",
-            _REPO_ROOT / ".env",
-        ),
+        env_file=_ENV_FILES or None,
         env_file_encoding="utf-8",
         extra="ignore",
     )
