@@ -118,7 +118,12 @@ async def verify_siwe_and_login(
     if expected_domain == "localhost":
         expected_domain = siwe.domain
 
+    logger.debug(
+        "AUTH_VERIFY_BEFORE_SIWE_VERIFY",
+        {"domain": expected_domain, "sig_len": len(signature), "msg_len": len(message)},
+    )
     siwe.verify(signature, domain=expected_domain)
+    logger.debug("AUTH_VERIFY_SIWE_OK")
 
     result = await db.execute(select(User).where(User.wallet_address == wallet))
     user = result.scalar_one_or_none()
@@ -165,7 +170,9 @@ async def verify_siwe_and_login(
     db.add(session)
     await db.flush()
 
+    logger.debug("AUTH_VERIFY_CREATING_JWT", {"user_id": str(user.id), "wallet": wallet})
     access_token = create_access_token(user_id=str(user.id), wallet=wallet, jti=jti)
+    logger.debug("AUTH_VERIFY_COMPLETE")
     return user, access_token, jti
 
 

@@ -1,3 +1,4 @@
+import logging
 from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
@@ -24,6 +25,8 @@ from app.services.auth_service import (
     revoke_session,
     verify_siwe_and_login,
 )
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -84,8 +87,14 @@ async def verify_wallet(
             user_agent=request.headers.get("user-agent"),
         )
     except ValueError as exc:
+        logger.warning("AUTH_VERIFY_VALUE_ERROR: %s", exc)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(exc)) from exc
     except Exception as exc:
+        logger.error(
+            "AUTH_VERIFY_GENERIC_ERROR: type=%s message=%s",
+            type(exc).__name__,
+            str(exc)[:200],
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Signature verification failed",
