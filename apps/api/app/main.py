@@ -80,6 +80,16 @@ app.include_router(memory_router, prefix=settings.api_v1_prefix)
 app.include_router(dev_infra_router, prefix=settings.api_v1_prefix)
 
 
+@app.get("/")
+async def root() -> dict[str, str]:
+    return {
+        "service": settings.app_name,
+        "status": "operational",
+        "docs": "/docs",
+        "version": "0.2.0",
+    }
+
+
 @app.get("/health")
 async def health() -> dict[str, str]:
     return {"status": "ok", "env": settings.app_env}
