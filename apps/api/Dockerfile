@@ -4,11 +4,11 @@ WORKDIR /app
 
 RUN adduser --disabled-password --gecos "" appuser
 
-COPY apps/api/requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY apps/api/app ./app
-COPY apps/api/pyproject.toml .
+COPY app ./app
+COPY pyproject.toml .
 
 USER appuser
 

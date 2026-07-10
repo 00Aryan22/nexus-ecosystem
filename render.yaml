@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: nexus-api
+    env: docker
+    repo: https://github.com/00Aryan22/nexus-ecosystem
+    branch: main
+    rootDir: apps/api
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        value: "https://nexus-ecosystem-web.vercel.app,https://nexus-ecosystem-web-git-*.vercel.app,https://nexus-ecosystem-web-*.vercel.app"
+      - key: SIWE_DOMAIN
+        value: nexus-ecosystem-web.vercel.app
+      - key: SIWE_URI
+        value: https://nexus-ecosystem-web.vercel.app
+      - key: SIWE_CHAIN_ID
+        value: "80002"
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: COOKIE_SAMESITE
+        value: lax
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: POLYGON_AMOY_RPC_URL
+        sync: false
+      - key: PINATA_JWT
+        sync: false
