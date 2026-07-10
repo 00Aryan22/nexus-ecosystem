@@ -42,8 +42,15 @@ async def issue_nonce(
     expires_at = datetime.now(UTC) + timedelta(seconds=settings.siwe_nonce_ttl_seconds)
     issued_at = datetime.now(UTC).replace(microsecond=0).isoformat()
 
-    siwe_domain = domain or settings.siwe_domain
-    siwe_uri = uri or settings.siwe_uri
+    # In production, prefer the explicitly configured SIWE_DOMAIN/SIWE_URI
+    # over the request-derived host header (which is the backend's host, not
+    # the frontend's).  In development ("localhost") the request host is fine.
+    if settings.siwe_domain != "localhost":
+        siwe_domain = settings.siwe_domain
+        siwe_uri = settings.siwe_uri
+    else:
+        siwe_domain = domain or settings.siwe_domain
+        siwe_uri = uri or settings.siwe_uri
 
     siwe = SiweMessage(
         domain=siwe_domain,
