@@ -15,7 +15,7 @@ services:
       - key: JWT_SECRET_KEY
         sync: false
       - key: CORS_ORIGINS
-        value: "https://nexus-ecosystem-web.vercel.app,https://nexus-ecosystem-web-git-*.vercel.app,https://nexus-ecosystem-web-*.vercel.app"
+        value: "https://nexus-ecosystem-web.vercel.app,http://localhost:3000"
       - key: SIWE_DOMAIN
         value: nexus-ecosystem-web.vercel.app
       - key: SIWE_URI
@@ -33,4 +33,6 @@ services:
       - key: POLYGON_AMOY_RPC_URL
         sync: false
       - key: PINATA_JWT
+        sync: false
+      - key: CORS_ORIGIN_REGEX
         sync: false
