@@ -9,8 +9,17 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    // Forward the original frontend host so the backend builds the SIWE
+    // message with the correct domain rather than the backend's own host.
+    const forwardedHost = request.headers.get("host");
+    const headers: Record<string, string> = {};
+    if (forwardedHost) {
+      headers["x-forwarded-host"] = forwardedHost;
+    }
+
     const upstream = await fetch(
       `${API_BASE}/auth/nonce?wallet=${encodeURIComponent(wallet)}`,
+      { headers },
     );
     const bodyText = await upstream.text();
     let parsed: unknown;
