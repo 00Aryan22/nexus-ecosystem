@@ -9,7 +9,7 @@ export default defineConfig({
   workers: 1,
   reporter: [
     ["list"],
-    ["html", { outputFolder: "test-results/reports/demo-html", open: "never" }],
+    ["html", { outputFolder: "playwright-report/demo-html", open: "never" }],
   ],
   use: {
     baseURL: "https://nexus-ecosystem-web.vercel.app",

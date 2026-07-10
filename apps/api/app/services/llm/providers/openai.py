@@ -72,7 +72,7 @@ class OpenAIProvider(LLMProvider):
 
     async def detailed_health(self, model: str | None = None) -> ProviderHealthStatus:
         if not self.api_key:
-            return ProviderHealthStatus.MISCONFIGURED
+            return ProviderHealthStatus.NOT_CONFIGURED
         try:
             async with httpx.AsyncClient(timeout=10.0) as client:
                 resp = await client.get(
@@ -111,7 +111,7 @@ class OpenAIProvider(LLMProvider):
 
     @property
     def default_model(self) -> str:
-        return "gpt-4o"
+        return settings.openai_default_model
 
     @property
     def supports_model_listing(self) -> bool:

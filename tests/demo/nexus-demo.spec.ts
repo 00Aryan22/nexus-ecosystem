@@ -49,11 +49,7 @@ test.describe("NEXUS AI Professional Demo", () => {
 
       const chatInput = page.getByPlaceholder(/message.*founder|chat/i);
       if (await chatInput.isVisible()) {
-        const prompt = "Help me create a business model canvas for a decentralized AI marketplace";
-        await chatInput.click();
-        await page.waitForTimeout(500);
-        await chatInput.pressSequentially(prompt, { delay: 30 });
-        await page.waitForTimeout(1000);
+        await page.waitForTimeout(2000);
       }
       await page.waitForTimeout(2000);
     });

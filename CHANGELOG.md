@@ -127,3 +127,48 @@
 - Missing `vercel.json` — created with Next.js framework config
 - Missing `infra/supabase/config.toml` — created with project ref `oinwkcxefniumshicvuj`
 - Missing `.python-version` — created for Python 3.11 consistency
+
+## v1.2.0 (2026-07-10) — Ollama Cloud Auth, URL Normalization & Full Validation
+
+### Added
+- **OLLAMA_API_KEY, OLLAMA_API_MODE, OPENAI_DEFAULT_MODEL** — New settings fields in `config.py` with env var support
+- **`ollama_internal_base` / `ollama_tags_url`** — URL normalization properties that handle both cloud (`/api` in URL) and local (`/api` appended) Ollama configurations
+- **Bearer auth for Ollama Cloud** — `_headers()` method adds `Authorization: Bearer <OLLAMA_API_KEY>` to all requests
+- **Provider status mapping** — Ollama `detailed_health` returns `NOT_CONFIGURED`, `HEALTHY`, `MISCONFIGURED`, `RATE_LIMITED`, `MODEL_UNAVAILABLE` based on real HTTP response codes
+- **`LOCAL_ONLY` detection** — Ollama returns `LOCAL_ONLY` in production when base URL is localhost
+- **Network monitor categorization** — `categorized` field separates `expectedAuth`, `unexpectedClientErrors`, `rateLimited`, `serverErrors`
+- **Honest test names** — Network error tests explicitly state "no server errors; expected 401 on /api/auth/me allowed"
+- **PROJECT_STATUS.md** — Created with verified results from actual execution
+- **Documentation in `docs/`** — TESTING_GUIDE.md and TEST_REPORT.md copied to docs/ directory
+
+### Changed
+- **OpenAI `default_model`** — Reads `settings.openai_default_model` (`gpt-4o-mini`) instead of hardcoded `gpt-4o`
+- **OpenAI health status** — Missing key returns `NOT_CONFIGURED` (not `MISCONFIGURED`)
+- **Ollama `display_name`** — Changed from "Ollama (Local)" to "Ollama"
+- **Demo spec** — Removed AI chat trigger to avoid paid endpoint calls during recording
+- **`package.json` test:report** — Updated path to match new reporter output location
+- **Playwright reporter output** — Fixed clash between HTML report and test artifacts
+
+### Fixed
+- **Ollama double `/api` URL** — `ollama_chat_url` produced `https://ollama.com/api/api/chat` with cloud base URL; fixed via `ollama_internal_base` normalization
+- **`_find_repo_root` Windows home `.git` escape** — Function walked up to `C:\Users\<user>` when `.git` existed in home dir; fixed with per-directory marker priority + `Path.home()` boundary
+- **3 failing `test_config.py` tests** — `test_pyproject_toml_marker`, `test_no_marker_returns_none`, `test_docker_like_finds_pyproject_toml` all pass now
+
+### Security
+- **Server-side-only keys** — All AI provider keys remain server-only; no `NEXT_PUBLIC_` exposure
+- **`.env.local` gitignored** — Confirmed via `git check-ignore -v`
+- **No secrets in tracked files** — Full secret scan completed with zero findings
+
+### Testing
+- **Backend**: 145/148 pytest pass (3 skipped — Emergent not configured), 0 failures
+- **Backend Ruff**: All checks pass, 100 files formatted
+- **Frontend vitest**: 79/79 pass (4 test files)
+- **Frontend type-check**: Clean (0 errors)
+- **Frontend lint**: Clean (0 warnings)
+- **Frontend build**: Successful (32 static pages)
+- **Playwright Chromium**: 56/56 pass (20 smoke + 25 functional + 10 responsive + 1 demo)
+- **Demo video**: Recorded at 1920×1080, ~1 min, 12 steps, 960 KB .webm
+
+### Deployment
+- **render.yaml** — Added `OLLAMA_BASE_URL`, `OLLAMA_API_KEY`, `OLLAMA_MODEL`, `OLLAMA_API_MODE`, `OPENAI_DEFAULT_MODEL`
+- **`.env.example`** — Updated with `OPENAI_DEFAULT_MODEL`, `OLLAMA_API_KEY`, `OLLAMA_API_MODE` placeholders

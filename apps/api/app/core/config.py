@@ -7,18 +7,20 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 def _find_repo_root(start: Path) -> Path | None:
     """Walk up from *start* looking for the monorepo root.
 
-    Checks for markers in priority order: .git directory, then
-    package.json (monorepo), then pyproject.toml (standalone backend).
-    Returns None when no marker is found — process environment will
-    still be used.
+    Checks each ancestor directory for markers in priority order:
+    .git directory, then package.json, then pyproject.toml.
+    Returns the nearest ancestor that contains any marker.
+    Returns None if no marker is found before reaching the user's
+    home directory — process environment will still be used.
     """
-    for parent in [start] + list(start.parents):
+    home = Path.home().resolve()
+    for parent in [start.resolve()] + list(start.resolve().parents):
+        if parent == home:
+            break
         if (parent / ".git").exists():
             return parent
-    for parent in [start] + list(start.parents):
         if (parent / "package.json").exists():
             return parent
-    for parent in [start] + list(start.parents):
         if (parent / "pyproject.toml").exists():
             return parent
     return None
@@ -89,6 +91,9 @@ class Settings(BaseSettings):
     openai_api_key: str = ""
     ollama_base_url: str = "http://localhost:11434"
     ollama_model: str = "llama3"
+    ollama_api_key: str = ""
+    ollama_api_mode: str = "native"
+    openai_default_model: str = "gpt-4o-mini"
     llm_max_retries: int = 2
     llm_retry_delay_seconds: float = 0.5
 
@@ -141,9 +146,19 @@ class Settings(BaseSettings):
     )
 
     @property
-    def ollama_chat_url(self) -> str:
+    def ollama_internal_base(self) -> str:
         base = self.ollama_base_url.rstrip("/")
-        return f"{base}/api/chat"
+        if not base.endswith("/api"):
+            return f"{base}/api"
+        return base
+
+    @property
+    def ollama_chat_url(self) -> str:
+        return f"{self.ollama_internal_base}/chat"
+
+    @property
+    def ollama_tags_url(self) -> str:
+        return f"{self.ollama_internal_base}/tags"
 
     @property
     def cors_origin_list(self) -> list[str]:

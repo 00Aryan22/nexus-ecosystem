@@ -30,6 +30,16 @@ services:
         sync: false
       - key: OPENAI_API_KEY
         sync: false
+      - key: OPENAI_DEFAULT_MODEL
+        value: gpt-4o-mini
+      - key: OLLAMA_BASE_URL
+        value: https://ollama.com/api
+      - key: OLLAMA_API_KEY
+        sync: false
+      - key: OLLAMA_MODEL
+        value: gpt-oss:120b
+      - key: OLLAMA_API_MODE
+        value: native
       - key: POLYGON_AMOY_RPC_URL
         sync: false
       - key: PINATA_JWT
