@@ -172,3 +172,36 @@
 ### Deployment
 - **render.yaml** — Added `OLLAMA_BASE_URL`, `OLLAMA_API_KEY`, `OLLAMA_MODEL`, `OLLAMA_API_MODE`, `OPENAI_DEFAULT_MODEL`
 - **`.env.example`** — Updated with `OPENAI_DEFAULT_MODEL`, `OLLAMA_API_KEY`, `OLLAMA_API_MODE` placeholders
+
+## v1.2.1 (2026-07-10) — Production Verification & Gemini Key Rotation
+
+### Added
+- **Production smoke regression** — 20/20 Playwright tests pass against `https://nexus-ecosystem-web.vercel.app` (all landing + dashboard routes)
+- **Production backend verification** — All endpoints operational: `GET /`, `/health`, `/docs`, `/openapi.json`, `/api/v1/auth/nonce`, `/api/v1/auth/me` (401), `/api/v1/founder-agent/provider/status`
+- **Demo video extended** — 1920×1080, 5.8 min, 3.7 MB .webm covering all 12 application sections
+- **Test artifacts organized** — `test-results/videos/`, `screenshots/`, `traces/`, `reports/` directories
+
+### Changed
+- **Gemini API key** — Rotated (old key compromised); new key configured in `.env.local` only
+- **Demo spec pauses** — Extended from ~48s total wait to ~350s total wait for 5–8 min professional demo target
+
+### Fixed
+- **SIWE_URI/SIWE_DOMAIN** — Still using backend domain in nonce message; Render env vars must be set manually: `SIWE_DOMAIN=nexus-ecosystem-web.vercel.app`, `SIWE_URI=https://nexus-ecosystem-web.vercel.app`
+
+### Provider Status (Production)
+| Provider | Status |
+|----------|--------|
+| Gemini | `RATE_LIMITED` (free tier quota exhausted) — new key set locally; requires Render redeploy |
+| OpenAI | `NOT_CONFIGURED` — `OPENAI_API_KEY` not set on Render |
+| Ollama | `NOT_CONFIGURED` — `OLLAMA_API_KEY` not set on Render |
+
+### Security
+- **New Gemini key** — Set only in `.env.local` (gitignored); not committed to repo
+- **Full secret scan** — Zero secrets found in tracked files
+- **All artifacts gitignored** — `test-results/`, `playwright-report/`, `.env*` confirmed in `.gitignore`
+
+### Testing
+- **Production Playwright (Chromium)**: 20/20 pass (smoke + landing + dashboard routes)
+- **Demo video**: 1/1 pass, 5.8 min, 1920×1080, 3.7 MB
+- **Backend**: Unchanged from v1.2.0 (145/148 pass, 3 skipped)
+- **Frontend**: Unchanged from v1.2.0 (79/79 vitest, build clean)

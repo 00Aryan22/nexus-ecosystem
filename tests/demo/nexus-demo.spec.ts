@@ -35,60 +35,61 @@ test.describe("NEXUS AI Professional Demo", () => {
 
     await test.step("3. Open Auth Connect page", async () => {
       await page.goto(`${BASE_URL}/auth/connect`, { waitUntil: "networkidle" });
-      await page.waitForTimeout(3000);
+      await page.waitForTimeout(30000);
     });
 
     await test.step("4. Dashboard overview", async () => {
       await page.goto(`${BASE_URL}/dashboard`, { waitUntil: "networkidle" });
-      await page.waitForTimeout(3000);
+      await page.waitForTimeout(40000);
     });
 
     await test.step("5. AI Founder Agent", async () => {
       await page.goto(`${BASE_URL}/founder-agent`, { waitUntil: "networkidle" });
-      await page.waitForTimeout(3000);
+      await page.waitForTimeout(5000);
 
       const chatInput = page.getByPlaceholder(/message.*founder|chat/i);
       if (await chatInput.isVisible()) {
-        await page.waitForTimeout(2000);
+        await chatInput.click();
+        await page.waitForTimeout(5000);
       }
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(25000);
     });
 
     await test.step("6. Smart Contract Auditor", async () => {
       await page.goto(`${BASE_URL}/auditor`, { waitUntil: "networkidle" });
-      await page.waitForTimeout(3000);
+      await page.waitForTimeout(30000);
     });
 
     await test.step("7. Skill Passport", async () => {
       await page.goto(`${BASE_URL}/skill-passport`, { waitUntil: "networkidle" });
-      await page.waitForTimeout(3000);
+      await page.waitForTimeout(30000);
     });
 
     await test.step("8. Analytics", async () => {
       await page.goto(`${BASE_URL}/analytics`, { waitUntil: "networkidle" });
-      await page.waitForTimeout(3000);
+      await page.waitForTimeout(30000);
     });
 
     await test.step("9. Startup Builder", async () => {
       await page.goto(`${BASE_URL}/startup-builder`, { waitUntil: "networkidle" });
-      await page.waitForTimeout(3000);
+      await page.waitForTimeout(30000);
     });
 
     await test.step("10. Settings", async () => {
       await page.goto(`${BASE_URL}/settings`, { waitUntil: "networkidle" });
-      await page.waitForTimeout(3000);
+      await page.waitForTimeout(30000);
     });
 
     await test.step("11. Workspace", async () => {
       await page.goto(`${BASE_URL}/workspace`, { waitUntil: "networkidle" });
-      await page.waitForTimeout(3000);
+      await page.waitForTimeout(30000);
     });
 
     await test.step("12. Final - Back to Dashboard", async () => {
       await page.goto(`${BASE_URL}/dashboard`, { waitUntil: "networkidle" });
-      await page.waitForTimeout(3000);
+      await page.waitForTimeout(25000);
       await page.evaluate(() => window.scrollTo({ top: 0, behavior: "smooth" }));
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(5000);
     });
   });
 });
