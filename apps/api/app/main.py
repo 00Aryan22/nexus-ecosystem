@@ -60,6 +60,7 @@ app = FastAPI(
     ],
 )
 
+
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
     logger.debug("HTTPException: %s %s", exc.status_code, exc.detail)
@@ -70,7 +71,10 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
 
 
 @app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+async def validation_exception_handler(
+    request: Request,
+    exc: RequestValidationError,
+) -> JSONResponse:
     logger.debug("ValidationError: %s", exc.errors())
     safe_errors = _safe_validation_errors(exc.errors())
     return JSONResponse(
@@ -93,7 +97,9 @@ def _safe_validation_errors(errors: list) -> list:
             if key == "ctx" and isinstance(value, dict):
                 safe_ctx: dict = {}
                 for ck, cv in value.items():
-                    safe_ctx[ck] = str(cv) if not isinstance(cv, (str, int, float, bool, type(None))) else cv
+                    safe_ctx[ck] = (
+                        str(cv) if not isinstance(cv, (str, int, float, bool, type(None))) else cv
+                    )
                 safe_err[key] = safe_ctx
             else:
                 safe_err[key] = value
