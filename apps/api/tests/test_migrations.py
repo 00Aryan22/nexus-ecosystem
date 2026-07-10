@@ -133,7 +133,7 @@ async def test_user_ai_settings_crud() -> None:
                 text(
                     "INSERT INTO users "
                     "(id, wallet_address, role, is_active, default_llm_provider) "
-                    "VALUES (:id, :wallet, 'founder', 1, 'gemini')"
+                    "VALUES (:id, :wallet, 'founder', true, 'gemini')"
                 ),
                 {"id": str(user_id), "wallet": f"0x{uuid.uuid4().hex[:40]}"},
             )
@@ -142,7 +142,7 @@ async def test_user_ai_settings_crud() -> None:
                     "INSERT INTO user_ai_settings "
                     "(id, user_id, default_provider, default_model, temperature, top_p, "
                     "max_tokens, streaming_enabled, memory_enabled, max_retrieved_docs) "
-                    "VALUES (:id, :uid, 'gemini', 'gemini-1.5-pro', 0.7, 1.0, 4096, 1, 1, 5)"
+                    "VALUES (:id, :uid, 'gemini', 'gemini-1.5-pro', 0.7, 1.0, 4096, true, true, 5)"
                 ),
                 {"id": str(settings_id), "uid": str(user_id)},
             )
