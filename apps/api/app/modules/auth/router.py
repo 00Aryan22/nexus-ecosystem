@@ -33,7 +33,7 @@ async def get_nonce(wallet: str, request: Request, response: Response) -> ApiRes
     await check_rate_limit(request, bucket="auth:nonce", limit=20, window_seconds=60)
     if not wallet.startswith("0x") or len(wallet) != 42:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail="Invalid wallet address",
         )
 

@@ -16,7 +16,9 @@
     "postinstall": "npx patch-package"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "patch-package": "^8.0.1",
+    "playwright": "^1.61.1",
     "turbo": "^2.5.4",
     "typescript": "^5.8.3"
   },
