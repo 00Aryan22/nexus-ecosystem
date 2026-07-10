@@ -60,7 +60,8 @@ export async function verifySignature(payload: {
   const body = await res.json().catch(() => ({}));
   if (!res.ok) {
     console.error("[Auth API] verifySignature failed", { status: res.status, body });
-    throw new Error(body?.error?.message ?? "Verification failed");
+    const errMsg = body?.error?.message ?? body?.detail ?? "Verification failed";
+    throw new Error(errMsg);
   }
 
   const json = body as ApiResponse<{ user: UserPublic }>;

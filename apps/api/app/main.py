@@ -1,8 +1,10 @@
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from app.core.config import settings
 from app.core.redis import close_redis
@@ -57,6 +59,47 @@ app = FastAPI(
         },
     ],
 )
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
+    logger.debug("HTTPException: %s %s", exc.status_code, exc.detail)
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"data": None, "error": {"message": exc.detail}, "meta": {}},
+    )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+    logger.debug("ValidationError: %s", exc.errors())
+    safe_errors = _safe_validation_errors(exc.errors())
+    return JSONResponse(
+        status_code=422,
+        content={
+            "data": None,
+            "error": {"message": "Validation error", "details": safe_errors},
+            "meta": {},
+        },
+    )
+
+
+def _safe_validation_errors(errors: list) -> list:
+    """Strip non-serializable objects (e.g. Exception instances) from
+    FastAPI validation error details so the response is always JSON-safe."""
+    safe: list = []
+    for err in errors:
+        safe_err: dict = {}
+        for key, value in err.items():
+            if key == "ctx" and isinstance(value, dict):
+                safe_ctx: dict = {}
+                for ck, cv in value.items():
+                    safe_ctx[ck] = str(cv) if not isinstance(cv, (str, int, float, bool, type(None))) else cv
+                safe_err[key] = safe_ctx
+            else:
+                safe_err[key] = value
+        safe.append(safe_err)
+    return safe
+
 
 app.add_middleware(
     CORSMiddleware,
