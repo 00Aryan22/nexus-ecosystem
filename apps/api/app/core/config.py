@@ -70,7 +70,7 @@ class Settings(BaseSettings):
     jwt_access_token_expire_minutes: int = 15
     jwt_refresh_token_expire_days: int = 7
 
-    cors_origins: str = "http://localhost:3000"
+    cors_origins: str = "https://nexus-ecosystem-web.vercel.app,http://localhost:3000"
 
     siwe_domain: str = "localhost"
     siwe_uri: str = "http://localhost:3000"

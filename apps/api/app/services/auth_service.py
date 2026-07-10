@@ -110,11 +110,12 @@ async def verify_siwe_and_login(
 
     await redis.delete(_nonce_redis_key(wallet))
 
-    # Support dynamic Vercel previews when running with default localhost domain configuration
+    # When SIWE_DOMAIN is not explicitly configured, accept the domain
+    # from the SIWE message itself (which was derived from the request host).
+    # This supports any hosting platform — Render, Vercel, Railway, etc.
+    # The domain check is only enforced when SIWE_DOMAIN is explicitly set.
     expected_domain = settings.siwe_domain
-    if expected_domain == "localhost" and (
-        siwe.domain.endswith(".vercel.app") or "vercel" in siwe.domain or siwe.domain == "localhost"
-    ):
+    if expected_domain == "localhost":
         expected_domain = siwe.domain
 
     siwe.verify(signature, domain=expected_domain)
