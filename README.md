@@ -1,369 +1,409 @@
 # NEXUS AI Ecosystem
 
-**AI-powered Web3 operating system for founders** — blockchain reputation, NFT skill passports, AI startup building, smart contract auditing, and DAO governance.
+AI-powered Web3 operating system for founders — AI agents, soulbound skill credentials, smart contract auditing, and startup tools on Polygon Amoy.
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D22-brightgreen)](package.json)
 [![Python](https://img.shields.io/badge/python-%3E%3D3.11-brightgreen)](apps/api/pyproject.toml)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black)](apps/web)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688)](apps/api)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.28-363636)](packages/contracts)
-[![Polygon](https://img.shields.io/badge/Polygon-Amoy-8247E5)](packages/contracts)
+[![Playwright](https://img.shields.io/badge/Playwright-1.61-green)](tests)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue)](apps/web)
 
 **Repository:** [github.com/00Aryan22/nexus-ecosystem](https://github.com/00Aryan22/nexus-ecosystem)
 
 ---
 
+## Live Application
+
+| Environment | URL |
+|-------------|-----|
+| Frontend | [https://nexus-ecosystem-web.vercel.app](https://nexus-ecosystem-web.vercel.app) |
+| Backend API | [https://nexus-api-1swe.onrender.com](https://nexus-api-1swe.onrender.com) |
+| Health Check | [https://nexus-api-1swe.onrender.com/health](https://nexus-api-1swe.onrender.com/health) |
+| API Docs | [https://nexus-api-1swe.onrender.com/docs](https://nexus-api-1swe.onrender.com/docs) |
+
+---
+
 ## Project Overview
 
-NEXUS AI is a full-stack dApp that combines AI agents with blockchain infrastructure to help founders:
-- **Mint Skill Passport NFTs** — soulbound reputation tokens proving expertise
-- **Chat with an AI Founder Agent** — get startup advice with memory and context
-- **Audit Smart Contracts** — AI-powered security analysis with gas optimization
-- **Build & Register Startups** — on-chain startup profiles
-- **Manage Knowledge** — RAG-powered vector search across documents
-- **Deploy & Verify Contracts** — developer infrastructure tools
+NEXUS AI combines AI agents with Web3 infrastructure to give founders a unified platform for building, launching, and managing blockchain startups.
+
+The platform addresses several challenges:
+- **Fragmented tools** — AI chat, smart contract auditing, skill credentials, and startup management are scattered across siloed services
+- **Reputation portability** — Skill verification is centralized; NEXUS uses soulbound NFT credentials for on-chain reputation
+- **AI provider flexibility** — A multi-provider LLM layer supports Gemini, OpenAI, and Ollama (cloud or local) with a health-aware router
+
+---
+
+## Core Features
+
+| Feature | Description | Status |
+|---------|-------------|--------|
+| **AI Founder Agent** | Chat-based AI assistant with memory, context, and multi-provider LLM support | Production deployed |
+| **Startup Builder** | On-chain startup registration and management | Production deployed |
+| **Smart Contract Auditor** | AI-powered Solidity security analysis with gas optimization | Production deployed |
+| **Skill Passport** | Soulbound NFT credentials (ERC-721) minted on Polygon Amoy | Production deployed |
+| **DAO Center** | Governance and community tools | Implemented |
+| **Workspace** | Knowledge documents with RAG vector search | Implemented |
+| **Analytics** | Platform usage and event tracking | Implemented |
+| **Wallet Authentication** | SIWE (Sign-In with Ethereum) via RainbowKit + wagmi | Production deployed |
+| **Contract Deployment** | Developer infrastructure — verification, ABI lookup, gas estimation, templates | Implemented |
+| **AI Provider Configuration** | Per-user provider/model settings | Implemented |
+
+---
+
+## AI Provider Architecture
+
+NEXUS uses a pluggable LLM provider system with health-aware routing:
+
+| Provider | Production Status | Notes |
+|----------|-----------------|-------|
+| **Gemini** | `RATE_LIMITED` | `gemini-2.0-flash` configured; free-tier quota exhausted on Render |
+| **OpenAI** | `NOT_CONFIGURED` | Key must be set on Render dashboard (old key compromised) |
+| **Ollama Cloud** | `NOT_CONFIGURED` | Key must be set on Render dashboard |
+| **Ollama Local** | `LOCAL_ONLY` | Works when Ollama runs locally at `http://127.0.0.1:11434` |
+
+Key design points:
+- All API keys remain **server-side only** — never exposed to the browser via `NEXT_PUBLIC_*`
+- Provider health is reported truthfully: `HEALTHY`, `RATE_LIMITED`, `NOT_CONFIGURED`, `MISCONFIGURED`, `MODEL_UNAVAILABLE`, `LOCAL_ONLY`
+- The LLM Router selects providers based on availability, user preference, and configured model
+- Ollama Cloud uses Bearer token authentication normalized for `https://ollama.com/api`
+
+---
+
+## Web3 Authentication
+
+```
+Connect Wallet (MetaMask / WalletConnect)
+  → GET /api/v1/auth/nonce (SIWE nonce generation)
+  → wallet.signMessage() (user signs SIWE message)
+  → POST /api/v1/auth/verify (signature verification)
+  → JWT + secure HttpOnly cookies issued
+  → Authenticated dashboard access
+```
+
+- **Network:** Polygon Amoy (Chain ID: 80002)
+- **Stack:** RainbowKit + wagmi + SIWE + JWT + secure cookies
+- **Session:** Access + refresh tokens with CSRF protection
+- **Status:** Implemented and deployed; real wallet interaction requires MetaMask
 
 ---
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Frontend (Next.js 15)                  │
-│  Dashboard │ Founder Chat │ Auditor │ Passport │ Settings │
-└──────────────────────┬──────────────────────────────────┘
-                       │ HTTP / SSE / WebSocket
-┌──────────────────────┴──────────────────────────────────┐
-│                   API Gateway (FastAPI)                   │
-│  Auth │ Projects │ Passports │ Auditor │ AI │ Analytics   │
-└────┬─────────┬──────────┬──────────┬───────────────────┘
-     │         │          │          │
-┌────┴──┐ ┌───┴───┐ ┌───┴────┐ ┌───┴────────────┐
-│Postgres│ │ Redis │ │ChromaDB│ │  LLM Providers  │
-│Supabase│ │ Cache │ │Vector  │ │Gemini│Ollama│AI │
-└────────┘ └───────┘ │ Store  │ └────────────────┘
-                     └────────┘
-┌─────────────────────────────────────────────────────────┐
-│              Smart Contracts (Polygon Amoy)               │
-│   SkillPassportNFT (ERC-721 Soulbound)                    │
-│   StartupRegistry (On-Chain Startup Profiles)             │
-└─────────────────────────────────────────────────────────┘
-```
+```mermaid
+graph TB
+    User["User / Browser"] --> Frontend["Next.js 15 Frontend (Vercel)"]
+    Frontend --> Backend["FastAPI Backend (Render)"]
+    Frontend --> Wallet["MetaMask / WalletConnect (Polygon Amoy)"]
 
----
+    subgraph Backend["FastAPI Backend"]
+        Auth["Auth (SIWE + JWT)"]
+        AI["AI Provider Router"]
+        Auditor["Smart Contract Auditor"]
+        Passport["Skill Passport Service"]
+        Projects["Startup Builder"]
+        Memory["Memory / RAG"]
 
-## Tech Stack
+        AI --> Gemini["Gemini API"]
+        AI --> OpenAI["OpenAI API"]
+        AI --> Ollama["Ollama Cloud / Local"]
+    end
 
-| Layer | Technology |
-|-------|-----------|
-| **Frontend** | Next.js 15, React 19, TypeScript, Tailwind CSS, shadcn/ui, Framer Motion, Zustand, TanStack Query |
-| **Backend** | Python 3.12, FastAPI, SQLAlchemy (async), Alembic, Redis, ChromaDB |
-| **AI** | OpenAI, Google Gemini, Ollama (local), RAG with vector embeddings, LLM Router |
-| **Blockchain** | Solidity 0.8.28, Hardhat, OpenZeppelin, Polygon Amoy, WalletConnect, RainbowKit, wagmi |
-| **Storage** | PostgreSQL (Supabase), IPFS (Pinata), ChromaDB (vectors) |
-| **Auth** | SIWE (Sign-In with Ethereum), JWT, session management |
-| **DevOps** | Docker Compose, Turborepo, GitHub Actions, Vercel |
+    Backend --> PG[("PostgreSQL")]
+    Backend --> Redis[("Redis Cache")]
+    Backend --> Chroma[("ChromaDB Vector Store")]
 
----
+    Wallet --> Contracts["Smart Contracts (Polygon Amoy)"]
+    Contracts --> SkillPassportNFT["SkillPassportNFT (ERC-721 Soulbound)"]
+    Contracts --> StartupRegistry["StartupRegistry (On-chain Profiles)"]
 
-## Prerequisites
-
-- **Node.js** >= 22
-- **Python** >= 3.11
-- **Docker Desktop** (for local PostgreSQL, Redis, ChromaDB)
-- **MetaMask** browser extension
-
----
-
-## Installation
-
-### 1. Clone & Install Dependencies
-
-```bash
-git clone https://github.com/00Aryan22/nexus-ecosystem.git
-cd nexus-ecosystem
-npm install
-```
-
-### 2. Environment Variables
-
-```bash
-cp .env.example .env.local
-cp apps/web/.env.example apps/web/.env.local
-```
-
-Edit both `.env.local` files with your secrets. See [Environment Variables](#environment-variables) below.
-
-### 3. Start Infrastructure
-
-```bash
-docker compose -f infra/docker/docker-compose.yml up -d
-```
-
-This starts PostgreSQL (port 5432), Redis (port 6379), and ChromaDB (port 8000).
-
-### 4. Backend
-
-```bash
-cd apps/api
-python -m venv .venv
-# Windows: .venv\Scripts\activate  |  macOS/Linux: source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-```
-
-API docs: http://localhost:8000/docs
-
-### 5. Frontend
-
-```bash
-cd apps/web
-npm run dev
-```
-
-App: http://localhost:3000
-
-### 6. Smart Contracts (optional)
-
-```bash
-cd packages/contracts
-npm run compile
-npm test
+    Backend --> IPFS["IPFS (Pinata)"]
 ```
 
 ---
 
-## Environment Variables
+## Technology Stack
 
-### Root `.env.local` (server-side)
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `DATABASE_URL` | Yes | PostgreSQL connection string (Supabase or local) |
-| `JWT_SECRET_KEY` | Yes | Secret for signing JWT tokens |
-| `JWT_ALGORITHM` | No | JWT algorithm (default: HS256) |
-| `JWT_EXPIRATION_MINUTES` | No | Token expiry (default: 60) |
-| `REDIS_URL` | No | Redis connection string (default: localhost:6379) |
-| `GEMINI_API_KEY` | No | Google Gemini API key |
-| `OPENAI_API_KEY` | No | OpenAI API key |
-| `ALCHEMY_API_KEY` | No | Alchemy API key |
-| `ALCHEMY_POLYGON_AMOY_RPC_URL` | No | Polygon Amoy RPC endpoint |
-| `PINATA_API_KEY` | No | Pinata API key |
-| `PINATA_API_SECRET` | No | Pinata API secret |
-| `PINATA_JWT` | No | Pinata JWT for IPFS pinning |
-| `STITCH_URL` | No | Stitch API endpoint |
-
-### Frontend `apps/web/.env.local` (browser-safe)
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | Yes | WalletConnect Cloud project ID |
-| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anonymous key |
-| `NEXT_PUBLIC_ALCHEMY_POLYGON_AMOY_RPC_URL` | No | Public read-only RPC endpoint |
-| `NEXT_PUBLIC_PINATA_GATEWAY` | No | IPFS gateway URL |
-
-> **Never commit `.env.local` files.** They contain sensitive credentials.
+| Category | Technologies |
+|----------|-------------|
+| **Frontend** | Next.js 15, React 19, TypeScript 5.8, Tailwind CSS, shadcn/ui, Framer Motion, Zustand, TanStack Query, RainbowKit, wagmi |
+| **Backend** | Python 3.12, FastAPI, SQLAlchemy (async), Alembic, Pydantic, Redis, ChromaDB |
+| **AI** | Gemini, OpenAI, Ollama (cloud + local), Provider Router, RAG with vector embeddings |
+| **Blockchain** | Solidity 0.8.28, Hardhat, OpenZeppelin, Polygon Amoy, WalletConnect, SIWE |
+| **Storage** | PostgreSQL, Redis, ChromaDB (vectors), IPFS (Pinata) |
+| **Auth** | SIWE (EIP-4361), JWT, secure HttpOnly cookies, CSRF protection |
+| **Testing** | pytest (145 tests), vitest (79 tests), Playwright (56 tests + demo), Ruff, ESLint |
+| **CI/CD** | GitHub Actions, Turborepo, Playwright, SQLite in-memory for backend tests |
+| **Deployment** | Vercel (frontend), Render (backend), Docker Compose |
 
 ---
 
-## Docker
-
-The infrastructure stack runs via Docker Compose:
-
-```yaml
-# infra/docker/docker-compose.yml
-services:
-  postgres:   # PostgreSQL 16 (port 5432)
-  redis:      # Redis 7 (port 6379)
-  chromadb:   # ChromaDB (port 8000)
-```
-
-Start: `docker compose -f infra/docker/docker-compose.yml up -d`  
-Stop:  `docker compose -f infra/docker/docker-compose.yml down`
-
-A production Dockerfile for the API is available at `infra/docker/Dockerfile.api` (Python 3.12-slim, uvicorn).
-
----
-
-## Supabase
-
-This project uses Supabase for managed PostgreSQL and authentication.
-
-### Local Development
-1. Install Supabase CLI: `npm install -g supabase`
-2. Link your project: `supabase link --project-ref YOUR_PROJECT_REF`
-3. Apply migrations: `supabase db push`
-
-### Database Migrations
-Alembic manages schema migrations (9 migrations from `001` through `009`):
-
-```bash
-cd apps/api
-alembic upgrade head
-```
-
----
-
-## Vercel
-
-The frontend deploys to Vercel:
-
-```bash
-# Install Vercel CLI
-npm install -g vercel
-
-# Link project
-vercel link --project YOUR_PROJECT_NAME
-
-# Deploy to production
-vercel --prod
-```
-
-Environment variables must be configured in the Vercel dashboard under Settings > Environment Variables.
-
----
-
-## Ollama (Local AI)
-
-For fully local AI inference:
-
-```bash
-# Install Ollama: https://ollama.com
-ollama pull llama3.2:3b
-ollama pull nomic-embed-text
-
-# Set in .env.local
-OLLAMA_BASE_URL=http://localhost:11434
-```
-
----
-
-## Smart Contracts
-
-### Contracts
-
-| Contract | Network | Description |
-|----------|---------|-------------|
-| `SkillPassportNFT.sol` | Polygon Amoy | ERC-721 soulbound NFT with roles (ADMIN, ISSUER), mint/revoke/update |
-| `StartupRegistry.sol` | Polygon Amoy | On-chain startup registration with founder profiles |
-
-### Compile & Test
-
-```bash
-cd packages/contracts
-npm run compile      # Compile Solidity
-npm test            # Run Hardhat tests (17/17 passing)
-```
-
-### Deploy
-
-```bash
-cd packages/contracts
-npx hardhat run scripts/deploy.ts --network amoy
-```
-
----
-
-## Deployment
-
-### Prerequisites
-
-- Supabase project (managed PostgreSQL)
-- Vercel account (for frontend hosting)
-- Alchemy or Infura RPC URL for Polygon Amoy
-- WalletConnect Cloud project ID
-
-### Steps
-
-1. **Database**: Run Alembic migrations against Supabase
-2. **Backend**: Deploy FastAPI to your preferred host (Railway, Render, or VPS)
-3. **Frontend**: Deploy Next.js to Vercel
-4. **Contracts**: Deploy Solidity contracts to Polygon Amoy
-
----
-
-## Demo Instructions
-
-### 1. Connect Wallet
-- Open the app at http://localhost:3000
-- Click "Connect Wallet" → MetaMask → Sign the SIWE message
-
-### 2. Mint Skill Passport
-- Navigate to **Skill Passport**
-- Create a passport with your expertise details
-- Click "Mint" → confirm MetaMask transaction
-
-### 3. Chat with Founder Agent
-- Navigate to **Founder Agent**
-- Ask startup-related questions
-- The agent uses AI + your knowledge base + memory
-
-### 4. Audit a Contract
-- Navigate to **Auditor**
-- Paste Solidity code or enter a contract address
-- View AI-generated security analysis and gas optimization
-
-### 5. Register a Startup
-- Navigate to **Startup Builder**
-- Fill in your startup details
-- Deploy the on-chain registration transaction
-
----
-
-## Folder Structure
+## Repository Structure
 
 ```
 nexus-ecosystem/
 ├── apps/
-│   ├── api/                    # FastAPI backend
+│   ├── api/                    # FastAPI backend (Python)
 │   │   ├── app/
 │   │   │   ├── core/           # Config, database, security
-│   │   │   ├── models/         # SQLAlchemy models
-│   │   │   ├── schemas/        # Pydantic schemas
-│   │   │   ├── services/       # Business logic
+│   │   │   ├── models/         # SQLAlchemy ORM models
+│   │   │   ├── schemas/        # Pydantic request/response schemas
+│   │   │   ├── services/       # Business logic layer
 │   │   │   │   ├── ai/         # Context builder, AI service
 │   │   │   │   ├── auditor/    # Contract audit + gas optimization
 │   │   │   │   ├── founder_agent/ # Agent prompts & service
 │   │   │   │   └── llm/        # LLM provider registry + router
 │   │   │   └── modules/        # Route handlers (11 modules)
-│   │   ├── alembic/            # Database migrations (9)
-│   │   └── tests/              # Pytest suite (132 tests)
-│   └── web/                    # Next.js 15 frontend
-│       ├── app/                # App Router (32 pages)
-│       ├── components/         # React components
+│   │   ├── alembic/            # Database migrations
+│   │   └── tests/              # Pytest suite (145 tests)
+│   └── web/                    # Next.js 15 frontend (TypeScript)
+│       ├── app/                # App Router pages
+│       ├── components/         # React components (shadcn/ui)
 │       ├── hooks/              # Custom React hooks
 │       ├── lib/                # API client, utilities
 │       └── store/              # Zustand state management
 ├── packages/
-│   └── contracts/              # Solidity + Hardhat
-│       ├── contracts/          # Smart contracts (2)
-│       ├── scripts/            # Deploy scripts
-│       └── test/               # Hardhat tests (17)
+│   ├── contracts/              # Solidity + Hardhat
+│   │   ├── contracts/          # Smart contracts
+│   │   ├── scripts/            # Deploy scripts
+│   │   └── test/               # Hardhat tests
+│   └── agents/                 # Agent framework
+├── tests/                      # Playwright E2E tests
+│   ├── smoke/                  # Production smoke tests (20)
+│   ├── functional/             # Feature + network tests
+│   ├── responsive/             # Mobile viewport tests
+│   ├── demo/                   # Demo video recording
+│   ├── pages/                  # Page object models
+│   ├── fixtures/               # Test fixtures
+│   └── helpers/                # Network monitor helper
 ├── infra/
 │   └── docker/                 # Docker Compose + Dockerfiles
 ├── docs/                       # Documentation
-├── scripts/                    # Utility scripts
-├── tools/                      # Developer tools
-├── supabase/                   # Supabase config
-└── .github/                    # GitHub Actions CI
+├── .github/
+│   └── workflows/              # GitHub Actions CI
+├── render.yaml                 # Render deployment blueprint
+├── vercel.json                 # Vercel configuration
+├── playwright.config.ts        # Playwright E2E config
+├── playwright.demo.config.ts   # Demo video config
+├── .env.example                # Environment variable template
+└── package.json                # Turborepo root
 ```
 
 ---
 
-## Validation
+## Local Development
 
-| Check | Status |
-|-------|--------|
-| Ruff lint (Python) | ✅ Pass |
-| Pytest (backend) | ✅ 121/132 pass |
-| Next.js build | ✅ 32 pages, 0 errors |
-| Solidity tests | ✅ 17/17 pass |
-| TypeScript typecheck | ✅ Pass |
+### Prerequisites
+
+- **Node.js** >= 22
+- **Python** >= 3.11
+- **PostgreSQL** 16 (Docker recommended)
+- **Redis** 7 (Docker recommended)
+- **MetaMask** browser extension (for wallet testing)
+
+### Quick Start
+
+```bash
+# Clone
+git clone https://github.com/00Aryan22/nexus-ecosystem.git
+cd nexus-ecosystem
+
+# Install frontend dependencies
+npm install
+
+# Start infrastructure (PostgreSQL + Redis)
+docker compose -f infra/docker/docker-compose.yml up -d postgres redis
+
+# Backend setup
+cd apps/api
+python -m venv .venv
+# Windows: .venv\Scripts\activate  |  macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+
+# Frontend (new terminal)
+cd apps/web
+npm run dev
+```
+
+The application will be available at:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000
+- API Docs: http://localhost:8000/docs
+
+### Environment Configuration
+
+1. Copy the example files (placeholders only, no real secrets):
+
+```bash
+cp .env.example .env.local
+```
+
+2. Edit `.env.local` with your credentials. Required variables:
+
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | PostgreSQL connection string |
+| `JWT_SECRET_KEY` | Secret for signing JWT tokens (min 32 chars) |
+| `GEMINI_API_KEY` | Google Gemini API key |
+| `SIWE_DOMAIN` | Your frontend domain |
+| `SIWE_URI` | Your frontend URL |
+
+3. For the frontend, set `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` in Vercel dashboard.
+
+> **Never commit `.env.local`.** It is gitignored. Production secrets go in Vercel and Render dashboards.
+
+### Smart Contracts (optional)
+
+```bash
+cd packages/contracts
+npm run compile      # Compile Solidity
+npm test            # Run Hardhat tests
+```
+
+---
+
+## Testing
+
+### Backend (pytest)
+
+```bash
+cd apps/api
+pytest tests -v --tb=short
+# 145 passed, 3 skipped (Emergent AI not configured)
+ruff check app tests
+ruff format app tests --check
+```
+
+### Frontend (vitest)
+
+```bash
+cd apps/web
+npm run test            # vitest (79 tests)
+npm run lint            # ESLint
+npm run typecheck       # tsc --noEmit
+npm run build           # Next.js production build
+```
+
+### Playwright (E2E)
+
+```bash
+# Smoke tests against production (20 tests)
+npx playwright test tests/smoke/ --project=chromium
+
+# Full suite (56 tests)
+npx playwright test --project=chromium
+
+# Demo video recording (5.8 min)
+npx playwright test --config=playwright.demo.config.ts
+```
+
+### Verified Test Results
+
+| Suite | Tests | Passed | Failed | Skipped |
+|-------|-------|--------|--------|---------|
+| pytest (backend) | 148 | 145 | 0 | 3 |
+| Ruff lint | - | Pass | - | - |
+| Ruff format | 100 files | Pass | - | - |
+| vitest (frontend) | 79 | 79 | 0 | 0 |
+| ESLint | - | Pass | - | - |
+| TypeScript type-check | - | Pass | - | - |
+| Next.js build | 32 pages | Pass | - | - |
+| Playwright Chromium | 56 | 56 | 0 | 0 |
+| Playwright production smoke | 20 | 20 | 0 | 0 |
+| Demo video | 1 | 1 (5.8 min) | 0 | 0 |
+
+3 skipped backend tests cover the Emergent AI provider (not configured by default).
+
+---
+
+## Deployment
+
+| Component | Platform | URL |
+|-----------|----------|-----|
+| Frontend | Vercel | [nexus-ecosystem-web.vercel.app](https://nexus-ecosystem-web.vercel.app) |
+| Backend | Render | [nexus-api-1swe.onrender.com](https://nexus-api-1swe.onrender.com) |
+| API Health | Render | [nexus-api-1swe.onrender.com/health](https://nexus-api-1swe.onrender.com/health) |
+
+The `render.yaml` blueprint defines the backend service with auto-deploy from `main`. Environment variables marked `sync: false` must be set manually in the Render dashboard:
+
+- `DATABASE_URL`, `JWT_SECRET_KEY`, `GEMINI_API_KEY`, `OPENAI_API_KEY`, `OLLAMA_API_KEY`
+- `POLYGON_AMOY_RPC_URL`, `PINATA_JWT`, `CORS_ORIGIN_REGEX`
+
+The frontend deploys via Vercel with `NEXT_PUBLIC_API_URL=https://nexus-api-1swe.onrender.com/api/v1`.
+
+---
+
+## Security
+
+- All AI provider keys are **server-side only** (never `NEXT_PUBLIC_*`)
+- Wallet authentication uses **SIWE (EIP-4361)** with nonce replay protection
+- Sessions use **JWT with secure HttpOnly cookies** and CSRF tokens
+- **No private wallet keys** are stored or committed
+- **`.env.local`** is gitignored and never committed
+- **Secret scanning** runs before every commit
+- Test artifacts (videos, reports, traces) are gitignored
+
+---
+
+## Current Project Status
+
+| Category | Status |
+|----------|--------|
+| Frontend production | ✅ Deployed and verified (20/20 smoke tests) |
+| Backend production | ✅ Deployed and operational |
+| AI providers | ⚠️ Requires valid keys + Render redeploy |
+| Wallet auth (manual) | ⏳ Requires MetaMask |
+| Smart contracts | ✅ Compiled and tested (Polygon Amoy) |
+| E2E tests | ✅ 56/56 passing |
+| Demo video | ✅ 5.8 min, 1920x1080 |
+
+See [PROJECT_STATUS.md](PROJECT_STATUS.md) and [CHANGELOG.md](CHANGELOG.md) for detailed status.
+
+---
+
+## Known Limitations
+
+- **AI providers** require valid API keys on Render: OpenAI key is compromised (needs replacement), Ollama Cloud key not set, Gemini key newly rotated and awaiting redeploy
+- **Gemini free tier** is rate-limited (HTTP 429) on the current Render deployment
+- **Ollama Local** requires a running local Ollama instance
+- **Wallet testing** with browser extension automation is not available — MetaMask interaction is manual
+- **Render free tier** may cold-start (first request after inactivity takes several seconds)
+- **Notifications** module has a frontend route but the backend is not yet implemented
+- **Cross-browser** (Firefox, WebKit, mobile) Playwright tests are configured but not yet run
+
+---
+
+## Roadmap
+
+- Deeper multi-agent orchestration across AI providers
+- Expanded DAO governance workflows
+- Additional blockchain network support beyond Polygon Amoy
+- Enhanced AI memory with long-term vector recall
+- Richer analytics dashboards
+- Improved contract deployment pipeline
+- Expanded integration and load testing
+
+---
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Make changes and run tests
+4. Commit with descriptive messages
+5. Open a pull request
 
 ---
 
 ## License
 
-Proprietary — NEXUS AI Team
+Licensing information is pending. All rights reserved — NEXUS AI Team.
+
+---
+
+## Project Author
+
+[00Aryan22](https://github.com/00Aryan22)

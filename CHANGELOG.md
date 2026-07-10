@@ -205,3 +205,14 @@
 - **Demo video**: 1/1 pass, 5.8 min, 1920×1080, 3.7 MB
 - **Backend**: Unchanged from v1.2.0 (145/148 pass, 3 skipped)
 - **Frontend**: Unchanged from v1.2.0 (79/79 vitest, build clean)
+
+## v1.2.2 (2026-07-10) — README Modernization & GitHub Synchronization
+
+### Changed
+- **Root README** — Completely rewritten with accurate production URLs, verified test counts, AI provider status, architecture diagram (Mermaid), technology stack, repository structure, and truthful status labels
+- **README modernization** — Added live application links, architecture diagram, verified feature table, AI provider status table, Web3 auth flow, current project status, known limitations, and roadmap
+
+### Fixed
+- **README badges** — Removed broken MIT badge (no LICENSE file exists), corrected test counts from outdated 121/132 to verified 145/148
+- **README Supabase references** — Removed outdated Supabase auth documentation (project uses SIWE + JWT)
+- **README Docker Compose path** — Updated from old path to correct `infra/docker/docker-compose.yml`
