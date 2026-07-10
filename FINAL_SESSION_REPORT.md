@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-10
 **Branch:** `main`
-**Commit:** `5361a9b`
+**Commit:** `6e3e7b4`
 **Author:** OpenCode Agent
 
 ---
@@ -62,13 +62,16 @@ Production deployment sprint completed. Backend deployed to Render at nexus-api-
 ## Remaining Issues
 
 ### Required User Actions (1)
-1. **Set `SIWE_DOMAIN` on Render dashboard** — The code fix is deployed and the SIWE verify flow should now work even without this, but the wallet message will show the backend hostname (`nexus-api-1swe.onrender.com`) instead of the frontend domain (`nexus-ecosystem-web.vercel.app`). Set these env vars in the Render dashboard (Settings → Environment Variables):
-   - `SIWE_DOMAIN = nexus-ecosystem-web.vercel.app`
-   - `SIWE_URI = https://nexus-ecosystem-web.vercel.app`
-   - `CORS_ORIGINS = https://nexus-ecosystem-web.vercel.app,http://localhost:3000`
-   - `APP_ENV = production`
-   - `JWT_SECRET_KEY` (generate: `python -c "import secrets; print(secrets.token_urlsafe(48))"`)
-   - `GEMINI_API_KEY`, `OPENAI_API_KEY`, `POLYGON_AMOY_RPC_URL`, `PINATA_JWT`
+1. **Trigger Render deploy + set env vars** — The latest commit (`6e3e7b4`) has NOT been auto-deployed by Render. The service was created manually and auto-deploy may not be enabled. Required steps on Render dashboard:
+   - Go to https://dashboard.render.com → nexus-api → Manual Deploy → Deploy with latest commit
+   - Then set these env vars in Settings → Environment Variables:
+     - `SIWE_DOMAIN = nexus-ecosystem-web.vercel.app`
+     - `SIWE_URI = https://nexus-ecosystem-web.vercel.app`
+     - `CORS_ORIGINS = https://nexus-ecosystem-web.vercel.app,http://localhost:3000`
+     - `APP_ENV = production`
+     - `JWT_SECRET_KEY` (generate: `python -c "import secrets; print(secrets.token_urlsafe(48))"`)
+     - `GEMINI_API_KEY`, `OPENAI_API_KEY`, `POLYGON_AMOY_RPC_URL`, `PINATA_JWT`
+   - After setting, the service auto-redeploys (or trigger another manual deploy)
 
 ### High Priority (from audit)
 | # | Issue | ETA | Status |
@@ -85,11 +88,12 @@ Production deployment sprint completed. Backend deployed to Render at nexus-api-
 
 | File | Change |
 |------|--------|
-| `apps/api/app/main.py` | Added `GET /` root endpoint |
-| `apps/api/app/services/auth_service.py` | SIWE verify domain broader check |
-| `apps/api/app/core/config.py` | CORS default includes production origin |
+| `apps/api/app/main.py` | Added `GET /` root endpoint (committed `ec93ffe`, deployed) |
+| `apps/api/app/services/auth_service.py` | SIWE domain priority + verify broader check (committed `7fdcfc5` deployed, `5361a9b` verify fix NOT deployed) |
+| `apps/api/app/core/config.py` | CORS default includes production origin (committed `5361a9b`, NOT deployed) |
 | `render.yaml` | Render Blueprint with env var declarations |
-| `apps/web/.env.production` | Vercel env pull output (auto-generated) |
+| `CHANGELOG.md` | v1.0.1 entry with Render deployment |
+| `FINAL_SESSION_REPORT.md` | This file |
 
 ---
 
