@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { API_BASE } from "@/lib/constants";
-import { setAccessCookie, setRefreshCookie } from "@/lib/auth-cookies";
+import { setAccessCookie, setCsrfCookie, setRefreshCookie } from "@/lib/auth-cookies";
 
 export async function POST(request: NextRequest) {
   const payload = await request.json();
@@ -46,6 +46,9 @@ export async function POST(request: NextRequest) {
     }
     if (upstream.ok && body?.data?.refresh_token) {
       setRefreshCookie(response, body.data.refresh_token, 7 * 24 * 60 * 60);
+    }
+    if (upstream.ok && csrfToken) {
+      setCsrfCookie(response, csrfToken, 15 * 60);
     }
     return response;
   } catch (error: any) {

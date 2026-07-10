@@ -20,6 +20,19 @@ export function setAccessCookie(
   );
 }
 
+export function setCsrfCookie(
+  response: Response,
+  token: string,
+  maxAgeSeconds: number,
+) {
+  response.headers.append(
+    "Set-Cookie",
+    `${CSRF_COOKIE}=${token}; Path=/; SameSite=Lax; Max-Age=${maxAgeSeconds}${
+      COOKIE_OPTS.secure ? "; Secure" : ""
+    }`,
+  );
+}
+
 export function setRefreshCookie(
   response: Response,
   token: string,
