@@ -44,10 +44,30 @@
 - Removed `console.debug()` calls from production frontend code
 - Removed dead code: `mintMockPassportNFT`, unused page-module stubs, `async-storage-browser.ts`
 
+## v1.0.1 (2026-07-10) — Render Production Deployment
+
+### Added
+- **Render Web Service** deployed at `https://nexus-api-1swe.onrender.com` (Docker, Free plan)
+- **Root endpoint** `GET /` returning service status, docs link, and version
+- **Vercel `NEXT_PUBLIC_API_URL`** set to `https://nexus-api-1swe.onrender.com/api/v1` for Production
+- **`render.yaml`** Blueprint with Docker runtime, health check, auto-deploy, and env var declarations
+- **Path resolution** — `_find_repo_root()` replaces brittle `parents[4]` with marker-based upward search
+
+### Changed
+- **CORS defaults** — `cors_origins` includes `https://nexus-ecosystem-web.vercel.app` by default
+- **SIWE domain priority** — `issue_nonce()` prefers configured `SIWE_DOMAIN` over request Host header
+- **SIWE verify domain check** — Broadened to accept any domain when `SIWE_DOMAIN` not explicitly configured
+- **Dockerfile** — Fixed build context paths, `${PORT:-8000}` env var support
+- **`render.yaml`** — Replaces old `railway.json` as the deployment config
+
+### Fixed
+- **Render startup crash** — `parents[4]` `IndexError` in Docker container resolved with marker-based path search
+- **SIWE domain mismatch** — Nonce message used backend hostname (`nexus-api-1swe.onrender.com`) instead of frontend domain; fixed both nonce creation and verify checking
+
 ### Known Issues
 - **Notifications backend** — Frontend route exists, backend module not yet implemented
 - **`except: pass` patterns** — Intentional graceful degradation in non-critical error handlers
-- **Notifications backend** — Frontend route exists, backend module not yet implemented
+- **SIWE_DOMAIN env var** — Must be set manually on Render dashboard for correct wallet domain display
 - **User secrets** — `DEPLOYER_PRIVATE_KEY`, `GEMINI_API_KEY`, `OPENAI_API_KEY` must be provided by repo owner
 
 ### Fixed (v1.0.0 final sprint)
