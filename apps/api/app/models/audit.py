@@ -29,7 +29,7 @@ class Audit(Base):
     report_json: Mapped[dict[str, Any] | None] = mapped_column(JSONBCompat(), nullable=True)
     report_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
     ai_model_used: Mapped[str] = mapped_column(
-        String(100), nullable=False, default="gemini-1.5-pro"
+        String(100), nullable=False, default="gemini-2.0-flash"
     )
     processing_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
     created_at: Mapped[datetime] = mapped_column(

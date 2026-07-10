@@ -44,7 +44,7 @@ async function memoryRequest<T>(url: string, options?: RequestInit): Promise<T> 
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err?.error?.message || err?.detail || res.statusText);
+    throw new Error(err?.error?.message || err?.detail || `API error (${res.status})`);
   }
 
   const envelope = (await res.json()) as ApiResponseEnvelope<T>;

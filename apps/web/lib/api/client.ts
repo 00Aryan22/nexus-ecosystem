@@ -326,7 +326,14 @@ async function apiRequest<T>(
     }
 
     if (!res.ok) {
-      throw new Error(`API Error: ${res.statusText}`);
+      let errorMessage: string;
+      try {
+        const errorBody = await res.json();
+        errorMessage = errorBody?.error?.message || errorBody?.detail || `API error (${res.status})`;
+      } catch {
+        errorMessage = `API error (${res.status})`;
+      }
+      throw new Error(errorMessage);
     }
 
     const envelope = (await res.json()) as ApiResponseEnvelope<T>;

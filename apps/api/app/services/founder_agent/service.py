@@ -348,6 +348,7 @@ async def stream_agent_response(
     prompt: str,
     plan_type_hint: str | None = None,
     provider_name: str | None = None,
+    model_name: str | None = None,
     context_builder: ContextBuilder | None = None,
     enable_memory: bool = True,
 ):
@@ -374,6 +375,7 @@ async def stream_agent_response(
             prompt=enhanced_prompt,
             system=SYSTEM_PROMPT_FOUNDER_AGENT,
             history=llm_history,
+            model=model_name,
         ):
             full_response += chunk
             yield chunk

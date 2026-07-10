@@ -40,7 +40,9 @@ from app.services.founder_agent.service import (
     stream_agent_response,
     update_conversation,
 )
-from app.services.llm.provider import ProviderRegistry, llm_router
+from app.services.llm.base import sanitize_provider_error
+from app.services.llm.provider import ProviderRegistry
+from app.services.llm.validation import validate_provider_model
 
 logger = logging.getLogger(__name__)
 
@@ -240,6 +242,8 @@ async def chat_with_agent(
 
     resolved_provider = body.provider or user.default_llm_provider
 
+    resolved_model = await validate_provider_model(resolved_provider, body.model)
+
     context_builder = create_context_builder(db) if body.enable_memory else None
 
     async def sse_generator():
@@ -251,13 +255,15 @@ async def chat_with_agent(
                 body.prompt,
                 body.plan_type,
                 provider_name=resolved_provider,
+                model_name=resolved_model,
                 context_builder=context_builder,
                 enable_memory=body.enable_memory,
             ):
                 yield f"data: {json.dumps({'text': chunk})}\n\n"
         except Exception as exc:
             logger.exception("Founder agent stream failed")
-            yield f"data: {json.dumps({'error': str(exc)})}\n\n"
+            safe_error = sanitize_provider_error(exc)
+            yield f"data: {json.dumps({'error': safe_error})}\n\n"
 
         yield "data: [DONE]\n\n"
 
@@ -371,13 +377,15 @@ async def get_provider_status():
     for name in ProviderRegistry.list_providers():
         provider = ProviderRegistry.get(name)
         configured = await provider.health()
-        available = await llm_router.check_provider_health(name)
+        health_status = await provider.detailed_health()
+        available = health_status.value in ("healthy",)
         results.append(
             ProviderStatus(
                 name=name,
                 displayName=provider.display_name,
                 available=available,
                 configured=configured,
+                health_status=health_status.value,
             )
         )
     return ApiResponse(data=results)

@@ -98,7 +98,7 @@ export default function FounderAgentPage() {
   const aiProviders = useAIProviders();
   const aiHealth = useAIHealth();
   const [currentProvider, setCurrentProvider] = useState<string>("gemini");
-  const [currentModel, setCurrentModel] = useState<string>("gemini-1.5-pro");
+  const [currentModel, setCurrentModel] = useState<string>("gemini-2.0-flash");
   const { data: modelsData, isLoading: modelsLoading, refetch: refetchModels } = useAIModels(currentProvider);
   const updateAiSettings = useUpdateAISettings();
   const [settingsLoaded, setSettingsLoaded] = useState(false);
@@ -127,6 +127,8 @@ export default function FounderAgentPage() {
       setCurrentProvider(providerPrefs.data.provider);
     }
   }, [providerPrefs.data, settingsLoaded, aiSettings.data]);
+
+  const isHealthy = currentHealthStatus === "healthy" || !currentHealthStatus;
 
   useEffect(() => {
     setDismissedHealthWarning(false);
@@ -218,7 +220,7 @@ export default function FounderAgentPage() {
         const conversationId = await ensureConversation();
         let fullText = "";
 
-        for await (const chunk of streamFounderChat(conversationId, text, planType, controller.signal, currentProvider, memoryActive)) {
+        for await (const chunk of streamFounderChat(conversationId, text, planType, controller.signal, currentProvider, memoryActive, currentModel)) {
           fullText += chunk;
           setMessages((prev) =>
             prev.map((m) =>
@@ -249,7 +251,7 @@ export default function FounderAgentPage() {
         setStreaming(false);
       }
     },
-    [streaming, ensureConversation, queryClient, currentProvider, memoryActive]
+    [streaming, ensureConversation, queryClient, currentProvider, currentModel, memoryActive]
   );
 
   const handleRetry = useCallback(async () => {
@@ -317,7 +319,7 @@ export default function FounderAgentPage() {
     setCurrentProvider(provider);
     const providersList = aiProviders.data ?? [];
     const providerMeta = providersList.find((p) => p.id === provider);
-    const newModel = providerMeta?.defaultModel ?? modelsData?.[0]?.id ?? "gemini-1.5-pro";
+    const newModel = providerMeta?.defaultModel ?? modelsData?.[0]?.id ?? "gemini-2.0-flash";
     setCurrentModel(newModel);
     updateAiSettings.mutate({ defaultProvider: provider, defaultModel: newModel });
   };
@@ -425,12 +427,30 @@ export default function FounderAgentPage() {
       />
 
       {currentHealthStatus && currentHealthStatus !== "healthy" && !dismissedHealthWarning && (
-        <div className="flex items-center gap-2 rounded-lg border border-yellow-500/30 bg-yellow-500/10 px-4 py-2 text-sm text-yellow-600 dark:text-yellow-400">
+        <div className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm ${
+          currentHealthStatus === "rate_limited"
+            ? "border-orange-500/30 bg-orange-500/10 text-orange-600 dark:text-orange-400"
+            : currentHealthStatus === "model_unavailable"
+              ? "border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400"
+              : currentHealthStatus === "not_configured" || currentHealthStatus === "misconfigured"
+                ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
+                : currentHealthStatus === "local_only"
+                  ? "border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                  : "border-yellow-500/30 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
+        }`}>
           <AlertTriangle className="h-4 w-4 shrink-0" />
           <span className="flex-1">
-            {currentProvider === "gemini" || currentProvider === "openai"
-              ? `${currentProvider.charAt(0).toUpperCase() + currentProvider.slice(1)} API key may not be configured. Chat may fail.`
-              : `${currentProvider.charAt(0).toUpperCase() + currentProvider.slice(1)} is unavailable.`}
+            {currentHealthStatus === "rate_limited"
+              ? `${currentProvider.charAt(0).toUpperCase() + currentProvider.slice(1)} is rate-limited. Check your API quota or billing.`
+              : currentHealthStatus === "model_unavailable"
+                ? `Selected model is unavailable. Choose a different model from the dropdown.`
+                : currentHealthStatus === "not_configured"
+                  ? `${currentProvider.charAt(0).toUpperCase() + currentProvider.slice(1)} API key is not configured. Add it in Settings.`
+                  : currentHealthStatus === "misconfigured"
+                    ? `${currentProvider.charAt(0).toUpperCase() + currentProvider.slice(1)} credentials are invalid. Check your API key in Settings.`
+                    : currentHealthStatus === "local_only"
+                      ? `Ollama is only available during local development. Deploy with a cloud provider for production.`
+                      : `${currentProvider.charAt(0).toUpperCase() + currentProvider.slice(1)} is currently unavailable.`}
           </span>
           <button className="text-xs underline hover:no-underline" onClick={() => setDismissedHealthWarning(true)}>
             Dismiss
@@ -553,9 +573,10 @@ export default function FounderAgentPage() {
                 <Button
                   type={streaming ? "button" : "submit"}
                   size="icon"
-                  disabled={!input.trim() || streaming}
-                  className="h-9 w-9 rounded-lg bg-neon-purple hover:bg-neon-purple/80 text-white"
+                  disabled={!input.trim() || streaming || !isHealthy}
+                  className="h-9 w-9 rounded-lg bg-neon-purple hover:bg-neon-purple/80 text-white disabled:opacity-50"
                   aria-label="Send message"
+                  title={!isHealthy ? "Provider is not healthy" : undefined}
                 >
                   <Send className="h-4 w-4" />
                 </Button>
@@ -564,7 +585,9 @@ export default function FounderAgentPage() {
             <p className="mt-1.5 text-[10px] text-muted-foreground text-center">
               {streaming
                 ? "Press Esc to stop generation"
-                : "Ctrl+Enter to send · ↑ to edit last prompt"}
+                : !isHealthy
+                  ? `Cannot send — ${currentProvider} is ${currentHealthStatus ?? "unavailable"}`
+                  : "Ctrl+Enter to send · ↑ to edit last prompt"}
             </p>
           </div>
         </div>

@@ -35,7 +35,7 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false);
 
   const [provider, setProvider] = useState("gemini");
-  const [model, setModel] = useState("gemini-1.5-pro");
+  const [model, setModel] = useState("gemini-2.0-flash");
   const [temperature, setTemperature] = useState(0.7);
   const [topP, setTopP] = useState(1.0);
   const [maxTokens, setMaxTokens] = useState(4096);
@@ -182,7 +182,7 @@ export default function SettingsPage() {
                   <Input
                     value={model}
                     onChange={(e) => setModel(e.target.value)}
-                    placeholder="e.g. gemini-1.5-pro"
+                    placeholder="e.g. gemini-2.0-flash"
                   />
                 </div>
               </CardContent>

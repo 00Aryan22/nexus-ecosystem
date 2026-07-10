@@ -17,7 +17,14 @@ class OllamaProvider(LLMProvider):
         self.endpoint = endpoint or settings.ollama_chat_url
         self.model = model or settings.ollama_model
 
-    async def stream_generate(self, prompt: str, system: str, history: list[dict[str, str]]):
+    async def stream_generate(
+        self,
+        prompt: str,
+        system: str,
+        history: list[dict[str, str]],
+        model: str | None = None,
+    ):
+        model_name = model or self.model
         messages = (
             [{"role": "system", "content": system}]
             + history
@@ -28,7 +35,7 @@ class OllamaProvider(LLMProvider):
             async with client.stream(
                 "POST",
                 self.endpoint,
-                json={"model": self.model, "messages": messages, "stream": True},
+                json={"model": model_name, "messages": messages, "stream": True},
             ) as response:
                 response.raise_for_status()
                 async for line in response.aiter_lines():
@@ -51,7 +58,7 @@ class OllamaProvider(LLMProvider):
         except Exception:
             return False
 
-    async def detailed_health(self) -> ProviderHealthStatus:
+    async def detailed_health(self, model: str | None = None) -> ProviderHealthStatus:
         base = settings.ollama_base_url.rstrip("/")
         try:
             async with httpx.AsyncClient(timeout=5.0) as client:

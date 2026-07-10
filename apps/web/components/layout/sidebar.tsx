@@ -116,8 +116,9 @@ export function Sidebar() {
   const pathname = usePathname();
   const { user, address, signOut } = useAuth();
 
-  const truncatedAddress = address
-    ? `${address.slice(0, 6)}...${address.slice(-4)}`
+  const displayAddress = address ?? user?.wallet_address;
+  const truncatedAddress = displayAddress
+    ? `${displayAddress.slice(0, 6)}...${displayAddress.slice(-4)}`
     : "Not connected";
 
   return (

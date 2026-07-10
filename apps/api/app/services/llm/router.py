@@ -20,12 +20,17 @@ class ProviderRouter:
         self.providers: list[LLMProvider] = []
 
     async def _stream_with_retries(
-        self, provider: LLMProvider, prompt: str, system: str, history: list[dict[str, str]]
+        self,
+        provider: LLMProvider,
+        prompt: str,
+        system: str,
+        history: list[dict[str, str]],
+        model: str | None = None,
     ) -> AsyncGenerator[str, None]:
         last_error: Exception | None = None
         for attempt in range(MAX_RETRIES + 1):
             try:
-                async for chunk in provider.stream_generate(prompt, system, history):
+                async for chunk in provider.stream_generate(prompt, system, history, model):
                     yield chunk
                 return
             except (httpx.HTTPError, ValueError, RuntimeError) as exc:
@@ -68,9 +73,10 @@ class ProviderRouter:
         prompt: str,
         system: str,
         history: list[dict[str, str]],
+        model: str | None = None,
     ) -> AsyncGenerator[str, None]:
         provider = ProviderRegistry.get(provider_name)
-        async for chunk in self._stream_with_retries(provider, prompt, system, history):
+        async for chunk in self._stream_with_retries(provider, prompt, system, history, model):
             yield chunk
 
     async def stream_generate(
@@ -86,10 +92,12 @@ class ProviderRouter:
         except ValueError:
             return False
 
-    async def detailed_provider_health(self, name: str) -> ProviderHealthStatus:
+    async def detailed_provider_health(
+        self, name: str, model: str | None = None
+    ) -> ProviderHealthStatus:
         try:
             provider = ProviderRegistry.get(name)
-            return await provider.detailed_health()
+            return await provider.detailed_health(model=model or provider.default_model or None)
         except ValueError:
             return ProviderHealthStatus.UNAVAILABLE
 

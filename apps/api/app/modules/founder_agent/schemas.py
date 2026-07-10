@@ -43,6 +43,10 @@ class ChatRequest(BaseModel):
         default=None,
         description="Optional LLM provider override (emergent, gemini, ollama)",
     )
+    model: str | None = Field(
+        default=None,
+        description="Optional model override (e.g. gemini-2.0-flash, gpt-4o)",
+    )
     enable_memory: bool = Field(
         default=True,
         description="Enable semantic memory search to inject relevant workspace knowledge",
@@ -60,6 +64,7 @@ class ProviderStatus(BaseModel):
     displayName: str = Field(validation_alias="display_name")
     available: bool
     configured: bool
+    healthStatus: str | None = Field(default=None, validation_alias="health_status")
 
 
 class StartupPlanPublic(BaseModel):

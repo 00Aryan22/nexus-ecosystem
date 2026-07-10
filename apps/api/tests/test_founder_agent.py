@@ -24,7 +24,7 @@ def mock_llm(monkeypatch: pytest.MonkeyPatch) -> None:
         async for chunk, provider in _mock_stream():
             yield chunk, provider
 
-    async def mock_stream_from_provider(provider_name, prompt, system, history):
+    async def mock_stream_from_provider(provider_name, prompt, system, history, **kwargs):
         async for chunk in _mock_chunks():
             yield chunk
 

@@ -6,6 +6,8 @@ from app.modules.ai.models import UserAISettings
 from app.modules.ai.schemas import AISettings
 from app.services.llm.registry import ProviderRegistry
 
+_STALE_MODELS = {"gemini-1.5-pro", "gemini-1.5-flash"}
+
 
 async def get_ai_settings(db: AsyncSession, user: User) -> AISettings:
     result = await db.execute(select(UserAISettings).where(UserAISettings.user_id == user.id))
@@ -15,9 +17,22 @@ async def get_ai_settings(db: AsyncSession, user: User) -> AISettings:
             default_provider=user.default_llm_provider,
             default_model=_default_for_provider(user.default_llm_provider),
         )
+
+    migrated = False
+    model = settings.default_model
+    if model in _STALE_MODELS:
+        model = _default_for_provider(settings.default_provider)
+        settings.default_model = model
+        migrated = True
+
+    provider = settings.default_provider or user.default_llm_provider
+    if migrated:
+        await db.commit()
+        await db.refresh(settings)
+
     return AISettings(
-        default_provider=settings.default_provider or user.default_llm_provider,
-        default_model=settings.default_model,
+        default_provider=provider,
+        default_model=model,
         temperature=settings.temperature,
         top_p=settings.top_p,
         max_tokens=settings.max_tokens,
@@ -68,4 +83,4 @@ def _default_for_provider(provider: str) -> str:
         p = ProviderRegistry.get(provider)
         return p.default_model
     except ValueError:
-        return "gemini-1.5-pro"
+        return "gemini-2.0-flash"

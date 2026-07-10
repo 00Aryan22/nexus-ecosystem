@@ -20,7 +20,7 @@ class UserAISettings(Base):
     )
     default_provider: Mapped[str] = mapped_column(String(30), nullable=False, default="gemini")
     default_model: Mapped[str] = mapped_column(
-        String(100), nullable=False, default="gemini-1.5-pro"
+        String(100), nullable=False, default="gemini-2.0-flash"
     )
     temperature: Mapped[float] = mapped_column(Float, nullable=False, default=0.7)
     top_p: Mapped[float] = mapped_column(Float, nullable=False, default=1.0)

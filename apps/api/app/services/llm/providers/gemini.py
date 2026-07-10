@@ -8,7 +8,7 @@ from app.services.llm.base import LLMProvider, ProviderHealthStatus
 
 logger = logging.getLogger(__name__)
 
-GEMINI_MODELS = ["gemini-1.5-pro", "gemini-1.5-flash", "gemini-2.0-flash"]
+GEMINI_MODELS = ["gemini-2.0-flash", "gemini-2.0-flash-lite"]
 
 
 class GeminiProvider(LLMProvider):
@@ -18,14 +18,34 @@ class GeminiProvider(LLMProvider):
     def __init__(self, api_key: str | None = None):
         self.api_key = api_key or settings.gemini_api_key
 
-    async def stream_generate(self, prompt: str, system: str, history: list[dict[str, str]]):
+    def _model_for_url(self, model: str | None = None) -> str:
+        return model or self.default_model
+
+    def _stream_url(self, model: str | None = None) -> str:
+        m = self._model_for_url(model)
+        return (
+            "https://generativelanguage.googleapis.com/v1beta/models/"
+            f"{m}:streamGenerateContent?alt=sse&key={self.api_key}"
+        )
+
+    def _health_url(self, model: str | None = None) -> str:
+        m = self._model_for_url(model)
+        return (
+            "https://generativelanguage.googleapis.com/v1beta/models/"
+            f"{m}:generateContent?key={self.api_key}"
+        )
+
+    async def stream_generate(
+        self,
+        prompt: str,
+        system: str,
+        history: list[dict[str, str]],
+        model: str | None = None,
+    ):
         if not self.api_key:
             raise ValueError("Gemini API Key not configured")
 
-        url = (
-            "https://generativelanguage.googleapis.com/v1beta/models/"
-            f"gemini-1.5-pro:streamGenerateContent?alt=sse&key={self.api_key}"
-        )
+        url = self._stream_url(model)
 
         contents = []
         for msg in history:
@@ -60,14 +80,11 @@ class GeminiProvider(LLMProvider):
     async def health(self) -> bool:
         return bool(self.api_key)
 
-    async def detailed_health(self) -> ProviderHealthStatus:
+    async def detailed_health(self, model: str | None = None) -> ProviderHealthStatus:
         if not self.api_key:
             return ProviderHealthStatus.MISCONFIGURED
         try:
-            url = (
-                "https://generativelanguage.googleapis.com/v1beta/models/"
-                f"gemini-1.5-pro:generateContent?key={self.api_key}"
-            )
+            url = self._health_url(model)
             async with httpx.AsyncClient(timeout=10.0) as client:
                 resp = await client.post(
                     url,
@@ -79,6 +96,8 @@ class GeminiProvider(LLMProvider):
                     return ProviderHealthStatus.RATE_LIMITED
                 if resp.status_code == 403:
                     return ProviderHealthStatus.MISCONFIGURED
+                if resp.status_code == 404:
+                    return ProviderHealthStatus.MODEL_UNAVAILABLE
                 return ProviderHealthStatus.UNAVAILABLE
         except httpx.ConnectError:
             return ProviderHealthStatus.UNAVAILABLE
@@ -90,7 +109,7 @@ class GeminiProvider(LLMProvider):
 
     @property
     def default_model(self) -> str:
-        return "gemini-1.5-pro"
+        return "gemini-2.0-flash"
 
     @property
     def supports_model_listing(self) -> bool:

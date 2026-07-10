@@ -24,10 +24,17 @@ class OpenAIProvider(LLMProvider):
     def __init__(self, api_key: str | None = None):
         self.api_key = api_key or settings.openai_api_key
 
-    async def stream_generate(self, prompt: str, system: str, history: list[dict[str, str]]):
+    async def stream_generate(
+        self,
+        prompt: str,
+        system: str,
+        history: list[dict[str, str]],
+        model: str | None = None,
+    ):
         if not self.api_key:
             raise ValueError("OpenAI API Key not configured")
 
+        model_name = model or self.default_model
         messages = (
             [{"role": "system", "content": system}]
             + history
@@ -42,7 +49,7 @@ class OpenAIProvider(LLMProvider):
                     "Authorization": f"Bearer {self.api_key}",
                     "Content-Type": "application/json",
                 },
-                json={"model": "gpt-4o", "messages": messages, "stream": True},
+                json={"model": model_name, "messages": messages, "stream": True},
             ) as response:
                 response.raise_for_status()
                 async for line in response.aiter_lines():
@@ -63,7 +70,7 @@ class OpenAIProvider(LLMProvider):
     async def health(self) -> bool:
         return bool(self.api_key)
 
-    async def detailed_health(self) -> ProviderHealthStatus:
+    async def detailed_health(self, model: str | None = None) -> ProviderHealthStatus:
         if not self.api_key:
             return ProviderHealthStatus.MISCONFIGURED
         try:

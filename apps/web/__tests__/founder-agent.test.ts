@@ -200,7 +200,7 @@ describe("updateFounderConversation", () => {
     } as Response);
 
     await expect(updateFounderConversation("bad-id", { title: "title" })).rejects.toThrow(
-      "Not Found"
+      "API error (404)"
     );
   });
 });
@@ -661,7 +661,7 @@ describe("fetchAIProviders", () => {
 
   it("should fetch providers list", async () => {
     const mockData = [
-      { id: "gemini", displayName: "Gemini", status: "available", defaultModel: "gemini-1.5-pro" },
+      { id: "gemini", displayName: "Gemini", status: "available", defaultModel: "gemini-2.0-flash" },
       { id: "openai", displayName: "OpenAI", status: "available", defaultModel: "gpt-4o" },
     ];
     global.fetch = vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => ({ data: mockData }) } as Response);
@@ -726,7 +726,7 @@ describe("updateAISettings", () => {
   it("should send PUT request with settings", async () => {
     const updated: AISettings = {
       defaultProvider: "gemini",
-      defaultModel: "gemini-1.5-pro",
+      defaultModel: "gemini-2.0-flash",
       temperature: 0.7,
       topP: 1.0,
       maxTokens: 4096,

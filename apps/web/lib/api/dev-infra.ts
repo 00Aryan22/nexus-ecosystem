@@ -39,7 +39,7 @@ async function infraRequest<T>(url: string, options?: RequestInit): Promise<T> {
   if (res.status === 401) throw new Error("UNAUTHORIZED");
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err?.error?.message || err?.detail || res.statusText);
+    throw new Error(err?.error?.message || err?.detail || `API error (${res.status})`);
   }
   const envelope = (await res.json()) as ApiResponseEnvelope<T>;
   if (envelope.error) throw new Error(envelope.error.message || "Unknown API error");

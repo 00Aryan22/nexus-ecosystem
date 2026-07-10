@@ -13,6 +13,13 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
+    "test:e2e": "npx playwright test --project=chromium",
+    "test:headed": "npx playwright test --project=chromium --headed",
+    "test:mobile": "npx playwright test --project=mobile-chrome",
+    "test:cross-browser": "npx playwright test",
+    "test:demo": "npx playwright test --config=playwright.demo.config.ts",
+    "test:report": "npx playwright show-report test-results/reports/html",
+    "test:full": "npx playwright test && npx playwright test --config=playwright.demo.config.ts",
     "postinstall": "npx patch-package"
   },
   "devDependencies": {

@@ -64,7 +64,7 @@ async function founderRequest<T>(url: string, options?: RequestInit): Promise<T>
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err?.error?.message || err?.detail || res.statusText);
+    throw new Error(err?.error?.message || err?.detail || `API error (${res.status})`);
   }
 
   const envelope = (await res.json()) as ApiResponseEnvelope<T>;
@@ -179,6 +179,7 @@ export type ProviderStatus = {
   displayName: string;
   available: boolean;
   configured: boolean;
+  healthStatus?: string;
 };
 
 // ---------------------------------------------------------------------------
@@ -264,10 +265,12 @@ export async function* streamFounderChat(
   planType?: string | null,
   signal?: AbortSignal,
   provider?: string | null,
-  enableMemory?: boolean
+  enableMemory?: boolean,
+  model?: string | null
 ): AsyncGenerator<string, void, unknown> {
   const body: Record<string, unknown> = { prompt, plan_type: planType ?? null };
   if (provider) body.provider = provider;
+  if (model) body.model = model;
   if (enableMemory !== undefined) body.enable_memory = enableMemory;
   const res = await fetch(
     `/api/v1/founder-agent/conversations/${conversationId}/chat`,

@@ -96,7 +96,7 @@ describe("apiRequest", () => {
       .catch((e: Error) => e);
 
     expect(error).toBeInstanceOf(Error);
-    expect(error!.message).toContain("API Error");
+    expect(error!.message).toContain("API error");
   });
 
   it("should throw when data is null", async () => {

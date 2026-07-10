@@ -18,7 +18,7 @@ class AISettings(BaseModel):
     model_config = ConfigDict(populate_by_name=True, from_attributes=True)
 
     defaultProvider: str = Field(default="gemini", validation_alias="default_provider")
-    defaultModel: str = Field(default="gemini-1.5-pro", validation_alias="default_model")
+    defaultModel: str = Field(default="gemini-2.0-flash", validation_alias="default_model")
     temperature: float = Field(default=0.7, ge=0.0, le=2.0)
     topP: float = Field(default=1.0, ge=0.0, le=1.0, validation_alias="top_p")
     maxTokens: int = Field(default=4096, ge=1, le=128000, validation_alias="max_tokens")

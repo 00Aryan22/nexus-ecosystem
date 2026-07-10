@@ -127,7 +127,7 @@ async def provider_health(
     for name in ProviderRegistry.list_providers():
         p = ProviderRegistry.get(name)
         configured = await p.health()
-        status = await llm_router.detailed_provider_health(name)
+        status = await llm_router.detailed_provider_health(name, model=p.default_model or None)
         results.append(
             AIProviderHealth(
                 provider=name,

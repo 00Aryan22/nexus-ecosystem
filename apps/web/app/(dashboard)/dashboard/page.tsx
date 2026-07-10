@@ -94,7 +94,7 @@ export default function DashboardOverviewPage() {
         const docs = await fetchDocuments();
         setDocuments(docs);
       } catch {
-        // silent
+        console.warn("[Dashboard] Failed to load documents");
       } finally {
         setDocumentsLoading(false);
       }
@@ -105,7 +105,7 @@ export default function DashboardOverviewPage() {
         const convos = await fetchFounderConversations();
         setConversations(convos);
       } catch {
-        // silent
+        console.warn("[Dashboard] Failed to load conversations");
       } finally {
         setConversationsLoading(false);
       }
@@ -116,7 +116,7 @@ export default function DashboardOverviewPage() {
         const provs = await fetchAIProviders();
         setProviders(provs);
       } catch {
-        // silent
+        console.warn("[Dashboard] Failed to load AI providers");
       } finally {
         setProvidersLoading(false);
       }

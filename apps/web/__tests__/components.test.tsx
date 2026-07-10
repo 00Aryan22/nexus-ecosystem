@@ -10,7 +10,7 @@ import { ProviderSelector } from "@/components/founder-agent/provider-selector";
 
 describe("ModelSelector", () => {
   const defaultProps = {
-    models: ["gpt-4o", "gpt-4o-mini", "gemini-1.5-pro"],
+    models: ["gpt-4o", "gpt-4o-mini", "gemini-2.0-flash"],
     currentModel: "gpt-4o",
     onSelect: vi.fn(),
     onRefresh: vi.fn(),
@@ -36,7 +36,7 @@ describe("ModelSelector", () => {
     fireEvent.click(screen.getByLabelText("Selected model: gpt-4o"));
     expect(screen.getByRole("listbox")).toBeDefined();
     expect(screen.getByText("gpt-4o-mini")).toBeDefined();
-    expect(screen.getByText("gemini-1.5-pro")).toBeDefined();
+    expect(screen.getByText("gemini-2.0-flash")).toBeDefined();
   });
 
   it("calls onSelect when a model is clicked", () => {

@@ -22,7 +22,7 @@ def test_ai_provider_registry_get_openai() -> None:
 
 def test_ai_provider_registry_get_gemini() -> None:
     p = ProviderRegistry.get("gemini")
-    assert p.default_model == "gemini-1.5-pro"
+    assert p.default_model == "gemini-2.0-flash"
 
 
 def test_ai_provider_registry_get_ollama() -> None:
@@ -67,8 +67,8 @@ def test_provider_metadata_supports_model_listing() -> None:
 async def test_gemini_model_list() -> None:
     p = ProviderRegistry.get("gemini")
     models = await p.model_list()
-    assert "gemini-1.5-pro" in models
-    assert "gemini-1.5-flash" in models
+    assert "gemini-2.0-flash" in models
+    assert "gemini-1.5-pro" not in models
 
 
 @pytest.mark.asyncio
@@ -128,7 +128,8 @@ async def test_ai_providers_models_gemini(client: AsyncClient) -> None:
     assert response.status_code == 200
     data = response.json()["data"]
     ids = [m["id"] for m in data]
-    assert "gemini-1.5-pro" in ids
+    assert "gemini-2.0-flash" in ids
+    assert "gemini-1.5-pro" not in ids
 
 
 @pytest.mark.asyncio
@@ -160,7 +161,8 @@ async def test_ai_models_gemini(client: AsyncClient) -> None:
     assert response.status_code == 200
     data = response.json()["data"]
     ids = [m["id"] for m in data]
-    assert "gemini-1.5-pro" in ids
+    assert "gemini-2.0-flash" in ids
+    assert "gemini-1.5-pro" not in ids
 
 
 @pytest.mark.asyncio
