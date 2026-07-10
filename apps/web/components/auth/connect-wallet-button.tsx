@@ -60,7 +60,12 @@ export function ConnectWalletButton() {
       await signIn(address);
     } catch (error) {
       console.error("[ConnectWalletButton] sign in failed", error);
-      setStatusMessage("Unable to sign in with the connected wallet. Please try again.");
+      const message = error instanceof Error ? error.message : "";
+      setStatusMessage(
+        message.includes("Backend") || message.includes("proxy") || message.includes("fetch")
+          ? "Authentication backend is not available. Make sure the API server is running."
+          : message || "Unable to sign in with the connected wallet. Please try again."
+      );
     } finally {
       signInAttemptRef.current = null;
     }

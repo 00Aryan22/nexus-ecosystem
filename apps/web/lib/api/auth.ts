@@ -24,8 +24,10 @@ export async function fetchNonce(wallet: string) {
   const res = await fetch(`/api/auth/nonce?wallet=${encodeURIComponent(wallet)}`);
   if (!res.ok) {
     const body = await res.text().catch(() => "");
+    let detail = "Failed to fetch nonce";
+    try { const parsed = JSON.parse(body); if (parsed?.error?.message) detail = parsed.error.message; } catch {}
     console.error("[Auth API] fetchNonce failed", { status: res.status, body });
-    throw new Error("Failed to fetch nonce");
+    throw new Error(detail);
   }
   const json = (await res.json()) as ApiResponse<{
     nonce: string;

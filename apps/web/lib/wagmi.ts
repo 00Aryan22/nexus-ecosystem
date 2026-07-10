@@ -1,4 +1,4 @@
-import { createConfig, http, type Config } from "wagmi";
+import { createConfig, http, fallback, type Config } from "wagmi";
 import { injected, walletConnect } from "wagmi/connectors";
 import { polygonAmoy } from "viem/chains";
 
@@ -14,6 +14,10 @@ const metadata = {
   icons: ["/nexus-ai-logo.svg"],
 };
 
+const amoyRpcUrl =
+  process.env.NEXT_PUBLIC_POLYGON_AMOY_RPC_URL?.trim() ||
+  process.env.NEXT_PUBLIC_ALCHEMY_POLYGON_AMOY_RPC_URL?.trim();
+
 export const wagmiConfig = createConfig({
   chains: [polygonAmoy],
   connectors: [
@@ -28,7 +32,9 @@ export const wagmiConfig = createConfig({
     }),
   ],
   transports: {
-    [polygonAmoy.id]: http(),
+    [polygonAmoy.id]: amoyRpcUrl
+      ? fallback([http(amoyRpcUrl), http()])
+      : http(),
   },
   ssr: true,
 }) satisfies Config;
